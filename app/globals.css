@@ -1,21 +1,91 @@
+@import '../styles/colors.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+body {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-white);
+    --foreground: var(--color-slate-900);
+    --card: var(--color-white);
+    --card-foreground: var(--color-slate-900);
+    --popover: var(--color-white);
+    --popover-foreground: var(--color-slate-900);
+    --primary: var(--color-teal-500);
+    --primary-foreground: var(--color-slate-50);
+    --primary-hover: var(--color-teal-600);
+    --secondary: var(--color-gray-200);
+    --secondary-foreground: var(--color-slate-900);
+    --muted: var(--color-gray-200);
+    --muted-foreground: var(--color-gray-700);
+    --accent: var(--color-gray-200);
+    --accent-foreground: var(--color-slate-900);
+    --destructive: var(--color-red-500);
+    --destructive-foreground: var(--color-slate-50);
+    --border: var(--color-gray-200);
+    --input: var(--color-gray-200);
+    --ring: var(--color-teal-500);
+    --chart-1: var(--color-chart-1);
+    --chart-2: var(--color-chart-2);
+    --chart-3: var(--color-chart-3);
+    --chart-4: var(--color-chart-4);
+    --chart-5: var(--color-chart-5);
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --background: var(--color-slate-900);
+    --foreground: var(--color-slate-50);
+    --card: var(--color-slate-900);
+    --card-foreground: var(--color-slate-50);
+    --popover: var(--color-slate-900);
+    --popover-foreground: var(--color-slate-50);
+    --primary: var(--color-teal-600);
+    --primary-foreground: var(--color-slate-900);
+    --primary-hover: var(--color-teal-500);
+    --secondary: var(--color-gray-700);
+    --secondary-foreground: var(--color-slate-50);
+    --muted: var(--color-gray-700);
+    --muted-foreground: var(--color-gray-200);
+    --accent: var(--color-gray-700);
+    --accent-foreground: var(--color-slate-50);
+    --destructive: var(--color-red-500);
+    --destructive-foreground: var(--color-slate-50);
+    --border: var(--color-gray-700);
+    --input: var(--color-gray-700);
+    --ring: var(--color-teal-600);
+    --chart-1: var(--color-chart-1);
+    --chart-2: var(--color-chart-2);
+    --chart-3: var(--color-chart-3);
+    --chart-4: var(--color-chart-4);
+    --chart-5: var(--color-chart-5);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

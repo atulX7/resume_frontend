@@ -1,0 +1,18 @@
+:root {
+  /* Base colors in HEX */
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-slate-50: #f8fafc;
+  --color-slate-900: #0f172a;
+  --color-white: #ffffff;
+  --color-red-500: #ef4444;
+  --color-gray-200: #e5e7eb;
+  --color-gray-700: #374151;
+
+  /* Chart colors in HEX */
+  --color-chart-1: #E74C3C;  /* Warm Red */
+  --color-chart-2: #2FA4B1;  /* Teal */
+  --color-chart-3: #1B3240;  /* Dark Blue */
+  --color-chart-4: #F1C40F;  /* Yellow */
+  --color-chart-5: #F39C12;  /* Orange */
+} 
