@@ -23,18 +23,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const isAdminRoute = pathname?.startsWith('/admin')
+  const hideNavbar = pathname?.startsWith('/admin') || pathname?.startsWith('/dashboard')
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased ${
-          isAdminRoute ? '' : 'pt-16'
+          hideNavbar ? '' : 'pt-16'
         }`}
       >
         <Providers>
           <LoadingProvider>
-            {!isAdminRoute && <Navbar />}
+            {!hideNavbar && <Navbar />}
             <main>{children}</main>
           </LoadingProvider>
         </Providers>
