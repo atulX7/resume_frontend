@@ -1,4 +1,4 @@
-import { FileText, Wand2, FileSearch, ScrollText, DollarSign } from 'lucide-react'
+import { FileText, Wand2, FileSearch, ScrollText, DollarSign, MessageSquare } from 'lucide-react'
 
 export const siteConfig = {
   name: "Boost Resume",
@@ -26,6 +26,12 @@ export const siteConfig = {
           href: "/resume/ats-check",
           description: "Check how well your resume performs against ATS systems",
           icon: FileSearch
+        },
+        {
+          title: "Interview Practice",
+          href: "/resume/interview",
+          description: "Practice your interview skills with our AI-powered mock interviews",
+          icon: MessageSquare
         },
       ],
     },
