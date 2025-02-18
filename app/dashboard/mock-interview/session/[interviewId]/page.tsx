@@ -1,7 +1,6 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, use } from 'react'
 import { useRouter } from 'next/navigation'
-import { use } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -15,7 +14,11 @@ import {
   AlertCircle 
 } from "lucide-react"
 
-export default function InterviewSession({ params }: { params: Promise<{ interviewId: string }> }) {
+export default function InterviewSession({ 
+  params 
+}: { 
+  params: Promise<{ interviewId: string }> 
+}) {
   const router = useRouter()
   const { interviewId } = use(params)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -42,7 +45,6 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     }
     setupStream()
 
-    // Cleanup function to stop all tracks
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => {
@@ -108,7 +110,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   }
 
   const finishInterview = () => {
-    cleanupMedia() // Stop media before redirect
+    cleanupMedia()
     router.push(`/dashboard/mock-interview/analysis/${interviewId}`)
   }
 
@@ -121,7 +123,6 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-5xl mx-auto px-4">
-        {/* Progress Bar */}
         <Card className="mb-8">
           <CardContent className="py-6">
             <div className="flex items-center justify-between mb-4">
@@ -139,8 +140,6 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
             />
           </CardContent>
         </Card>
-
-        {/* Question Card */}
         <Card className="mb-8">
           <CardContent className="py-6">
             <div className="flex items-start gap-4">
@@ -158,8 +157,6 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
             </div>
           </CardContent>
         </Card>
-
-        {/* Video and Controls */}
         <div className="grid md:grid-cols-2 gap-8">
           <Card>
             <CardContent className="p-4">

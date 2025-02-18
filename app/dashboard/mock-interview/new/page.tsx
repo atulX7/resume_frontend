@@ -15,7 +15,6 @@ export default function NewInterviewPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Temporary mock implementation
     router.push(`/dashboard/mock-interview/setup/mock-interview-id`)
   }
 

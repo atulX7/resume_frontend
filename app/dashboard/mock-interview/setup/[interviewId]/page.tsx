@@ -1,10 +1,10 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { use } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MicIcon, VideoIcon } from "lucide-react"
+import { use } from 'react'
 
 export default function SetupPage({ params }: { params: Promise<{ interviewId: string }> }) {
   const router = useRouter()
@@ -26,12 +26,10 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
         setStream(mediaStream)
         setDevices({ video: true, audio: true })
 
-        // Set video stream
         if (videoRef.current) {
           videoRef.current.srcObject = mediaStream
         }
 
-        // Set up audio analysis
         audioContext.current = new AudioContext()
         analyser.current = audioContext.current.createAnalyser()
         const source = audioContext.current.createMediaStreamSource(mediaStream)
@@ -79,7 +77,7 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Camera Preview */}
+
             <div className="space-y-4">
               <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
                 <video
@@ -96,7 +94,6 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
               </div>
             </div>
 
-            {/* Audio Test */}
             <div className="space-y-4">
               <div className="bg-white p-6 rounded-lg border h-full flex flex-col justify-between">
                 <div className="space-y-4">

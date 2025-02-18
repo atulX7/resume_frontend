@@ -6,13 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { INTERVIEW_ANALYSIS } from '../../data/analysis'
 import { useEffect } from 'react'
 import { InterviewService } from '@/services/interview-service'
+import { use } from 'react'
 
-export default function AnalysisPage({ params }: { params: { interviewId: string } }) {
-  const { interviewId } = params
+export default function AnalysisPage({ params }: { params: Promise<{ interviewId: string }> }) {
+  const { interviewId } = use(params)
   const router = useRouter()
 
   useEffect(() => {
-    // Stop all media tracks when analysis page loads
     const stopMediaTracks = async () => {
       try {
         const streams = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
@@ -25,9 +25,7 @@ export default function AnalysisPage({ params }: { params: { interviewId: string
     stopMediaTracks()
   }, [])
 
-  // Use interviewId to fetch specific interview data
   useEffect(() => {
-    // Fetch interview data using interviewId
     console.log('Interview ID:', interviewId)
   }, [interviewId])
 
@@ -36,8 +34,6 @@ export default function AnalysisPage({ params }: { params: { interviewId: string
       try {
         const response = await InterviewService.getAnalysis(interviewId)
         if (response.success && response.data) {
-          // Update your state with the analysis data
-          // You might want to create a state for this
           console.log('Analysis data:', response.data)
         }
       } catch (error) {
@@ -50,7 +46,6 @@ export default function AnalysisPage({ params }: { params: { interviewId: string
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
-      {/* Header Section */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-[#0A2647]">Interview Analysis</h1>
@@ -64,7 +59,6 @@ export default function AnalysisPage({ params }: { params: { interviewId: string
         </Button>
       </div>
 
-      {/* Overall Score Card */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="col-span-1">
           <CardHeader>
@@ -77,7 +71,7 @@ export default function AnalysisPage({ params }: { params: { interviewId: string
           </CardContent>
         </Card>
         
-        {/* Performance Metrics */}
+
         {INTERVIEW_ANALYSIS.metrics.map((metric) => (
           <Card key={metric.name} className="col-span-1">
             <CardHeader>
@@ -91,9 +85,7 @@ export default function AnalysisPage({ params }: { params: { interviewId: string
         ))}
       </div>
 
-      {/* Detailed Analysis */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Question Analysis */}
         <Card className="col-span-1 md:col-span-2">
           <CardHeader>
             <CardTitle>Question Analysis</CardTitle>
@@ -118,8 +110,7 @@ export default function AnalysisPage({ params }: { params: { interviewId: string
             ))}
           </CardContent>
         </Card>
-
-        {/* Keyword Analysis */}
+              
         <Card>
           <CardHeader>
             <CardTitle>Keyword Analysis</CardTitle>
