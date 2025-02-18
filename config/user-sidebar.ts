@@ -32,8 +32,8 @@ export const userMenuItems: MenuGroup[] = [
     groupLabel: "Resume",
     menus: [
       {
-        href: "/dashboard/resumes",
-        label: "My Resumes",
+        href: "/dashboard/mock-interview",
+        label: "Mock Interview",
         icon: FileText,
       },
       {

@@ -1,0 +1,905 @@
+{
+	"info": {
+		"_postman_id": "17d80ef6-e1f8-4ff1-87cc-f9b9243b9b9e",
+		"name": "resume-builder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42387901"
+	},
+	"item": [
+		{
+			"name": "Upload resume",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/neelamyadav1/Documents/resumes/Sample_Resume.pdf"
+						},
+						{
+							"key": "title",
+							"value": "Senior Developer",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users",
+						"b7465672-73a5-4ce0-bd35-69c2297c363a",
+						"resumes",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Upload resume",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/neelamyadav1/Documents/resumes/Sample_Resume.pdf"
+								},
+								{
+									"key": "title",
+									"value": "Senior Developer",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"b7465672-73a5-4ce0-bd35-69c2297c363a",
+								"resumes",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 08:01:48 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "279"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"ab9dc845-fe27-418f-874a-90784e733913\",\n    \"user_id\": \"b7465672-73a5-4ce0-bd35-69c2297c363a\",\n    \"title\": \"Senior Developer\",\n    \"s3_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/resume_b7ca4192-92d2-4ceb-84bb-ed6602d45f3c.pdf\",\n    \"resume_data\": {}\n}"
+				}
+			]
+		},
+		{
+			"name": "get resumes list",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users",
+						"b7465672-73a5-4ce0-bd35-69c2297c363a",
+						"resumes",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "get resumes",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"b7465672-73a5-4ce0-bd35-69c2297c363a",
+								"resumes",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 07:52:12 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "929"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"id\": \"c7184ad6-b130-4c7f-af79-c70921b7586f\",\n        \"user_id\": \"b7465672-73a5-4ce0-bd35-69c2297c363a\",\n        \"title\": \"Software Engineer Resume\",\n        \"s3_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/resume_7ed08af9-91c3-4d05-8dcf-3f299cdbc478.pdf\",\n        \"resume_data\": {}\n    },\n    {\n        \"id\": \"06038f54-ae10-44be-8016-c6525f105f5c\",\n        \"user_id\": \"b7465672-73a5-4ce0-bd35-69c2297c363a\",\n        \"title\": \"Senior Software Engineer Resume\",\n        \"s3_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/resume_11e76eb2-30e3-41c0-a8e3-433aa76e01c1.pdf\",\n        \"resume_data\": {\n            \"skills\": [\n                \"Python\",\n                \"FastAPI\",\n                \"Kubernetes\"\n            ],\n            \"experience\": \"6 years\"\n        }\n    },\n    {\n        \"id\": \"517182a0-9ae8-4fe4-9578-ef465aff0da9\",\n        \"user_id\": \"b7465672-73a5-4ce0-bd35-69c2297c363a\",\n        \"title\": \"Senior Developer\",\n        \"s3_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/resume_bc123fc9-7237-45a4-8281-896a3dd23d00.pdf\",\n        \"resume_data\": {}\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "update resume",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Senior Software Engineer Resume\",\n  \"resume_data\": {\n    \"experience\": \"16 years\",\n    \"skills\": [\"AWS\", \"DevOps\", \"Kubernetes\"]\n  }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/517182a0-9ae8-4fe4-9578-ef465aff0da9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users",
+						"b7465672-73a5-4ce0-bd35-69c2297c363a",
+						"resumes",
+						"517182a0-9ae8-4fe4-9578-ef465aff0da9"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "update resume",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Senior Software Engineer Resume\",\n  \"resume_data\": {\n    \"experience\": \"16 years\",\n    \"skills\": [\"AWS\", \"DevOps\", \"Kubernetes\"]\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/517182a0-9ae8-4fe4-9578-ef465aff0da9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"b7465672-73a5-4ce0-bd35-69c2297c363a",
+								"resumes",
+								"517182a0-9ae8-4fe4-9578-ef465aff0da9"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 07:55:19 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "356"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"517182a0-9ae8-4fe4-9578-ef465aff0da9\",\n    \"user_id\": \"b7465672-73a5-4ce0-bd35-69c2297c363a\",\n    \"title\": \"Senior Software Engineer Resume\",\n    \"s3_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/resume_bc123fc9-7237-45a4-8281-896a3dd23d00.pdf\",\n    \"resume_data\": {\n        \"skills\": [\n            \"AWS\",\n            \"DevOps\",\n            \"Kubernetes\"\n        ],\n        \"experience\": \"16 years\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete resume",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/ab9dc845-fe27-418f-874a-90784e733913",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users",
+						"b7465672-73a5-4ce0-bd35-69c2297c363a",
+						"resumes",
+						"ab9dc845-fe27-418f-874a-90784e733913"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Delete resume",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/ab9dc845-fe27-418f-874a-90784e733913",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"b7465672-73a5-4ce0-bd35-69c2297c363a",
+								"resumes",
+								"ab9dc845-fe27-418f-874a-90784e733913"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 08:02:01 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "41"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Resume deleted successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Download resume",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/c7184ad6-b130-4c7f-af79-c70921b7586f/download",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users",
+						"b7465672-73a5-4ce0-bd35-69c2297c363a",
+						"resumes",
+						"c7184ad6-b130-4c7f-af79-c70921b7586f",
+						"download"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Download resume",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/users/b7465672-73a5-4ce0-bd35-69c2297c363a/resumes/c7184ad6-b130-4c7f-af79-c70921b7586f/download",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"b7465672-73a5-4ce0-bd35-69c2297c363a",
+								"resumes",
+								"c7184ad6-b130-4c7f-af79-c70921b7586f",
+								"download"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 08:03:40 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "244"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"download_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/resume_7ed08af9-91c3-4d05-8dcf-3f299cdbc478.pdf?AWSAccessKeyId=AKIAZTFCTEHPEHNEIMT7&Signature=T2C9kQbcmStrYR0XlPpGBcLaFes%3D&Expires=1739783021\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Tailor resume based on JD",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "job_title",
+							"value": "Sr. AI Lead (Gen AI)",
+							"type": "text"
+						},
+						{
+							"key": "job_description",
+							"value": "What are we looking for?\n\n7+ years of experience working in a quantitative role preferably in the CPG, or retail industry.\n4+ years of experience managing a team of data scientists, product analysts or data analysts\nProven track record of delivering value through AI/ Data Science products in a fast-paced, agile environment using a scalable and reusable codebase and models to address business problems effectively.\nPartner with business leadership across functions to identify business challenges and opportunities and translate them unto actionable, integrated, data-driven solutions.\nAn expert understanding of LLMs, ML Ops, LLM Ops and pertinent design architecture elements.\nAn understanding of product management principles such as product definition, roadmap building and management, and product releases and commercialization\nHands on experience in building Agents and leveraging emerging technologies within Microsoft and Google to design an agentic ecosystem.\nA strong customer centric mindset especially within an internal customer base with the purpose of driving value creation, adoption and use\nStrategic thinking, problem solving and innovation, with the ability to anticipate and navigate challenges and opportunities. \nEnsure compliance with analytics standards, including tailoring methodologies to specific use case needs such as ML, AI, and descriptive analytics.\nAbility to translate business needs into analytical frameworks & superior verbal and written communication skills\nProficiency and hands-on experience in advanced analytics techniques and machine learning algorithms, including NLP, time-series analysis and other relevant methods and willingness to coach data scientists tactically \nWorking understanding of ML Ops and DevOps frameworks\nWorking expertise of OpenAI Endpoints, Google Vertex, Google Model Garden and Microsoft Suite of AI Models.\n\nWhat will be your key responsibilities?\n\nServe as the key lead for Gen AI and LLM Ops in the Mars Snacking Community\nApplies strong expertise in AI through use of machine learning, data mining, and statistical models to design, prototype and build next generation ML engines and services \nDesign, architect and review technical architecture of data science solutions\nPlan and lead data science projects that cover a diverse range of business problems\nServe as key point of contact with Data Engineering and DevOps teams, for solution architecture and infrastructure design\nReview work of team members identifying optimum methodologies, advising on implementation, and checking business logic\nUse machine learning techniques, visualizations, & statistical analysis to gain insight into various data sets – some readily available, and some you create and curate yourself \nCollaborate with internal and external teams to ensure we focus on product and service recommendations and be a key player in our network of talent\nContribute to a high performing data science function \nCreate repeatable, interpretable, dynamic and scalable models that are seamlessly incorporated into analytic data products\nPerformance Monitoring: Define key performance indicators (KPIs) and implement monitoring systems for deployed data platforms and products to ensure efficient operations data operations, effective support services and incident management.\nSolution ideation and Development: Guide a team of data scientists to create fit for purpose solutions using cutting edge analytical and AI methodologies.\nFocus on setting up a Data Science AI program and delivery methodology: Entails, recruiting and forming a team to solve a specific problem; elaborating on a programmatic mindset and tracking value delivery",
+							"type": "text"
+						},
+						{
+							"key": "skills",
+							"value": "MLFlow, AirFlow, DAG, LLM",
+							"type": "text"
+						},
+						{
+							"key": "user_resume",
+							"type": "file",
+							"src": "/Users/neelamyadav1/Documents/resumes/Sample_Resume.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/ai-resume/tailor",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"ai-resume",
+						"tailor"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Tailor resume based on JD",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "job_title",
+									"value": "Sr. AI Lead (Gen AI)",
+									"type": "text"
+								},
+								{
+									"key": "job_description",
+									"value": "What are we looking for?\n\n7+ years of experience working in a quantitative role preferably in the CPG, or retail industry.\n4+ years of experience managing a team of data scientists, product analysts or data analysts\nProven track record of delivering value through AI/ Data Science products in a fast-paced, agile environment using a scalable and reusable codebase and models to address business problems effectively.\nPartner with business leadership across functions to identify business challenges and opportunities and translate them unto actionable, integrated, data-driven solutions.\nAn expert understanding of LLMs, ML Ops, LLM Ops and pertinent design architecture elements.\nAn understanding of product management principles such as product definition, roadmap building and management, and product releases and commercialization\nHands on experience in building Agents and leveraging emerging technologies within Microsoft and Google to design an agentic ecosystem.\nA strong customer centric mindset especially within an internal customer base with the purpose of driving value creation, adoption and use\nStrategic thinking, problem solving and innovation, with the ability to anticipate and navigate challenges and opportunities. \nEnsure compliance with analytics standards, including tailoring methodologies to specific use case needs such as ML, AI, and descriptive analytics.\nAbility to translate business needs into analytical frameworks & superior verbal and written communication skills\nProficiency and hands-on experience in advanced analytics techniques and machine learning algorithms, including NLP, time-series analysis and other relevant methods and willingness to coach data scientists tactically \nWorking understanding of ML Ops and DevOps frameworks\nWorking expertise of OpenAI Endpoints, Google Vertex, Google Model Garden and Microsoft Suite of AI Models.\n\nWhat will be your key responsibilities?\n\nServe as the key lead for Gen AI and LLM Ops in the Mars Snacking Community\nApplies strong expertise in AI through use of machine learning, data mining, and statistical models to design, prototype and build next generation ML engines and services \nDesign, architect and review technical architecture of data science solutions\nPlan and lead data science projects that cover a diverse range of business problems\nServe as key point of contact with Data Engineering and DevOps teams, for solution architecture and infrastructure design\nReview work of team members identifying optimum methodologies, advising on implementation, and checking business logic\nUse machine learning techniques, visualizations, & statistical analysis to gain insight into various data sets – some readily available, and some you create and curate yourself \nCollaborate with internal and external teams to ensure we focus on product and service recommendations and be a key player in our network of talent\nContribute to a high performing data science function \nCreate repeatable, interpretable, dynamic and scalable models that are seamlessly incorporated into analytic data products\nPerformance Monitoring: Define key performance indicators (KPIs) and implement monitoring systems for deployed data platforms and products to ensure efficient operations data operations, effective support services and incident management.\nSolution ideation and Development: Guide a team of data scientists to create fit for purpose solutions using cutting edge analytical and AI methodologies.\nFocus on setting up a Data Science AI program and delivery methodology: Entails, recruiting and forming a team to solve a specific problem; elaborating on a programmatic mindset and tracking value delivery",
+									"type": "text"
+								},
+								{
+									"key": "skills",
+									"value": "MLFlow, AirFlow, DAG, LLM",
+									"type": "text"
+								},
+								{
+									"key": "user_resume",
+									"type": "file",
+									"src": "/Users/neelamyadav1/Documents/resumes/Sample_Resume.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/ai-resume/tailor",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"ai-resume",
+								"tailor"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 09:11:27 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "3197"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"resume_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/ai-tailored/resume_6bf69428-81ae-4b72-9e7e-b5ac23195d85.pdf?AWSAccessKeyId=AKIAZTFCTEHPEHNEIMT7&Signature=xAKJ4GN5fNnNAfUNQ%2FQw8G47bBw%3D&Expires=1739787089\",\n    \"review_suggestions\": \"json\\n{\\n  \\\"sections\\\": {\\n    \\\"summary\\\": {\\n      \\\"current_text\\\": \\\"\\\",\\n      \\\"suggested_text\\\": \\\"Director-Level Data Scientist with extensive experience in developing data products and machine learning models, specializing in Risk, Fraud, and portfolio management. Proven track record of delivering business value through innovative solutions and stakeholder management.\\\",\\n      \\\"highlight_color\\\": \\\"yellow\\\"\\n    },\\n    \\\"experience\\\": [\\n      {\\n        \\\"position\\\": \\\"Cloud Engineer\\\",\\n        \\\"company\\\": \\\"Company XX\\\",\\n        \\\"improvements\\\": [\\n          {\\n            \\\"current_text\\\": \\\"Replaced the existing infrastructure with IaC using Cloud Deployment Manager and Terraform.\\\",\\n            \\\"suggested_text\\\": \\\"Led the architecture transformation by implementing Infrastructure-as-Code (IaC) with Cloud Deployment Manager and Terraform, enhancing deployment efficiency by 40%.\\\",\\n            \\\"highlight_color\\\": \\\"green\\\"\\n          },\\n          {\\n            \\\"current_text\\\": \\\"Build and maintain software documentation sites using various programming languages involving Python, Java and Go\\\",\\n            \\\"suggested_text\\\": \\\"Developed and maintained comprehensive software documentation utilizing Python, Java, and Go, streamlining knowledge sharing and collaboration across teams.\\\",\\n            \\\"highlight_color\\\": \\\"green\\\"\\n          }\\n        ]\\n      },\\n      {\\n        \\\"position\\\": \\\"Support Engineer\\\",\\n        \\\"company\\\": \\\"Company XY\\\",\\n        \\\"improvements\\\": [\\n          {\\n            \\\"current_text\\\": \\\"Built and maintained cloud deployments for over 75 clients.\\\",\\n            \\\"suggested_text\\\": \\\"Spearheaded the deployment and management of cloud infrastructures for over 75 clients, leveraging Google Cloud services to boost operational efficiency.\\\",\\n            \\\"highlight_color\\\": \\\"green\\\"\\n          },\\n          {\\n            \\\"current_text\\\": \\\"Developed an in-house monitoring and alerting agent for the entire infrastructure deployed on Cloud. Leading to $100k reduction in the infrastructure spend.\\\",\\n            \\\"suggested_text\\\": \\\"Architected an in-house monitoring and alerting solution that reduced infrastructure costs by $100k through enhanced resource utilization and proactive issue resolution.\\\",\\n            \\\"highlight_color\\\": \\\"green\\\"\\n          }\\n        ]\\n      }\\n    ],\\n    \\\"new_sections\\\": [\\n      {\\n        \\\"title\\\": \\\"Professional Summary\\\",\\n        \\\"content\\\": \\\"Experienced Cloud and Data Professional with expertise in building scalable data solutions and cloud architectures. Strong leadership skills in managing cross-functional teams to deliver high-impact projects.\\\",\\n        \\\"highlight_color\\\": \\\"blue\\\"\\n      },\\n      {\\n        \\\"title\\\": \\\"Certifications\\\",\\n        \\\"content\\\": \\\"AWS Certified Solutions Architect - Associate (2022-2025)\\\",\\n        \\\"highlight_color\\\": \\\"blue\\\"\\n      }\\n    ]\\n  }\\n}\\n\"\n}"
+				}
+			]
+		},
+		{
+			"name": "ATS score",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "b7465672-73a5-4ce0-bd35-69c2297c363a",
+							"type": "text"
+						},
+						{
+							"key": "resume_file",
+							"type": "file",
+							"src": "/Users/neelamyadav1/Documents/resumes/Sample_Resume.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/score",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"score"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ATS score",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "b7465672-73a5-4ce0-bd35-69c2297c363a",
+									"type": "text"
+								},
+								{
+									"key": "resume_file",
+									"type": "file",
+									"src": "/Users/neelamyadav1/Documents/resumes/Sample_Resume.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/score",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"score"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 09:23:05 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "486"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"scores\": {\n        \"layout\": 75,\n        \"ats_readability\": 80,\n        \"impact\": 70,\n        \"keyword_optimization\": 65,\n        \"quantifiable_achievements\": 85,\n        \"action_verbs\": 80,\n        \"readability\": 70,\n        \"personal_branding\": 60,\n        \"customization\": 55,\n        \"grammar_spelling\": 95,\n        \"contact_info\": 80,\n        \"section_completeness\": 90,\n        \"visual_appeal\": 75,\n        \"cultural_fit\": 70,\n        \"social_proof\": 85,\n        \"career_progression\": 75,\n        \"emotional_appeal\": 65,\n        \"conciseness\": 80,\n        \"bullet_point_clarity\": 75,\n        \"industry_keywords\": 75,\n        \"call_to_action\": 60\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Interview start",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "b7465672-73a5-4ce0-bd35-69c2297c363a",
+							"type": "text"
+						},
+						{
+							"key": "job_title",
+							"value": "Sr. AI Lead (Gen AI)",
+							"type": "text"
+						},
+						{
+							"key": "job_description",
+							"value": "What are we looking for?\n7+ years of experience working in a quantitative role preferably in the CPG, or retail industry.\n4+ years of experience managing a team of data scientists, product analysts or data analysts\nProven track record of delivering value through AI/ Data Science products in a fast-paced, agile environment using a scalable and reusable codebase and models to address business problems effectively.\nPartner with business leadership across functions to identify business challenges and opportunities and translate them unto actionable, integrated, data-driven solutions.\nAn expert understanding of LLMs, ML Ops, LLM Ops and pertinent design architecture elements.\nAn understanding of product management principles such as product definition, roadmap building and management, and product releases and commercialization\nHands on experience in building Agents and leveraging emerging technologies within Microsoft and Google to design an agentic ecosystem.\nA strong customer centric mindset especially within an internal customer base with the purpose of driving value creation, adoption and use\nStrategic thinking, problem solving and innovation, with the ability to anticipate and navigate challenges and opportunities. \nEnsure compliance with analytics standards, including tailoring methodologies to specific use case needs such as ML, AI, and descriptive analytics.\nAbility to translate business needs into analytical frameworks & superior verbal and written communication skills\nProficiency and hands-on experience in advanced analytics techniques and machine learning algorithms, including NLP, time-series analysis and other relevant methods and willingness to coach data scientists tactically \nWorking understanding of ML Ops and DevOps frameworks\nWorking expertise of OpenAI Endpoints, Google Vertex, Google Model Garden and Microsoft Suite of AI Models.\nWhat will be your key responsibilities?\nServe as the key lead for Gen AI and LLM Ops in the Mars Snacking Community\nApplies strong expertise in AI through use of machine learning, data mining, and statistical models to design, prototype and build next generation ML engines and services \nDesign, architect and review technical architecture of data science solutions\nPlan and lead data science projects that cover a diverse range of business problems\nServe as key point of contact with Data Engineering and DevOps teams, for solution architecture and infrastructure design\nReview work of team members identifying optimum methodologies, advising on implementation, and checking business logic\nUse machine learning techniques, visualizations, & statistical analysis to gain insight into various data sets – some readily available, and some you create and curate yourself \nCollaborate with internal and external teams to ensure we focus on product and service recommendations and be a key player in our network of talent\nContribute to a high performing data science function \nCreate repeatable, interpretable, dynamic and scalable models that are seamlessly incorporated into analytic data products\nPerformance Monitoring: Define key performance indicators (KPIs) and implement monitoring systems for deployed data platforms and products to ensure efficient operations data operations, effective support services and incident management.\nSolution ideation and Development: Guide a team of data scientists to create fit for purpose solutions using cutting edge analytical and AI methodologies.\nFocus on setting up a Data Science AI program and delivery methodology: Entails, recruiting and forming a team to solve a specific problem; elaborating on a programmatic mindset and tracking value delivery",
+							"type": "text"
+						},
+						{
+							"key": "resume_file",
+							"type": "file",
+							"src": "/Users/neelamyadav1/Documents/resumes/Sample_Resume.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/mock-interview/start",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"mock-interview",
+						"start"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Interview start",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "b7465672-73a5-4ce0-bd35-69c2297c363a",
+									"type": "text"
+								},
+								{
+									"key": "job_title",
+									"value": "Sr. AI Lead (Gen AI)",
+									"type": "text"
+								},
+								{
+									"key": "job_description",
+									"value": "What are we looking for?\n7+ years of experience working in a quantitative role preferably in the CPG, or retail industry.\n4+ years of experience managing a team of data scientists, product analysts or data analysts\nProven track record of delivering value through AI/ Data Science products in a fast-paced, agile environment using a scalable and reusable codebase and models to address business problems effectively.\nPartner with business leadership across functions to identify business challenges and opportunities and translate them unto actionable, integrated, data-driven solutions.\nAn expert understanding of LLMs, ML Ops, LLM Ops and pertinent design architecture elements.\nAn understanding of product management principles such as product definition, roadmap building and management, and product releases and commercialization\nHands on experience in building Agents and leveraging emerging technologies within Microsoft and Google to design an agentic ecosystem.\nA strong customer centric mindset especially within an internal customer base with the purpose of driving value creation, adoption and use\nStrategic thinking, problem solving and innovation, with the ability to anticipate and navigate challenges and opportunities. \nEnsure compliance with analytics standards, including tailoring methodologies to specific use case needs such as ML, AI, and descriptive analytics.\nAbility to translate business needs into analytical frameworks & superior verbal and written communication skills\nProficiency and hands-on experience in advanced analytics techniques and machine learning algorithms, including NLP, time-series analysis and other relevant methods and willingness to coach data scientists tactically \nWorking understanding of ML Ops and DevOps frameworks\nWorking expertise of OpenAI Endpoints, Google Vertex, Google Model Garden and Microsoft Suite of AI Models.\nWhat will be your key responsibilities?\nServe as the key lead for Gen AI and LLM Ops in the Mars Snacking Community\nApplies strong expertise in AI through use of machine learning, data mining, and statistical models to design, prototype and build next generation ML engines and services \nDesign, architect and review technical architecture of data science solutions\nPlan and lead data science projects that cover a diverse range of business problems\nServe as key point of contact with Data Engineering and DevOps teams, for solution architecture and infrastructure design\nReview work of team members identifying optimum methodologies, advising on implementation, and checking business logic\nUse machine learning techniques, visualizations, & statistical analysis to gain insight into various data sets – some readily available, and some you create and curate yourself \nCollaborate with internal and external teams to ensure we focus on product and service recommendations and be a key player in our network of talent\nContribute to a high performing data science function \nCreate repeatable, interpretable, dynamic and scalable models that are seamlessly incorporated into analytic data products\nPerformance Monitoring: Define key performance indicators (KPIs) and implement monitoring systems for deployed data platforms and products to ensure efficient operations data operations, effective support services and incident management.\nSolution ideation and Development: Guide a team of data scientists to create fit for purpose solutions using cutting edge analytical and AI methodologies.\nFocus on setting up a Data Science AI program and delivery methodology: Entails, recruiting and forming a team to solve a specific problem; elaborating on a programmatic mindset and tracking value delivery",
+									"type": "text"
+								},
+								{
+									"key": "resume_file",
+									"type": "file",
+									"src": "/Users/neelamyadav1/Documents/resumes/Sample_Resume.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/mock-interview/start",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mock-interview",
+								"start"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 09:26:46 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "3549"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"session_id\": \"2a2c8407-a028-4ded-91cf-b7af4e8e4145\",\n    \"questions\": [\n        {\n            \"question_id\": \"b7465672-2a2c8407-1\",\n            \"question\": \"Hello and welcome! It's great to have you here today. I'm Alex, and I'm looking forward to our conversation. To start things off, could you please introduce yourself and share a bit about your career journey? Feel free to include any experiences or achievements that you believe would be important for us to know as we begin the interview.\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-2\",\n            \"question\": \"Can you elaborate on a project where you had to migrate infrastructure to Google Cloud and how you ensured the transition was seamless?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-3\",\n            \"question\": \"Describe a scenario where you worked collaboratively with a cross-functional team to obtain data-driven insights that drove business growth.\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-4\",\n            \"question\": \"How do you stay up-to-date with the latest trends and advancements in machine learning and data science?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-5\",\n            \"question\": \"Have you had the opportunity to lead and mentor a team in the past? How did you ensure their professional growth and development?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-6\",\n            \"question\": \"What strategies do you use to maintain and optimize machine learning models for accuracy and efficiency?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-7\",\n            \"question\": \"Can you discuss a time when you had to solve a complex problem using machine learning? How did you approach it?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-8\",\n            \"question\": \"How do you ensure that the technical solutions you build align with company strategy and adhere to industry standards?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-9\",\n            \"question\": \"Can you describe your experience with end-to-end ML workflows, and how you ensure each step is efficient?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-10\",\n            \"question\": \"Have you ever built and deployed machine learning models at scale? What were the key factors you considered?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-11\",\n            \"question\": \"What programming languages and tools do you prefer for developing ML models, and why?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-12\",\n            \"question\": \"How would you foster a continuous learning environment within a team or organization?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-13\",\n            \"question\": \"Can you share an example where you had to adapt quickly to a new technology or tool in a project?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-14\",\n            \"question\": \"How do you evaluate the success and performance of your machine learning projects or strategies?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-15\",\n            \"question\": \"Describe a situation where you had to implement service observability and monitoring in a project. What tools or methodologies did you use?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-16\",\n            \"question\": \"How would you go about building a strong team of ML/AI leaders to expand an organization’s footprint in the industry?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-17\",\n            \"question\": \"Describe a time when you implemented a data science strategy that resulted in significant business impact.\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-18\",\n            \"question\": \"What role does cloud computing play in your work with machine learning, and how do you utilize it effectively?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-19\",\n            \"question\": \"Can you discuss a challenging interpersonal issue you faced in a team setting and how you resolved it?\"\n        },\n        {\n            \"question_id\": \"b7465672-2a2c8407-20\",\n            \"question\": \"How do you balance innovation with maintaining operational efficiency in machine learning projects?\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Process Interview",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "question_audio_map",
+							"value": "{\n    \"b7465672-2a2c8407-1\": \"recording.mp3\",\n    \"b7465672-2a2c8407-2\": \"recordingre.mp3\"\n}\n",
+							"type": "text"
+						},
+						{
+							"key": "audio_files",
+							"type": "file",
+							"src": [
+								"/Users/neelamyadav1/Downloads/recording.mp3",
+								"/Users/neelamyadav1/Downloads/recordingre.mp3"
+							]
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/mock-interview/2a2c8407-a028-4ded-91cf-b7af4e8e4145/process",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"mock-interview",
+						"2a2c8407-a028-4ded-91cf-b7af4e8e4145",
+						"process"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Process Interview",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "question_audio_map",
+									"value": "{\n    \"b7465672-2a2c8407-1\": \"recording.mp3\",\n    \"b7465672-2a2c8407-2\": \"recordingre.mp3\"\n}\n",
+									"type": "text"
+								},
+								{
+									"key": "audio_files",
+									"type": "file",
+									"src": [
+										"/Users/neelamyadav1/Downloads/recording.mp3",
+										"/Users/neelamyadav1/Downloads/recordingre.mp3"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/mock-interview/2a2c8407-a028-4ded-91cf-b7af4e8e4145/process",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mock-interview",
+								"2a2c8407-a028-4ded-91cf-b7af4e8e4145",
+								"process"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 09:36:53 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "4205"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"overall_score\": 3,\n    \"key_strengths\": [\n        \"The candidate attempted to discuss the importance of scenario-based questions, which indicates an understanding of the interview process and possibly a strategic approach to answering questions.\"\n    ],\n    \"areas_for_growth\": [\n        \"The candidate did not provide specific answers to any of the questions, lacking demonstration of technical expertise.\",\n        \"There was no evidence of problem-solving or critical thinking as the responses were repetitive and off-topic.\",\n        \"The candidate did not showcase any leadership experience or teamwork abilities due to the repeated, unrelated answer.\",\n        \"Communication skills need improvement; the responses were not concise and did not address the questions.\",\n        \"Adaptability and learning ability were not demonstrated as challenging questions were not directly addressed or answered.\",\n        \"There was no indication of cultural fit or alignment with company values in the responses given.\",\n        \"The candidate did not display confidence or engagement, given the absence of relevant content in their answers.\"\n    ],\n    \"skill_assessment\": {\n        \"technical\": 1,\n        \"problem_solving\": 1,\n        \"communication\": 2,\n        \"leadership\": 1,\n        \"adaptability\": 1,\n        \"behavioral_fit\": 1,\n        \"confidence\": 2\n    },\n    \"evaluation_results\": [\n        {\n            \"question\": \"Hello and welcome! It's great to have you here today. I'm Alex, and I'm looking forward to our conversation. To start things off, could you please introduce yourself and share a bit about your career journey? Feel free to include any experiences or achievements that you believe would be important for us to know as we begin the interview.\",\n            \"score\": 3,\n            \"feedback\": \"The candidate's response did not directly answer the question posed. Instead of providing a specific scenario or example of their leadership and problem-solving skills during a cloud migration, the candidate offered generic advice about handling scenario-based questions. The response lacks clarity and relevance to the original question, and it doesn't demonstrate the candidate's depth of experience or specific skills in managing a migration project. For a better answer, the candidate should provide a detailed account of their experience with a concrete example, describe the challenges faced, and explain the steps taken to overcome them as well as the final outcome.\",\n            \"audio_presigned_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/mock_interviews/cd156fa5-e52f-4f02-83df-f2e4456735c5/audio_b7465672-cd156fa5-1.mp3?AWSAccessKeyId=AKIAZTFCTEHPEHNEIMT7&Signature=ze2x9ZJsZw8VBozpzNT4KKfPYWE%3D&Expires=1739788614\",\n            \"follow_up_question\": \"Can you provide a specific example from your past experience where you successfully led a team through the process of migrating an on-premise system to the cloud? What were the specific challenges, and how did you address them?\"\n        },\n        {\n            \"question\": \"Can you elaborate on a project where you had to migrate infrastructure to Google Cloud and how you ensured the transition was seamless?\",\n            \"score\": 3,\n            \"feedback\": \"The candidate's response did not directly answer the question posed. Instead of providing a specific scenario or example of their leadership and problem-solving skills during a cloud migration, the candidate offered generic advice about handling scenario-based questions. The response lacks clarity and relevance to the original question, and it doesn't demonstrate the candidate's depth of experience or specific skills in managing a migration project. For a better answer, the candidate should provide a detailed account of their experience with a concrete example, describe the challenges faced, and explain the steps taken to overcome them as well as the final outcome.\",\n            \"audio_presigned_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/mock_interviews/cd156fa5-e52f-4f02-83df-f2e4456735c5/audio_b7465672-cd156fa5-1.mp3?AWSAccessKeyId=AKIAZTFCTEHPEHNEIMT7&Signature=ze2x9ZJsZw8VBozpzNT4KKfPYWE%3D&Expires=1739788614\",\n            \"follow_up_question\": \"Can you provide a specific example from your past experience where you successfully led a team through the process of migrating an on-premise system to the cloud? What were the specific challenges, and how did you address them?\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Mock Interview Session",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/mock-interview/sessions/2a2c8407-a028-4ded-91cf-b7af4e8e4145",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"mock-interview",
+						"sessions",
+						"2a2c8407-a028-4ded-91cf-b7af4e8e4145"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Mock Interview Session",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/mock-interview/sessions/2a2c8407-a028-4ded-91cf-b7af4e8e4145",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mock-interview",
+								"sessions",
+								"2a2c8407-a028-4ded-91cf-b7af4e8e4145"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Mon, 17 Feb 2025 10:15:43 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "8321"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"session_id\": \"2a2c8407-a028-4ded-91cf-b7af4e8e4145\",\n    \"job_title\": \"Sr. AI Lead (Gen AI)\",\n    \"created_at\": \"2025-02-17 14:56:51\",\n    \"status\": \"completed\",\n    \"overall_score\": 3,\n    \"key_strengths\": [\n        \"The candidate attempted to discuss the importance of scenario-based questions, which indicates an understanding of the interview process and possibly a strategic approach to answering questions.\"\n    ],\n    \"areas_for_growth\": [\n        \"The candidate did not provide specific answers to any of the questions, lacking demonstration of technical expertise.\",\n        \"There was no evidence of problem-solving or critical thinking as the responses were repetitive and off-topic.\",\n        \"The candidate did not showcase any leadership experience or teamwork abilities due to the repeated, unrelated answer.\",\n        \"Communication skills need improvement; the responses were not concise and did not address the questions.\",\n        \"Adaptability and learning ability were not demonstrated as challenging questions were not directly addressed or answered.\",\n        \"There was no indication of cultural fit or alignment with company values in the responses given.\",\n        \"The candidate did not display confidence or engagement, given the absence of relevant content in their answers.\"\n    ],\n    \"skill_assessment\": {\n        \"technical\": 1,\n        \"problem_solving\": 1,\n        \"communication\": 2,\n        \"leadership\": 1,\n        \"adaptability\": 1,\n        \"behavioral_fit\": 1,\n        \"confidence\": 2\n    },\n    \"evaluation_results\": [\n        {\n            \"question\": \"Hello and welcome! It's great to have you here today. I'm Alex, and I'm looking forward to our conversation. To start things off, could you please introduce yourself and share a bit about your career journey? Feel free to include any experiences or achievements that you believe would be important for us to know as we begin the interview.\",\n            \"score\": 3,\n            \"feedback\": \"The candidate's response did not directly answer the question posed. Instead of providing a specific scenario or example of their leadership and problem-solving skills during a cloud migration, the candidate offered generic advice about handling scenario-based questions. The response lacks clarity and relevance to the original question, and it doesn't demonstrate the candidate's depth of experience or specific skills in managing a migration project. For a better answer, the candidate should provide a detailed account of their experience with a concrete example, describe the challenges faced, and explain the steps taken to overcome them as well as the final outcome.\",\n            \"audio_presigned_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/mock_interviews/cd156fa5-e52f-4f02-83df-f2e4456735c5/audio_b7465672-cd156fa5-1.mp3?AWSAccessKeyId=AKIAZTFCTEHPEHNEIMT7&Signature=A22pQEn0DOXKJS7f3WP35bI7rSY%3D&Expires=1739790944\",\n            \"follow_up_question\": \"Can you provide a specific example from your past experience where you successfully led a team through the process of migrating an on-premise system to the cloud? What were the specific challenges, and how did you address them?\"\n        },\n        {\n            \"question\": \"Can you elaborate on a project where you had to migrate infrastructure to Google Cloud and how you ensured the transition was seamless?\",\n            \"score\": 3,\n            \"feedback\": \"The candidate's response did not directly answer the question posed. Instead of providing a specific scenario or example of their leadership and problem-solving skills during a cloud migration, the candidate offered generic advice about handling scenario-based questions. The response lacks clarity and relevance to the original question, and it doesn't demonstrate the candidate's depth of experience or specific skills in managing a migration project. For a better answer, the candidate should provide a detailed account of their experience with a concrete example, describe the challenges faced, and explain the steps taken to overcome them as well as the final outcome.\",\n            \"audio_presigned_url\": \"https://so-3645-test-bucket.s3.amazonaws.com/b7465672-73a5-4ce0-bd35-69c2297c363a/mock_interviews/cd156fa5-e52f-4f02-83df-f2e4456735c5/audio_b7465672-cd156fa5-1.mp3?AWSAccessKeyId=AKIAZTFCTEHPEHNEIMT7&Signature=A22pQEn0DOXKJS7f3WP35bI7rSY%3D&Expires=1739790944\",\n            \"follow_up_question\": \"Can you provide a specific example from your past experience where you successfully led a team through the process of migrating an on-premise system to the cloud? What were the specific challenges, and how did you address them?\"\n        },\n        {\n            \"question\": \"Describe a scenario where you worked collaboratively with a cross-functional team to obtain data-driven insights that drove business growth.\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"How do you stay up-to-date with the latest trends and advancements in machine learning and data science?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"Have you had the opportunity to lead and mentor a team in the past? How did you ensure their professional growth and development?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"What strategies do you use to maintain and optimize machine learning models for accuracy and efficiency?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"Can you discuss a time when you had to solve a complex problem using machine learning? How did you approach it?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"How do you ensure that the technical solutions you build align with company strategy and adhere to industry standards?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"Can you describe your experience with end-to-end ML workflows, and how you ensure each step is efficient?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"Have you ever built and deployed machine learning models at scale? What were the key factors you considered?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"What programming languages and tools do you prefer for developing ML models, and why?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"How would you foster a continuous learning environment within a team or organization?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"Can you share an example where you had to adapt quickly to a new technology or tool in a project?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"How do you evaluate the success and performance of your machine learning projects or strategies?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"Describe a situation where you had to implement service observability and monitoring in a project. What tools or methodologies did you use?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"How would you go about building a strong team of ML/AI leaders to expand an organization’s footprint in the industry?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"Describe a time when you implemented a data science strategy that resulted in significant business impact.\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"What role does cloud computing play in your work with machine learning, and how do you utilize it effectively?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"Can you discuss a challenging interpersonal issue you faced in a team setting and how you resolved it?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        },\n        {\n            \"question\": \"How do you balance innovation with maintaining operational efficiency in machine learning projects?\",\n            \"score\": 0,\n            \"feedback\": \"No response provided.\",\n            \"audio_presigned_url\": \"\",\n            \"follow_up_question\": \"\"\n        }\n    ]\n}"
+				}
+			]
+		}
+	]
+}
