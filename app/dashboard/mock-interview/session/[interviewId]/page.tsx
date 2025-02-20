@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef, use } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -13,12 +13,9 @@ import {
   Mic, 
   AlertCircle 
 } from "lucide-react"
+import { use } from 'react'
 
-export default function InterviewSession({ 
-  params 
-}: { 
-  params: Promise<{ interviewId: string }> 
-}) {
+export default function InterviewSession({ params }: { params: Promise<{ interviewId: string }> }) {
   const router = useRouter()
   const { interviewId } = use(params)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -29,12 +26,20 @@ export default function InterviewSession({
   const [, setAnswers] = useState<Blob[]>([])
 
   useEffect(() => {
+    let mounted = true;
+
     async function setupStream() {
       try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true
         })
+
+        if (!mounted) {
+          mediaStream.getTracks().forEach(track => track.stop());
+          return;
+        }
+
         setStream(mediaStream)
         if (videoRef.current) {
           videoRef.current.srcObject = mediaStream
@@ -43,16 +48,21 @@ export default function InterviewSession({
         console.error('Error accessing devices:', error)
       }
     }
+    
     setupStream()
 
     return () => {
+      mounted = false;
       if (stream) {
         stream.getTracks().forEach(track => {
           track.stop()
         })
       }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null
+      }
     }
-  }, [stream])
+  }, [])
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -63,6 +73,20 @@ export default function InterviewSession({
     }
     return () => clearInterval(interval)
   }, [recording])
+
+  useEffect(() => {
+    const currentVideo = videoRef.current; // Store ref value in variable
+    
+    if (currentVideo && stream) {
+      currentVideo.srcObject = stream;
+    }
+
+    return () => {
+      if (currentVideo) {
+        currentVideo.srcObject = null;
+      }
+    };
+  }, [stream]); // Add stream to dependencies
 
   const startAnswering = () => {
     if (!stream) return

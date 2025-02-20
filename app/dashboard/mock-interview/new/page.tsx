@@ -3,19 +3,62 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
+import { InterviewService } from '@/services/interview-service'
+import { useUser } from '@/lib/user'
 
 export default function NewInterviewPage() {
   const router = useRouter()
+  const { user } = useUser()
   const [formData, setFormData] = useState({
-    jobTitle: '',
-    company: '',
-    interviewer: '',
-    description: ''
+    user_id: user?.id || '',
+    job_title: '',
+    job_description: '',
+    resume_file: null,
   })
+  const [resumeFile, setResumeFile] = useState<File | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setResumeFile(e.target.files[0])
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    router.push(`/dashboard/mock-interview/setup/mock-interview-id`)
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    if (!user?.id) {
+      alert('Please sign in to continue');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!formData.job_title || !formData.job_description) {
+      alert('Please fill in all required fields');
+      setIsSubmitting(false);
+      return;
+    }
+    
+    try {
+      const response = await InterviewService.createInterview({
+        ...formData,
+        user_id: user.id,
+        resume_file: resumeFile as File
+      });
+      
+      if (response.success && response.data) {
+        router.push(`/dashboard/mock-interview/setup/${response.data.id}`);
+      } else {
+        console.error('Failed to create interview:', response.error);
+        alert(`Error: ${response.error || 'Failed to create interview'}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'An unexpected error occurred'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -34,24 +77,11 @@ export default function NewInterviewPage() {
               id="jobTitle"
               className="w-full p-3 border border-gray-300 rounded-md"
               placeholder="Product Designer"
-              value={formData.jobTitle}
-              onChange={(e) => setFormData(prev => ({...prev, jobTitle: e.target.value}))}
+              value={formData.job_title}
+              onChange={(e) => setFormData(prev => ({...prev, job_title: e.target.value}))}
             />
           </div>
-          
-          <div>
-            <label htmlFor="company" className="block text-[#0A2647] font-semibold mb-2">
-              Company Name
-            </label>
-            <input
-              type="text"
-              id="company"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              placeholder="Google"
-              value={formData.company}
-              onChange={(e) => setFormData(prev => ({...prev, company: e.target.value}))}
-            />
-          </div>
+        
         </div>
 
         <div className="grid grid-cols-2 gap-6">
@@ -59,40 +89,35 @@ export default function NewInterviewPage() {
             <label htmlFor="resume" className="block text-[#0A2647] font-semibold mb-2">
               Resume
             </label>
-            <button
-              type="button"
-              className="w-full p-3 border border-gray-300 rounded-md text-gray-500 flex items-center justify-center gap-2"
+            <label 
+              className={`w-full p-3 border border-gray-300 rounded-md text-gray-500 
+                flex items-center justify-center gap-2 cursor-pointer
+                ${resumeFile ? 'bg-green-50' : ''}`}
             >
-              <span>+</span> Add Resume
-            </button>
-          </div>
-          
-          <div>
-            <label htmlFor="interviewer" className="block text-[#0A2647] font-semibold mb-2">
-              Interviewer Job Title <span className="text-gray-500">(optional)</span>
+              <input
+                type="file"
+                id="resume"
+                className="hidden"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileChange}
+              />
+              <span>+</span>
+              {resumeFile ? resumeFile.name : 'Add Resume'}
             </label>
-            <input
-              type="text"
-              id="interviewer"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              placeholder="Senior Product Designer"
-              value={formData.interviewer}
-              onChange={(e) => setFormData(prev => ({...prev, interviewer: e.target.value}))}
-            />
           </div>
         </div>
 
         <div>
           <label htmlFor="description" className="block text-[#0A2647] font-semibold mb-2">
-            Job Description <span className="text-gray-500">(optional)</span>
+            Job Description
           </label>
           <textarea
             id="description"
             rows={4}
             className="w-full p-3 border border-gray-300 rounded-md"
             placeholder="As a Product Designer, you will play a pivotal role in crafting intuitive and visually captivating digital products..."
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({...prev, description: e.target.value}))}
+            value={formData.job_description}
+            onChange={(e) => setFormData(prev => ({...prev, job_description: e.target.value}))}
           />
         </div>
 
@@ -106,8 +131,9 @@ export default function NewInterviewPage() {
           <Button
             type="submit"
             variant="default"
+            disabled={isSubmitting}
           >
-            Next
+            {isSubmitting ? 'Submitting...' : 'Next'}
           </Button>
         </div>
       </form>

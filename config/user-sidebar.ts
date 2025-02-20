@@ -2,7 +2,6 @@ import {
   Home,
   FileText,
   Settings,
-  MessageSquare,
   type LucideIcon 
 } from "lucide-react";
 
@@ -37,9 +36,14 @@ export const userMenuItems: MenuGroup[] = [
         icon: FileText,
       },
       {
-        href: "/dashboard/feedback",
-        label: "Feedback",
-        icon: MessageSquare,
+        href: "/dashboard/tailor-resume",
+        label: "Tailor Resume",
+        icon: FileText,
+      },
+      {
+        href: "/dashboard/resume-ATS",
+        label: "Resume ATS",
+        icon: FileText,
       },
     ],
   },

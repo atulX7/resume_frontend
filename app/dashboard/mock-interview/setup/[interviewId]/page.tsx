@@ -17,12 +17,20 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
+    let mounted = true;
+    
     async function checkDevices() {
       try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true
         })
+        
+        if (!mounted) {
+          mediaStream.getTracks().forEach(track => track.stop());
+          return;
+        }
+
         setStream(mediaStream)
         setDevices({ video: true, audio: true })
 
@@ -37,7 +45,7 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
         analyser.current.fftSize = 256
         
         const checkAudioLevel = () => {
-          if (!analyser.current) return
+          if (!analyser.current || !mounted) return
           const dataArray = new Uint8Array(analyser.current.frequencyBinCount)
           analyser.current.getByteFrequencyData(dataArray)
           const average = dataArray.reduce((a, b) => a + b) / dataArray.length
@@ -47,11 +55,16 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
         checkAudioLevel()
       } catch (error) {
         console.error('Error accessing devices:', error)
+        if (mounted) {
+          setDevices({ video: false, audio: false })
+        }
       }
     }
+    
     checkDevices()
 
     return () => {
+      mounted = false;
       if (stream) {
         stream.getTracks().forEach(track => track.stop())
       }
