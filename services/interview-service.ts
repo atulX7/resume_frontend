@@ -1,8 +1,33 @@
 import { ApiError } from "next/dist/server/api-utils";
 
-interface AnalysisResponse {
+export interface AnalysisResponse {
   success: boolean;
-  data?: unknown; 
+  data?: {
+    session_id: string;
+    job_title: string;
+    created_at: string;
+    status: string;
+    overall_score: number;
+    key_strengths: string[];
+    areas_for_growth: string[];
+    skill_assessment: {
+      technical: number;
+      problem_solving: number;
+      communication: number;
+      leadership: number;
+      adaptability: number;
+      behavioral_fit: number;
+      confidence: number;
+    };
+    evaluation_results: Array<{
+      question: string;
+      score: number;
+      feedback: string;
+      audio_presigned_url: string;
+      follow_up_question: string;
+    }>;
+  };
+  error?: string;
 }
 
 interface CreateInterviewData {
@@ -24,19 +49,68 @@ interface CreateInterviewResponse {
   error?: string;
 }
 
+interface ProcessInterviewResponse {
+  success: boolean;
+  data?: unknown;
+  error?: string;
+}
+
 export class InterviewService {
   private static BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   static async getAnalysis(interviewId: string): Promise<AnalysisResponse> {
     try {
-      const response = await fetch(`${this.BASE_URL}/mock-interview/analysis/${interviewId}`);
+      if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        return {
+          success: true,
+          data: {
+            session_id: "2a2c8407-a028-4ded-91cf-b7af4e8e4145",
+            job_title: "Sr. AI Lead (Gen AI)",
+            created_at: "2025-02-17 14:56:51",
+            status: "completed",
+            overall_score: 3,
+            key_strengths: [
+              "The candidate attempted to discuss the importance of scenario-based questions..."
+            ],
+            areas_for_growth: [
+              "The candidate did not provide specific answers to any of the questions...",
+              // ... other areas
+            ],
+            skill_assessment: {
+              technical: 1,
+              problem_solving: 1,
+              communication: 2,
+              leadership: 1,
+              adaptability: 1,
+              behavioral_fit: 1,
+              confidence: 2
+            },
+            evaluation_results: [
+              {
+                question: "Hello and welcome!...",
+                score: 3,
+                feedback: "The candidate's response did not directly answer...",
+                audio_presigned_url: "https://...",
+                follow_up_question: "Can you provide..."
+              },
+              // ... other evaluation results
+            ]
+          }
+        };
+      }
+
+      const response = await fetch(`${this.BASE_URL}/mock-interview/sessions/${interviewId}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch analysis (Status: ${response.status})`);
+      }
       const data = await response.json();
       return { success: true, data };
     } catch (error) {
-      if (error instanceof ApiError) {
-        return { success: false, data: error.message };
-      }
-      return { success: false, data: "An error occurred" };
+      console.error('Error fetching analysis:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'An error occurred while fetching the analysis'
+      };
     }
   }
 
@@ -110,6 +184,61 @@ export class InterviewService {
       return { 
         success: false, 
         error: `An error occurred while creating the interview: ${error instanceof Error ? error.message : 'Unknown error'}`
+      };
+    }
+  }
+
+  static async processInterview(
+    interviewId: string, 
+    recordings: Blob[], 
+    questionIds: string[]
+  ): Promise<ProcessInterviewResponse> {
+    try {
+      if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+        return {
+          success: true,
+          data: {
+            message: "Interview processed successfully"
+          }
+        };
+      }
+
+      const formData = new FormData();
+      
+      // Create question_audio_map object
+      const questionAudioMap: { [key: string]: string } = {};
+      recordings.forEach((_, index) => {
+        questionAudioMap[questionIds[index]] = `answer_${questionIds[index]}.webm`;
+      });
+
+      // Add question_audio_map as JSON string
+      formData.append('question_audio_map', JSON.stringify(questionAudioMap));
+      
+      // Add recordings as audio_file array
+      recordings.forEach((recording, index) => {
+        formData.append('audio_file', recording, `answer_${questionIds[index]}.webm`);
+      });
+
+      const response = await fetch(`${this.BASE_URL}/mock-interview/${interviewId}/process`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { 
+          success: false, 
+          error: data.message || `Failed to process interview (Status: ${response.status})`
+        };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error processing interview:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'An error occurred while processing the interview'
       };
     }
   }

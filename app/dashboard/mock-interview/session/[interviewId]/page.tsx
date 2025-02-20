@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { INTERVIEW_QUESTIONS } from '../../data/questions'
 import { 
   PlayCircle, 
   StopCircle, 
@@ -14,6 +13,12 @@ import {
   AlertCircle 
 } from "lucide-react"
 import { use } from 'react'
+import { InterviewService } from '@/services/interview-service'
+
+interface Answer {
+  questionId: string;
+  recording: Blob;
+}
 
 export default function InterviewSession({ params }: { params: Promise<{ interviewId: string }> }) {
   const router = useRouter()
@@ -23,7 +28,15 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   const [recording, setRecording] = useState<MediaRecorder | null>(null)
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [recordingTime, setRecordingTime] = useState(0)
-  const [, setAnswers] = useState<Blob[]>([])
+  const [answers, setAnswers] = useState<Answer[]>([])
+  const [questions, setQuestions] = useState<Array<{ question_id: string, question: string }>>([])
+
+  useEffect(() => {
+    const savedQuestions = localStorage.getItem('current-interview-questions');
+    if (savedQuestions) {
+      setQuestions(JSON.parse(savedQuestions));
+    }
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -100,12 +113,19 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
 
     mediaRecorder.onstop = () => {
       const blob = new Blob(chunks, { type: 'video/webm' })
-      setAnswers(prev => [...prev, blob])
+      const currentQuestionId = questions[currentQuestion]?.question_id
       
-      if (currentQuestion < INTERVIEW_QUESTIONS.length - 1) {
+      if (currentQuestionId) {
+        setAnswers(prev => [...prev, {
+          questionId: currentQuestionId,
+          recording: blob
+        }])
+      }
+      
+      if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(prev => prev + 1)
       } else {
-        finishInterview()
+        submitAnswers(blob, currentQuestionId)
       }
     }
 
@@ -113,13 +133,39 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     setRecording(mediaRecorder)
   }
 
+  const submitAnswers = async (finalBlob: Blob, finalQuestionId: string) => {
+    try {
+      const allAnswers = [
+        ...answers,
+        { questionId: finalQuestionId, recording: finalBlob }
+      ];
+
+      const recordings = allAnswers.map(a => a.recording);
+      const questionIds = allAnswers.map(a => a.questionId);
+
+      const response = await InterviewService.processInterview(
+        interviewId,
+        recordings,
+        questionIds
+      );
+
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+
+      // Clean up
+      cleanupMedia();
+      localStorage.removeItem('current-interview-questions');
+      router.push(`/dashboard/mock-interview/analysis/${interviewId}`);
+    } catch (error) {
+      console.error('Error submitting interview:', error);
+      alert('Failed to submit interview. Please try again.');
+    }
+  }
+
   const stopAnswering = () => {
     recording?.stop()
     setRecording(null)
-    
-    if (currentQuestion === INTERVIEW_QUESTIONS.length - 1) {
-      finishInterview()
-    }
   }
 
   const cleanupMedia = () => {
@@ -133,16 +179,13 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     }
   }
 
-  const finishInterview = () => {
-    cleanupMedia()
-    router.push(`/dashboard/mock-interview/analysis/${interviewId}`)
-  }
-
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
+
+  const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -151,7 +194,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
           <CardContent className="py-6">
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm font-medium text-gray-500">
-                Progress: {currentQuestion + 1}/{INTERVIEW_QUESTIONS.length}
+                Progress: {currentQuestion + 1}/{questions.length}
               </span>
               <span className="flex items-center gap-2 text-sm font-medium text-gray-500">
                 <Timer className="w-4 h-4" />
@@ -159,7 +202,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
               </span>
             </div>
             <Progress 
-              value={(currentQuestion / INTERVIEW_QUESTIONS.length) * 100} 
+              value={progress}
               className="h-2"
             />
           </CardContent>
@@ -175,7 +218,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
                   Question {currentQuestion + 1}
                 </h2>
                 <p className="text-lg text-gray-700">
-                  {INTERVIEW_QUESTIONS[currentQuestion]}
+                  {questions[currentQuestion]?.question || 'Loading question...'}
                 </p>
               </div>
             </div>

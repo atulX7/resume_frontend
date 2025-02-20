@@ -21,38 +21,40 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
     
     async function checkDevices() {
       try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true
-        })
-        
-        if (!mounted) {
-          mediaStream.getTracks().forEach(track => track.stop());
-          return;
-        }
+        if (!stream) {
+          const mediaStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+          })
+          
+          if (!mounted) {
+            mediaStream.getTracks().forEach(track => track.stop());
+            return;
+          }
 
-        setStream(mediaStream)
-        setDevices({ video: true, audio: true })
+          setStream(mediaStream)
+          setDevices({ video: true, audio: true })
 
-        if (videoRef.current) {
-          videoRef.current.srcObject = mediaStream
-        }
+          if (videoRef.current) {
+            videoRef.current.srcObject = mediaStream
+          }
 
-        audioContext.current = new AudioContext()
-        analyser.current = audioContext.current.createAnalyser()
-        const source = audioContext.current.createMediaStreamSource(mediaStream)
-        source.connect(analyser.current)
-        analyser.current.fftSize = 256
-        
-        const checkAudioLevel = () => {
-          if (!analyser.current || !mounted) return
-          const dataArray = new Uint8Array(analyser.current.frequencyBinCount)
-          analyser.current.getByteFrequencyData(dataArray)
-          const average = dataArray.reduce((a, b) => a + b) / dataArray.length
-          setAudioLevel(average)
-          requestAnimationFrame(checkAudioLevel)
+          audioContext.current = new AudioContext()
+          analyser.current = audioContext.current.createAnalyser()
+          const source = audioContext.current.createMediaStreamSource(mediaStream)
+          source.connect(analyser.current)
+          analyser.current.fftSize = 256
+          
+          const checkAudioLevel = () => {
+            if (!analyser.current || !mounted) return
+            const dataArray = new Uint8Array(analyser.current.frequencyBinCount)
+            analyser.current.getByteFrequencyData(dataArray)
+            const average = dataArray.reduce((a, b) => a + b) / dataArray.length
+            setAudioLevel(average)
+            requestAnimationFrame(checkAudioLevel)
+          }
+          checkAudioLevel()
         }
-        checkAudioLevel()
       } catch (error) {
         console.error('Error accessing devices:', error)
         if (mounted) {
@@ -72,11 +74,14 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
         audioContext.current.close()
       }
     }
-  }, [stream])
+  }, [])
 
   const startInterview = () => {
     if (devices.video && devices.audio) {
-      router.push(`/dashboard/mock-interview/session/${interviewId}`)
+      // Store questions in localStorage before navigation
+      const questions = JSON.parse(localStorage.getItem('interview-questions') || '[]');
+      localStorage.setItem('current-interview-questions', JSON.stringify(questions));
+      router.push(`/dashboard/mock-interview/session/${interviewId}`);
     }
   }
 
