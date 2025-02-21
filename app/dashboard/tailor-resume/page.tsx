@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ResumeTailorService } from '@/services/resume-tailor-service';
+import { useRouter } from 'next/navigation';
 
 export default function TailorResumePage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     jobTitle: '',
     jobDescription: '',
@@ -19,7 +21,7 @@ export default function TailorResumePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setTailoredResume(null); // Reset previous result
+    setTailoredResume(null);
     
     if (!formData.resumeFile) {
       console.error('No resume file selected');
@@ -35,7 +37,9 @@ export default function TailorResumePage() {
       });
 
       if (response.success && response.data) {
-        setTailoredResume(response.data);
+        // Use btoa for safe base64 encoding
+        const encodedData = btoa(JSON.stringify(response.data));
+        router.push(`/dashboard/tailor-resume/details?data=${encodedData}`);
       } else {
         console.error('Failed to tailor resume:', response.error);
       }

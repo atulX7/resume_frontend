@@ -8,28 +8,89 @@ import { InterviewService } from '@/services/interview-service'
 import type { AnalysisResponse } from '@/services/interview-service'
 import { use } from 'react'
 
+function LoadingAnalysis() {
+  return (
+    <div className="max-w-6xl mx-auto p-6 space-y-8">
+      <div className="flex justify-between items-center">
+        <div className="animate-pulse">
+          <div className="h-8 w-64 bg-gray-200 rounded mb-2"></div>
+          <div className="h-4 w-48 bg-gray-200 rounded mb-2"></div>
+          <div className="h-4 w-40 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[...Array(5)].map((_, i) => (
+          <Card key={i} className="col-span-1">
+            <CardHeader>
+              <div className="h-5 w-24 bg-gray-200 rounded animate-pulse"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-8 w-16 bg-gray-200 rounded animate-pulse"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <div className="h-6 w-40 bg-gray-200 rounded animate-pulse"></div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="border-b pb-4 last:border-0">
+              <div className="h-4 w-full bg-gray-200 rounded mb-3 animate-pulse"></div>
+              <div className="h-2 w-full bg-gray-200 rounded mb-3 animate-pulse"></div>
+              <div className="h-16 w-full bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 export default function AnalysisPage({ params }: { params: Promise<{ interviewId: string }> }) {
   const { interviewId } = use(params)
   const router = useRouter()
   const [analysis, setAnalysis] = useState<AnalysisResponse['data']>()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
+        setIsLoading(true)
         const response = await InterviewService.getAnalysis(interviewId)
         if (response.success && response.data) {
           setAnalysis(response.data)
         }
       } catch (error) {
         console.error('Error fetching analysis:', error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
     fetchAnalysis()
   }, [interviewId])
 
+  if (isLoading) {
+    return <LoadingAnalysis />
+  }
+
   if (!analysis) {
-    return <div>Loading...</div>
+    return (
+      <div className="max-w-6xl mx-auto p-6 text-center">
+        <h2 className="text-2xl font-bold text-gray-700">No analysis data available</h2>
+        <Button
+          variant="outline"
+          onClick={() => router.push('/dashboard/mock-interview')}
+          className="mt-4"
+        >
+          Return to Dashboard
+        </Button>
+      </div>
+    )
   }
 
   return (

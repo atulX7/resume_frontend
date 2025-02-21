@@ -47,10 +47,10 @@ export class ResumeService {
 
     try {
       const formData = new FormData();
-      formData.append('resume', resumeFile);
+      formData.append('resume_file', resumeFile);
       formData.append('user_id', userId);
 
-      const response = await fetch(`${this.BASE_URL}/score`, {
+      const response = await fetch(`${this.BASE_URL}/score/`, {
         method: 'POST',
         body: formData,
       });

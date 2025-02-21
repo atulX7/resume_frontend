@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { useUser } from '@/lib/user';
 import { ResumeService } from '@/services/resume-service';
 import { toast } from "sonner";
@@ -16,10 +15,17 @@ interface ATSScore {
 export default function ResumeATS() {
   const { user } = useUser();
   const [file, setFile] = useState<File | null>(null);
-  const [scores, setScores] = useState<ATSScore | null>(null);
+  const [, setScores] = useState<ATSScore | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const resumeFile = e.target.files[0];
+      setFile(resumeFile);
+    }
+  };
+
+  const handleSubmit = async () => {
     if (!user) {
       toast.error("Authentication Required", {
         description: "Please login to analyze your resume.",
@@ -27,51 +33,50 @@ export default function ResumeATS() {
       return;
     }
 
-    if (e.target.files && e.target.files[0]) {
-      const resumeFile = e.target.files[0];
-      setFile(resumeFile);
-      setLoading(true);
-      
-      try {
-        if (!process.env.NEXT_PUBLIC_API_URL) {
-          throw new Error('API URL is not configured');
-        }
+    if (!file) {
+      toast.error("File Required", {
+        description: "Please select a resume file first.",
+      });
+      return;
+    }
 
-        const response = await ResumeService.getResumeScore(resumeFile, user.id);
-        
-        if (response.success && response.scores) {
-          setScores({ scores: response.scores });
-        } else {
-          toast.error("Analysis Failed", {
-            description: response.error || "Failed to analyze resume. Please try again.",
-          });
-        }
-      } catch (error) {
-        console.error('Resume analysis error:', error);
-        
-        const errorMessage = error instanceof Error 
-          ? error.message.includes('CONNECTION_REFUSED')
-            ? "Cannot connect to the analysis server. Please ensure the server is running and try again."
-            : error.message.includes('API URL is not configured')
-              ? "Application configuration error. Please contact support."
-              : error.message
-          : "An unexpected error occurred. Please try again.";
-          
-        toast.error("Error", {
-          description: errorMessage
-        });
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    
+    try {
+      if (!process.env.NEXT_PUBLIC_API_URL) {
+        throw new Error('API URL is not configured');
       }
+
+      const response = await ResumeService.getResumeScore(file, user.id);
+      
+      if (response.success && response.scores) {
+        setScores({ scores: response.scores });
+        toast.success("Analysis Complete");
+        window.location.href = `/dashboard/resume-ATS/details?scores=${encodeURIComponent(JSON.stringify(response.scores))}`;
+      } else {
+        toast.error("Analysis Failed", {
+          description: response.error || "Failed to analyze resume. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error('Resume analysis error:', error);
+      
+      const errorMessage = error instanceof Error 
+        ? error.message.includes('CONNECTION_REFUSED')
+          ? "Cannot connect to the analysis server. Please ensure the server is running and try again."
+          : error.message.includes('API URL is not configured')
+            ? "Application configuration error. Please contact support."
+            : error.message
+        : "An unexpected error occurred. Please try again.";
+        
+      toast.error("Error", {
+        description: errorMessage
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const formatScoreKey = (key: string) => {
-    return key
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -87,6 +92,14 @@ export default function ResumeATS() {
             <input type='file' className="hidden" onChange={handleFileUpload} accept=".pdf,.doc,.docx" />
           </label>
           {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
+          
+          <button
+            onClick={handleSubmit}
+            disabled={!file || loading}
+            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+          >
+            {loading ? 'Analyzing...' : 'Analyze Resume'}
+          </button>
         </div>
       </Card>
 
@@ -94,22 +107,6 @@ export default function ResumeATS() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
           <p className="mt-4">Analyzing your resume...</p>
-        </div>
-      )}
-
-      {scores && !loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {Object.entries(scores.scores).map(([key, value]) => (
-            <Card key={key} className="p-4">
-              <div className="flex flex-col">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium">{formatScoreKey(key)}</span>
-                  <span className="text-sm font-bold">{value}%</span>
-                </div>
-                <Progress value={value} className="h-2" />
-              </div>
-            </Card>
-          ))}
         </div>
       )}
     </div>

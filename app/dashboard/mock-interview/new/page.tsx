@@ -3,20 +3,18 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
-import { InterviewService } from '@/services/interview-service'
 import { useUser } from '@/lib/user'
 
 export default function NewInterviewPage() {
   const router = useRouter()
   const { user } = useUser()
   const [formData, setFormData] = useState({
-    user_id: user?.id || '',
     job_title: '',
     job_description: '',
     resume_file: null,
   })
   const [resumeFile, setResumeFile] = useState<File | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting] = useState(false)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -26,39 +24,25 @@ export default function NewInterviewPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
     if (!user?.id) {
       alert('Please sign in to continue');
-      setIsSubmitting(false);
       return;
     }
 
     if (!formData.job_title || !formData.job_description) {
       alert('Please fill in all required fields');
-      setIsSubmitting(false);
       return;
     }
-    
-    try {
-      const response = await InterviewService.createInterview({
-        ...formData,
-        user_id: user.id,
-        resume_file: resumeFile as File
-      });
-      
-      if (response.success && response.data) {
-        router.push(`/dashboard/mock-interview/setup/${response.data.id}`);
-      } else {
-        console.error('Failed to create interview:', response.error);
-        alert(`Error: ${response.error || 'Failed to create interview'}`);
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      alert(`Error: ${error instanceof Error ? error.message : 'An unexpected error occurred'}`);
-    } finally {
-      setIsSubmitting(false);
-    }
+
+    // Store form data in localStorage
+    localStorage.setItem('interview-form-data', JSON.stringify({
+      ...formData,
+      resume_file: resumeFile
+    }));
+
+    // Navigate to setup page (without ID)
+    router.push('/dashboard/mock-interview/setup');
   }
 
   return (

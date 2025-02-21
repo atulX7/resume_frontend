@@ -4,11 +4,12 @@ import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MicIcon, VideoIcon } from "lucide-react"
-import { use } from 'react'
+import { InterviewService } from '@/services/interview-service'
+import { useUser } from '@/lib/user'
 
-export default function SetupPage({ params }: { params: Promise<{ interviewId: string }> }) {
+export default function SetupPage() {
   const router = useRouter()
-  const { interviewId } = use(params)
+  const { user } = useUser()
   const [devices, setDevices] = useState({ video: false, audio: false })
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [audioLevel, setAudioLevel] = useState(0)
@@ -74,14 +75,32 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
         audioContext.current.close()
       }
     }
-  }, [])
+  }, [stream])
 
-  const startInterview = () => {
-    if (devices.video && devices.audio) {
-      // Store questions in localStorage before navigation
-      const questions = JSON.parse(localStorage.getItem('interview-questions') || '[]');
-      localStorage.setItem('current-interview-questions', JSON.stringify(questions));
-      router.push(`/dashboard/mock-interview/session/${interviewId}`);
+  const createAndStartInterview = async () => {
+    if (!devices.video || !devices.audio || !user?.id) return;
+    
+    try {
+      // Get the form data from localStorage
+      const formData = JSON.parse(localStorage.getItem('interview-form-data') || '{}');
+      
+      const response = await InterviewService.createInterview({
+        user_id: user.id,
+        job_title: formData.job_title,
+        job_description: formData.job_description,
+        resume_file: formData.resume_file
+      });
+
+      if (response.success && response.data) {
+        // Store questions for the session
+        localStorage.setItem('current-interview-questions', JSON.stringify(response.data.questions));
+        router.push(`/dashboard/mock-interview/session/${response.data.id}`);
+      } else {
+        alert('Failed to create interview. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error creating interview:', error);
+      alert('An error occurred while creating the interview.');
     }
   }
 
@@ -139,7 +158,7 @@ export default function SetupPage({ params }: { params: Promise<{ interviewId: s
 
           <div className="flex justify-center pt-4">
             <Button
-              onClick={startInterview}
+              onClick={createAndStartInterview}
               disabled={!devices.video || !devices.audio}
               variant="default"
               size="lg"

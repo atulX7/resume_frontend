@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -10,7 +9,8 @@ import {
   Timer, 
   Video, 
   Mic, 
-  AlertCircle 
+  AlertCircle,
+  Send
 } from "lucide-react"
 import { use } from 'react'
 import { InterviewService } from '@/services/interview-service'
@@ -21,7 +21,6 @@ interface Answer {
 }
 
 export default function InterviewSession({ params }: { params: Promise<{ interviewId: string }> }) {
-  const router = useRouter()
   const { interviewId } = use(params)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -30,6 +29,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   const [recordingTime, setRecordingTime] = useState(0)
   const [answers, setAnswers] = useState<Answer[]>([])
   const [questions, setQuestions] = useState<Array<{ question_id: string, question: string }>>([])
+  const [isAllQuestionsAnswered, setIsAllQuestionsAnswered] = useState(false)
 
   useEffect(() => {
     const savedQuestions = localStorage.getItem('current-interview-questions');
@@ -40,66 +40,56 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
 
   useEffect(() => {
     let mounted = true;
+    // Capture the ref value once at the start of the effect
+    const currentVideoRef = videoRef.current;
 
     async function setupStream() {
       try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true
-        })
+        });
 
         if (!mounted) {
           mediaStream.getTracks().forEach(track => track.stop());
           return;
         }
 
-        setStream(mediaStream)
-        if (videoRef.current) {
-          videoRef.current.srcObject = mediaStream
+        setStream(mediaStream);
+        // Use the captured ref value
+        if (currentVideoRef) {
+          currentVideoRef.srcObject = mediaStream;
         }
       } catch (error) {
-        console.error('Error accessing devices:', error)
+        console.error('Error accessing devices:', error);
       }
     }
     
-    setupStream()
+    setupStream();
 
     return () => {
       mounted = false;
       if (stream) {
         stream.getTracks().forEach(track => {
-          track.stop()
-        })
+          track.stop();
+        });
       }
-      if (videoRef.current) {
-        videoRef.current.srcObject = null
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout
-    if (recording) {
-      interval = setInterval(() => {
-        setRecordingTime(prev => prev + 1)
-      }, 1000)
-    }
-    return () => clearInterval(interval)
-  }, [recording])
-
-  useEffect(() => {
-    const currentVideo = videoRef.current; // Store ref value in variable
-    
-    if (currentVideo && stream) {
-      currentVideo.srcObject = stream;
-    }
-
-    return () => {
-      if (currentVideo) {
-        currentVideo.srcObject = null;
+      // Use the same captured ref value in cleanup
+      if (currentVideoRef) {
+        currentVideoRef.srcObject = null;
       }
     };
   }, [stream]); // Add stream to dependencies
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (recording) {
+      interval = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [recording]);
 
   const startAnswering = () => {
     if (!stream) return
@@ -125,7 +115,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(prev => prev + 1)
       } else {
-        submitAnswers(blob, currentQuestionId)
+        setIsAllQuestionsAnswered(true)
       }
     }
 
@@ -133,15 +123,32 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     setRecording(mediaRecorder)
   }
 
-  const submitAnswers = async (finalBlob: Blob, finalQuestionId: string) => {
-    try {
-      const allAnswers = [
-        ...answers,
-        { questionId: finalQuestionId, recording: finalBlob }
-      ];
+  const cleanupMedia = () => {
+    // Stop all media tracks
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+    
+    // Stop recording if active
+    if (recording) {
+      recording.stop();
+      setRecording(null);
+    }
 
-      const recordings = allAnswers.map(a => a.recording);
-      const questionIds = allAnswers.map(a => a.questionId);
+    // Clear video element
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    // Reset recording time
+    setRecordingTime(0);
+  }
+
+  const submitInterview = async () => {
+    try {
+      const recordings = answers.map(a => a.recording);
+      const questionIds = answers.map(a => a.questionId);
 
       const response = await InterviewService.processInterview(
         interviewId,
@@ -153,29 +160,15 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
         throw new Error(response.error);
       }
 
-      // Clean up
+      // Clean up media
       cleanupMedia();
       localStorage.removeItem('current-interview-questions');
-      router.push(`/dashboard/mock-interview/analysis/${interviewId}`);
+      
+      // Force a page refresh before navigation
+      window.location.href = `/dashboard/mock-interview/analysis/${interviewId}`;
     } catch (error) {
       console.error('Error submitting interview:', error);
       alert('Failed to submit interview. Please try again.');
-    }
-  }
-
-  const stopAnswering = () => {
-    recording?.stop()
-    setRecording(null)
-  }
-
-  const cleanupMedia = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => {
-        track.stop()
-      })
-    }
-    if (videoRef.current) {
-      videoRef.current.srcObject = null
     }
   }
 
@@ -251,7 +244,17 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
 
           <Card>
             <CardContent className="p-8 flex flex-col justify-center items-center gap-6">
-              {!recording ? (
+              {isAllQuestionsAnswered ? (
+                <Button
+                  onClick={submitInterview}
+                  variant="default"
+                  size="lg"
+                  className="w-full max-w-md h-16 text-lg gap-2"
+                >
+                  <Send className="w-6 h-6" />
+                  Submit Interview
+                </Button>
+              ) : !recording ? (
                 <Button
                   onClick={startAnswering}
                   variant="default"
@@ -263,7 +266,10 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
                 </Button>
               ) : (
                 <Button
-                  onClick={stopAnswering}
+                  onClick={() => {
+                    recording?.stop()
+                    setRecording(null)
+                  }}
                   variant="destructive"
                   size="lg"
                   className="w-full max-w-md h-16 text-lg gap-2"
