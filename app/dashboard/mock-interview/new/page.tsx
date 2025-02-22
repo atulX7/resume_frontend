@@ -8,7 +8,11 @@ import { useUser } from '@/lib/user'
 export default function NewInterviewPage() {
   const router = useRouter()
   const { user } = useUser()
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    job_title: string;
+    job_description: string;
+    resume_file: File | null;
+  }>({
     job_title: '',
     job_description: '',
     resume_file: null,
@@ -18,7 +22,9 @@ export default function NewInterviewPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setResumeFile(e.target.files[0])
+      const file = e.target.files[0];
+      setResumeFile(file);
+      setFormData(prev => ({...prev, resume_file: file}));
     }
   }
 
@@ -35,13 +41,12 @@ export default function NewInterviewPage() {
       return;
     }
 
-    // Store form data in localStorage
     localStorage.setItem('interview-form-data', JSON.stringify({
-      ...formData,
-      resume_file: resumeFile
+      job_title: formData.job_title,
+      job_description: formData.job_description,
+      resume_file: resumeFile ? resumeFile.name : null
     }));
 
-    // Navigate to setup page (without ID)
     router.push('/dashboard/mock-interview/setup');
   }
 
@@ -65,7 +70,6 @@ export default function NewInterviewPage() {
               onChange={(e) => setFormData(prev => ({...prev, job_title: e.target.value}))}
             />
           </div>
-        
         </div>
 
         <div className="grid grid-cols-2 gap-6">
