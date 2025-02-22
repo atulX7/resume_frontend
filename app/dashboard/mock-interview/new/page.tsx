@@ -40,11 +40,20 @@ export default function NewInterviewPage() {
       alert('Please fill in all required fields');
       return;
     }
+    let base64Resume = null;
+    if (resumeFile) {
+      const buffer = await resumeFile.arrayBuffer();
+      base64Resume = {
+        name: resumeFile.name,
+        type: resumeFile.type,
+        data: Buffer.from(buffer).toString('base64')
+      };
+    }
 
     localStorage.setItem('interview-form-data', JSON.stringify({
       job_title: formData.job_title,
       job_description: formData.job_description,
-      resume_file: resumeFile ? resumeFile.name : null
+      resume_file: base64Resume
     }));
 
     router.push('/dashboard/mock-interview/setup');

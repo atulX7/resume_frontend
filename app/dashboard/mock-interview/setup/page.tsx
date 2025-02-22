@@ -81,7 +81,6 @@ export default function SetupPage() {
     if (!devices.video || !devices.audio || !user?.id) return;
     
     try {
-      // Get the form data from localStorage
       const formDataStr = localStorage.getItem('interview-form-data');
       if (!formDataStr) {
         alert('Interview form data not found. Please try again.');
@@ -90,16 +89,20 @@ export default function SetupPage() {
 
       const formData = JSON.parse(formDataStr);
       
-      // Create a File object from the stored resume data
       let resumeFile = null;
       if (formData.resume_file) {
+        const binaryStr = atob(formData.resume_file.data);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) {
+          bytes[i] = binaryStr.charCodeAt(i);
+        }
         resumeFile = new File(
-          [formData.resume_file], 
+          [bytes.buffer], 
           formData.resume_file.name, 
           { type: formData.resume_file.type }
         );
       }
-      
+
       const response = await InterviewService.createInterview({
         user_id: user.id,
         job_title: formData.job_title,
@@ -108,7 +111,6 @@ export default function SetupPage() {
       });
 
       if (response.success && response.data) {
-        // Store questions for the session
         localStorage.setItem('current-interview-questions', JSON.stringify(response.data.questions));
         router.push(`/dashboard/mock-interview/session/${response.data.id}`);
       } else {
