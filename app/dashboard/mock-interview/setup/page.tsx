@@ -82,13 +82,29 @@ export default function SetupPage() {
     
     try {
       // Get the form data from localStorage
-      const formData = JSON.parse(localStorage.getItem('interview-form-data') || '{}');
+      const formDataStr = localStorage.getItem('interview-form-data');
+      if (!formDataStr) {
+        alert('Interview form data not found. Please try again.');
+        return;
+      }
+
+      const formData = JSON.parse(formDataStr);
+      
+      // Create a File object from the stored resume data
+      let resumeFile = null;
+      if (formData.resume_file) {
+        resumeFile = new File(
+          [formData.resume_file], 
+          formData.resume_file.name, 
+          { type: formData.resume_file.type }
+        );
+      }
       
       const response = await InterviewService.createInterview({
         user_id: user.id,
         job_title: formData.job_title,
         job_description: formData.job_description,
-        resume_file: formData.resume_file
+        resume_file: resumeFile || new File([], 'empty.pdf')
       });
 
       if (response.success && response.data) {

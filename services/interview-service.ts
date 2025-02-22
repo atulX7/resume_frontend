@@ -34,7 +34,7 @@ interface CreateInterviewData {
   user_id: string;
   job_title: string;
   job_description: string;
-  resume_file: File;
+  resume_file?: File | null;
 }
 
 interface CreateInterviewResponse {
@@ -116,6 +116,17 @@ export class InterviewService {
 
   static async createInterview(data: CreateInterviewData): Promise<CreateInterviewResponse> {
     try {
+      // Validate required fields
+      if (!data.job_title?.trim()) {
+        return { success: false, error: 'Job title is required' };
+      }
+      if (!data.job_description?.trim()) {
+        return { success: false, error: 'Job description is required' };
+      }
+      if (!data.user_id?.trim()) {
+        return { success: false, error: 'User ID is required' };
+      }
+
       // Log the incoming data (remove in production)
       console.log('Creating interview with data:', {
         user_id: data.user_id,
@@ -125,7 +136,7 @@ export class InterviewService {
       });
 
       const formData = new FormData();
-      formData.append('user_id', data.user_id || 'default-user');
+      formData.append('user_id', data.user_id);
       formData.append('job_title', data.job_title);
       formData.append('job_description', data.job_description);
       
@@ -168,11 +179,13 @@ export class InterviewService {
       console.log('API Response:', result);
       
       if (!response.ok) {
-        console.error('API Error:', result);
-        return { 
-          success: false, 
-          error: result.message || `Failed to create interview (Status: ${response.status})` 
-        };
+        const errorMessage = result.message || result.error || `Failed to create interview (Status: ${response.status})`;
+        console.error('API Error:', errorMessage);
+        return { success: false, error: errorMessage };
+      }
+
+      if (!result.id || !result.questions) {
+        return { success: false, error: 'Invalid response format from server' };
       }
 
       return { success: true, data: result };
