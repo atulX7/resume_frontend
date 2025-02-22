@@ -37,8 +37,8 @@ export default function TailorResumePage() {
       });
 
       if (response.success && response.data) {
-        // Use btoa for safe base64 encoding
-        const encodedData = btoa(JSON.stringify(response.data));
+        // Encode only the sections data
+        const encodedData = btoa(JSON.stringify(response.data.sections));
         router.push(`/dashboard/tailor-resume/details?data=${encodedData}`);
       } else {
         console.error('Failed to tailor resume:', response.error);

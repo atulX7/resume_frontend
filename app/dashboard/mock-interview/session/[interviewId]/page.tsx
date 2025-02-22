@@ -30,17 +30,18 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   const [answers, setAnswers] = useState<Answer[]>([])
   const [questions, setQuestions] = useState<Array<{ question_id: string, question: string }>>([])
   const [isAllQuestionsAnswered, setIsAllQuestionsAnswered] = useState(false)
+  const [isCameraActive, setIsCameraActive] = useState(false)
 
   useEffect(() => {
     const savedQuestions = localStorage.getItem('current-interview-questions');
-    if (savedQuestions) {
+    console.log('Saved questions:', savedQuestions);
+    if (savedQuestions && savedQuestions !== 'undefined') {
       setQuestions(JSON.parse(savedQuestions));
     }
-  }, []);
+  }, [interviewId]);
 
   useEffect(() => {
     let mounted = true;
-    // Capture the ref value once at the start of the effect
     const currentVideoRef = videoRef.current;
 
     async function setupStream() {
@@ -56,12 +57,32 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
         }
 
         setStream(mediaStream);
-        // Use the captured ref value
+        setIsCameraActive(true);
+        
         if (currentVideoRef) {
           currentVideoRef.srcObject = mediaStream;
+          // Add event listeners for better error handling
+          const playVideo = async () => {
+            try {
+              await currentVideoRef.play();
+            } catch (error) {
+              console.error('Error playing video:', error);
+              // Retry play on loadedmetadata
+              currentVideoRef.addEventListener('loadedmetadata', async () => {
+                try {
+                  await currentVideoRef.play();
+                } catch (playError) {
+                  console.error('Error playing video after metadata loaded:', playError);
+                }
+              }, { once: true });
+            }
+          };
+          
+          playVideo();
         }
       } catch (error) {
         console.error('Error accessing devices:', error);
+        alert('Unable to access camera. Please check your permissions.');
       }
     }
     
@@ -74,12 +95,11 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
           track.stop();
         });
       }
-      // Use the same captured ref value in cleanup
       if (currentVideoRef) {
         currentVideoRef.srcObject = null;
       }
     };
-  }, [stream]); // Add stream to dependencies
+  }, []); // Remove stream from dependencies to prevent re-renders
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -183,6 +203,12 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-5xl mx-auto px-4">
+        {/* Camera status message */}
+        {!isCameraActive && (
+          <div className="absolute top-0 left-0 right-0 text-center bg-red-500 text-white p-2">
+            Camera is off. Please enable your camera.
+          </div>
+        )}
         <Card className="mb-8">
           <CardContent className="py-6">
             <div className="flex items-center justify-between mb-4">

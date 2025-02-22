@@ -26,6 +26,10 @@ export interface AnalysisResponse {
       audio_presigned_url: string;
       follow_up_question: string;
     }>;
+    questions: Array<{
+      question_id: string;
+      question: string;
+    }>;
   };
   error?: string;
 }
@@ -41,6 +45,7 @@ interface CreateInterviewResponse {
   success: boolean;
   data?: {
     id: string;
+    session_id: string;
     questions: Array<{
       question_id: string;
       question: string;
@@ -94,6 +99,20 @@ export class InterviewService {
                 follow_up_question: "Can you provide..."
               },
               // ... other evaluation results
+            ],
+            questions: [
+              {
+                question_id: "b7465672-2a2c8407-1",
+                question: "Hello and welcome! It's great to have you here today. I'm Alex, and I'm looking forward to our conversation. To start things off, could you please introduce yourself and share a bit about your career journey?"
+              },
+              {
+                question_id: "b7465672-2a2c8407-2",
+                question: "Can you elaborate on a project where you had to migrate infrastructure to Google Cloud and how you ensured the transition was seamless?"
+              },
+              {
+                question_id: "b7465672-2a2c8407-3",
+                question: "Describe a scenario where you worked collaboratively with a cross-functional team to obtain data-driven insights that drove business growth."
+              }
             ]
           }
         };
@@ -150,6 +169,7 @@ export class InterviewService {
           success: true,
           data: {
             id: "2a2c8407-a028-4ded-91cf-b7af4e8e4145",
+            session_id: "2a2c8407-a028-4ded-91cf-b7af4e8e4145",
             questions: [
               {
                 question_id: "b7465672-2a2c8407-1",
@@ -184,10 +204,12 @@ export class InterviewService {
         return { success: false, error: errorMessage };
       }
 
-      if (!result.id || !result.questions) {
+      if (!result.session_id || !result.questions) {
         return { success: false, error: 'Invalid response format from server' };
       }
 
+      // Save questions to localStorage
+      localStorage.setItem('current-interview-questions', JSON.stringify(result.questions));
       return { success: true, data: result };
     } catch (error) {
       console.error('Detailed error:', error);
@@ -221,7 +243,8 @@ export class InterviewService {
       // Create question_audio_map object
       const questionAudioMap: { [key: string]: string } = {};
       recordings.forEach((_, index) => {
-        questionAudioMap[questionIds[index]] = `answer_${questionIds[index]}.webm`;
+        const questionId = questionIds[index];
+        questionAudioMap[questionId] = `answer_${questionId}.webm`;
       });
 
       // Add question_audio_map as JSON string
@@ -229,7 +252,13 @@ export class InterviewService {
       
       // Add recordings as audio_file array
       recordings.forEach((recording, index) => {
-        formData.append('audio_file', recording, `answer_${questionIds[index]}.webm`);
+        const questionId = questionIds[index];
+        formData.append('audio_file', recording, `answer_${questionId}.webm`);
+      });
+
+      console.log('Sending data to server:', {
+        question_audio_map: questionAudioMap,
+        recordings: recordings.map((_, index) => `answer_${questionIds[index]}.webm`), // Log file names
       });
 
       const response = await fetch(`${this.BASE_URL}/mock-interview/${interviewId}/process`, {
