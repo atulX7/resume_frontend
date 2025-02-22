@@ -104,7 +104,7 @@ export default function SetupPage() {
         user_id: user.id,
         job_title: formData.job_title,
         job_description: formData.job_description,
-        resume_file: resumeFile || new File([], 'empty.pdf')
+        resume_file: resumeFile
       });
 
       if (response.success && response.data) {
