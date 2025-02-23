@@ -28,21 +28,21 @@ export const userMenuItems: MenuGroup[] = [
     ],
   },
   {
-    groupLabel: "Resume",
+    groupLabel: "Career Toolkit",
     menus: [
       {
-        href: "/dashboard/mock-interview",
-        label: "Mock Interview",
+        href: "/dashboard/mock-mate",
+        label: "Mock Mate",
         icon: FileText,
       },
       {
-        href: "/dashboard/tailor-resume",
-        label: "Tailor Resume",
+        href: "/dashboard/resume-perfect",
+        label: "Resume Perfect",
         icon: FileText,
       },
       {
-        href: "/dashboard/resume-ATS",
-        label: "Resume ATS",
+        href: "/dashboard/resume-eval",
+        label: "Resume Eval",
         icon: FileText,
       },
     ],

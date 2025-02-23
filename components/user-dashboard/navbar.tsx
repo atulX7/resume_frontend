@@ -17,7 +17,7 @@ export function Navbar() {
               {index > 0 && (
                 <ChevronRight className="h-4 w-4 text-muted-foreground mx-2" />
               )}
-              <span className={index === paths.length - 1 ? "font-semibold" : "text-muted-foreground capitalize"}>
+              <span className="text-muted-foreground capitalize">
                 {path}
               </span>
             </div>

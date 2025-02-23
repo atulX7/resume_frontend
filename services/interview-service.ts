@@ -244,21 +244,18 @@ export class InterviewService {
       const questionAudioMap: { [key: string]: string } = {};
       recordings.forEach((_, index) => {
         const questionId = questionIds[index];
-        questionAudioMap[questionId] = `answer_${questionId}.webm`;
+        questionAudioMap[questionId] = `answer_${questionId}.mp3`;
       });
 
       // Add question_audio_map as JSON string
       formData.append('question_audio_map', JSON.stringify(questionAudioMap));
       
-      // Add recordings as audio_file array
-      recordings.forEach((recording, index) => {
-        const questionId = questionIds[index];
-        formData.append('audio_file', recording, `answer_${questionId}.webm`);
-      });
+      const combinedBlob = new Blob(recordings, { type: 'audio/mpeg' });
+      formData.append('audio_files', combinedBlob, 'recordings.mp3');
 
       console.log('Sending data to server:', {
         question_audio_map: questionAudioMap,
-        recordings: recordings.map((_, index) => `answer_${questionIds[index]}.webm`), // Log file names
+        recordings: recordings.map((_, index) => `answer_${questionIds[index]}.mp3`), // Log file names
       });
 
       const response = await fetch(`${this.BASE_URL}/mock-interview/${interviewId}/process`, {

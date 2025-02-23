@@ -5,7 +5,7 @@ export default function ResumesPage() {
   return (
     <div className="flex p-6 justify-between items-center">
       <div className="max-w-xl">
-        <h1 className="text-4xl font-bold mb-4 text-[#0A2647]">Welcome to InterviewAI</h1>
+        <h1 className="text-4xl font-bold mb-4 text-[#0A2647]">Welcome to Mock Mate</h1>
         <p className="text-gray-700 mb-8 text-lg">
           Get more job offers by improving your interview skills, master the process, breakdown your
           interviews into manageable parts, and finally conquer your desired job.

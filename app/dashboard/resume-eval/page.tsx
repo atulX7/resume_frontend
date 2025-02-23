@@ -80,7 +80,7 @@ export default function ResumeATS() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Resume ATS Score Analyzer</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">EVAL My Resume</h1>
       
       <Card className="p-6 mb-8">
         <div className="flex flex-col items-center">

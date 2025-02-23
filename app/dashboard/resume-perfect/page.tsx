@@ -50,7 +50,7 @@ export default function TailorResumePage() {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Tailor Your Resume</h1>
+      <h1 className="text-2xl font-bold mb-6">Make Your Resume Perfect</h1>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
