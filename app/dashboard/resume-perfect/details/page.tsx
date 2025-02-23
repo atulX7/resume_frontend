@@ -93,7 +93,7 @@ function TailorResumeDetailsContent() {
             <Card className="p-6">
               <div className="text-center">
                 <Button variant="outline" asChild className="w-full">
-                  <Link href="/dashboard/tailor-resume">
+                  <Link href="/dashboard/resume-perfect">
                     <Home className="mr-2 h-4 w-4" />
                     Back to Tailor Resume
                   </Link>

@@ -39,7 +39,7 @@ export default function TailorResumePage() {
       if (response.success && response.data) {
         // Encode only the sections data
         const encodedData = btoa(JSON.stringify(response.data.sections));
-        router.push(`/dashboard/tailor-resume/details?data=${encodedData}`);
+        router.push(`/dashboard/resume-perfect/details?data=${encodedData}`);
       } else {
         console.error('Failed to tailor resume:', response.error);
       }

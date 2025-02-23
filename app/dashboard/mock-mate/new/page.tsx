@@ -56,7 +56,7 @@ export default function NewInterviewPage() {
       resume_file: base64Resume
     }));
 
-    router.push('/dashboard/mock-interview/setup');
+    router.push('/dashboard/mock-mate/setup');
   }
 
   return (
@@ -121,7 +121,7 @@ export default function NewInterviewPage() {
         <div className="flex justify-between mt-8">
           <Button
             variant="outline"
-            onClick={() => window.location.href = '/dashboard/mock-interview'}
+            onClick={() => window.location.href = '/dashboard/mock-mate'}
           >
             Back
           </Button>

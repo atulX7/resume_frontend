@@ -12,7 +12,7 @@ export default function ResumesPage() {
         </p>
         <button 
           type="button"
-          onClick={() => window.location.href = '/dashboard/mock-interview/new'} 
+          onClick={() => window.location.href = '/dashboard/mock-mate/new'} 
           className="bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/80 transition-colors"
         >
           Start New Interview

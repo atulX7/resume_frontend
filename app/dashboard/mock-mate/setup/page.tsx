@@ -174,7 +174,7 @@ export default function SetupPage() {
 
       if (response.success && response.data) {
         if (response.data.session_id) {
-          router.push(`/dashboard/mock-interview/session/${response.data.session_id}`);
+          router.push(`/dashboard/mock-mate/session/${response.data.session_id}`);
         } else {
           console.log('Session ID not found in response data:', response.data);
         }

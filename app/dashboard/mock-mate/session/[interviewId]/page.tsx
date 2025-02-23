@@ -185,7 +185,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
       localStorage.removeItem('current-interview-questions');
       
       // Force a page refresh before navigation
-      window.location.href = `/dashboard/mock-interview/analysis/${interviewId}`;
+      window.location.href = `/dashboard/mock-mate/analysis/${interviewId}`;
     } catch (error) {
       console.error('Error submitting interview:', error);
       alert('Failed to submit interview. Please try again.');

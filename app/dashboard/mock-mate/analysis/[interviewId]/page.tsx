@@ -84,7 +84,7 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
         <h2 className="text-2xl font-bold text-gray-700">No analysis data available</h2>
         <Button
           variant="outline"
-          onClick={() => router.push('/dashboard/mock-interview')}
+          onClick={() => router.push('/dashboard/mock-mate')}
           className="mt-4"
         >
           Return to Dashboard
@@ -103,7 +103,7 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
         </div>
         <Button
           variant="outline"
-          onClick={() => router.push('/dashboard/mock-interview')}
+          onClick={() => router.push('/dashboard/mock-mate')}
         >
           Start New Interview
         </Button>

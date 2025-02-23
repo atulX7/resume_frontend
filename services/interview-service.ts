@@ -118,7 +118,7 @@ export class InterviewService {
         };
       }
 
-      const response = await fetch(`${this.BASE_URL}/mock-interview/sessions/${interviewId}`);
+      const response = await fetch(`${this.BASE_URL}/mock-mate/sessions/${interviewId}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch analysis (Status: ${response.status})`);
       }
@@ -188,9 +188,9 @@ export class InterviewService {
         };
       }
 
-      console.log('Making API request to:', `${this.BASE_URL}/mock-interview/start`);
+      console.log('Making API request to:', `${this.BASE_URL}/mock-mate/start`);
       
-      const response = await fetch(`${this.BASE_URL}/mock-interview/start`, {
+      const response = await fetch(`${this.BASE_URL}/mock-mate/start`, {
         method: 'POST',
         body: formData,
       });
@@ -258,7 +258,7 @@ export class InterviewService {
         recordings: recordings.map((_, index) => `answer_${questionIds[index]}.mp3`), // Log file names
       });
 
-      const response = await fetch(`${this.BASE_URL}/mock-interview/${interviewId}/process`, {
+      const response = await fetch(`${this.BASE_URL}/mock-mate/${interviewId}/process`, {
         method: 'POST',
         body: formData,
       });

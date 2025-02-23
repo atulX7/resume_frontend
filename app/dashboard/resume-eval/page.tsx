@@ -52,7 +52,7 @@ export default function ResumeATS() {
       if (response.success && response.scores) {
         setScores({ scores: response.scores });
         toast.success("Analysis Complete");
-        window.location.href = `/dashboard/resume-ATS/details?scores=${encodeURIComponent(JSON.stringify(response.scores))}`;
+        window.location.href = `/dashboard/resume-eval/details?scores=${encodeURIComponent(JSON.stringify(response.scores))}`;
       } else {
         toast.error("Analysis Failed", {
           description: response.error || "Failed to analyze resume. Please try again.",

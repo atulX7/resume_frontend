@@ -141,7 +141,7 @@ function ResumeATSDetailsContent() {
                 </div>
                 <Separator className="my-4" />
                 <Button variant="outline" asChild className="w-full">
-                  <Link href="/dashboard/resume-ATS">
+                  <Link href="/dashboard/resume-eval">
                     <Home className="mr-2 h-4 w-4" />
                     Back to Upload
                   </Link>
