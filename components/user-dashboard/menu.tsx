@@ -84,27 +84,25 @@ export function Menu({ isOpen }: MenuProps) {
             <TooltipProvider>
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
-                  <Link href="/dashboard/profile" className="w-full">
-                    <div className={cn(
-                      "w-full p-4 border rounded-lg hover:bg-accent transition-colors",
-                      isOpen === false ? "p-2" : "p-4"
-                    )}>
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarImage src={user?.image || ''} />
-                          <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className={cn("flex-1 overflow-hidden transition-all duration-200", 
-                          isOpen === false ? "w-0 opacity-0" : "w-auto opacity-100"
-                        )}>
-                          <p className="text-sm font-medium truncate">{user?.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {user?.email}
-                          </p>
-                        </div>
+                  <div className={cn(
+                    "w-full p-4 border rounded-lg hover:bg-accent transition-colors cursor-pointer",
+                    isOpen === false ? "p-2" : "p-4"
+                  )}>
+                    <div className="flex items-center gap-3">
+                      <Avatar>
+                        <AvatarImage src={user?.image || ''} />
+                        <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className={cn("flex-1 overflow-hidden transition-all duration-200", 
+                        isOpen === false ? "w-0 opacity-0" : "w-auto opacity-100"
+                      )}>
+                        <p className="text-sm font-medium truncate">{user?.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {user?.email}
+                        </p>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 </TooltipTrigger>
                 {isOpen === false && (
                   <TooltipContent side="right">

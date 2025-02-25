@@ -117,7 +117,7 @@ export function Navbar({ title }: NavbarProps) {
             <Button
               variant="default"
               onClick={() => {
-                const dashboardPath = session.user.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard';
+                const dashboardPath = session.user.role === 'ADMIN' ? '/admin/dashboard/mock-mate' : '/dashboard/mock-mate';
                 window.location.href = dashboardPath;
               }}
             >

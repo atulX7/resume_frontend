@@ -1,7 +1,6 @@
 import { 
-  Home,
   FileText,
-  Settings,
+  User,
   type LucideIcon 
 } from "lucide-react";
 
@@ -18,15 +17,6 @@ interface MenuGroup {
 }
 
 export const userMenuItems: MenuGroup[] = [
-  {
-    menus: [
-      {
-        href: "/dashboard",
-        label: "Overview",
-        icon: Home,
-      },
-    ],
-  },
   {
     groupLabel: "Career Toolkit",
     menus: [
@@ -51,9 +41,9 @@ export const userMenuItems: MenuGroup[] = [
     groupLabel: "Account",
     menus: [
       {
-        href: "/dashboard/settings",
-        label: "Settings",
-        icon: Settings,
+        href: "/dashboard/profile", 
+        label: "Profile",
+        icon: User,
       },
     ],
   },

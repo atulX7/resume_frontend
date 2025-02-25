@@ -1,9 +1,9 @@
 import { 
   LayoutDashboard, 
   Users, 
-  Settings,
   FileText,
-  MessageSquare
+  MessageSquare,
+  User
 } from "lucide-react"
 import { LucideIcon } from "lucide-react"
 
@@ -25,7 +25,7 @@ export const menuItems: MenuItem[] = [
     menus: [
       {
         label: "Dashboard",
-        href: "/admin/dashboard",
+        href: "/admin/dashboard/mock-mate",
         icon: LayoutDashboard
       },
       {
@@ -49,9 +49,9 @@ export const menuItems: MenuItem[] = [
         icon: MessageSquare
       },
       {
-        label: "Settings",
-        href: "/admin/settings",
-        icon: Settings
+        label: "Profile",
+        href: "/admin/profile",
+        icon: User  
       }
     ]
   }
