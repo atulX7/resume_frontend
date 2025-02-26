@@ -3,7 +3,7 @@ name: Deploy Next.js to EC2
 on:
   push:
     branches:
-      - feature-atul  # or your deployment branch
+      - feature-atul  # Change this if you use a different deployment branch
 
 jobs:
   deploy:
@@ -36,26 +36,27 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            # Ensure Git is installed using yum (if not already installed)
+            # Ensure Git is installed using yum
             if ! command -v git &> /dev/null; then
               echo "Git not found. Installing Git..."
               sudo yum install -y git
             fi
 
-            # Navigate to the deployment directory. Clone the repo if the directory doesn't exist.
-            if [ ! -d /var/www/resume_hosting ]; then
-              echo "Directory not found. Cloning repository..."
-              git clone https://github.com/atulX7/resume_frontend.git /var/www/resume_hosting
-              cd /var/www/resume_hosting
+            # Check if the repository is cloned in /var/www/resume_frontend, else clone it.
+            if [ ! -d /var/www/resume_frontend ] || [ ! -d /var/www/resume_frontend/.git ]; then
+              echo "Directory is missing or not a valid git repository. Cloning repository..."
+              sudo rm -rf /var/www/resume_frontend
+              git clone https://github.com/atulX7/resume_frontend.git /var/www/resume_frontend
+              cd /var/www/resume_frontend
             else
-              cd /var/www/resume_hosting
+              cd /var/www/resume_frontend
               echo "Pulling latest changes..."
               git pull origin main
             fi
 
             # Ensure package.json exists before installing dependencies
             if [ ! -f package.json ]; then
-              echo "Error: package.json not found in /var/www/resume_hosting"
+              echo "Error: package.json not found in /var/www/resume_frontend"
               exit 1
             fi
 
@@ -76,5 +77,5 @@ jobs:
               sudo npm install -g pm2
             fi
 
-            # Restart the application with pm2, or start it if it's not already running
+            # Restart the application with pm2, or start it if not running
             pm2 restart app || pm2 start npm --name "app" -- start
