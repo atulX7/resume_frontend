@@ -16,13 +16,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.18.0'  # Updated Node.js version to meet Next.js requirements
+          node-version: '18.18.0'  # Use a supported Node.js version
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Install Dependencies & Build Locally
+        run: |
+          npm ci
+          npm run build
 
-      - name: Build Application
-        run: npm run build
+      # Optionally prepare the key file to help with formatting (if needed)
+      - name: Prepare SSH Key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > ./id_rsa
+          chmod 600 ./id_rsa
 
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
@@ -32,8 +37,45 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            cd /var/www/resume_hosting # adjust to your deployment path
-            git pull origin main            # update code; ensure repo is already cloned
-            npm ci
+            # Ensure Git is installed
+            if ! command -v git &> /dev/null; then
+              echo "Git not found. Installing Git..."
+              sudo apt-get update && sudo apt-get install -y git
+            fi
+
+            # Navigate to the deployment directory or clone if it doesn't exist
+            if [ ! -d /var/www/resume_hosting ]; then
+              echo "Directory not found. Cloning repository..."
+              git clone https://github.com/your-username/your-repo.git /var/www/resume_hosting
+              cd /var/www/resume_hosting
+            else
+              cd /var/www/resume_hosting
+              echo "Pulling latest changes..."
+              git pull origin main
+            fi
+
+            # Ensure package.json exists before installing dependencies
+            if [ ! -f package.json ]; then
+              echo "Error: package.json not found in /var/www/resume_hosting"
+              exit 1
+            fi
+
+            # Use npm install if package-lock.json is missing
+            if [ ! -f package-lock.json ]; then
+              echo "No package-lock.json found. Running npm install..."
+              npm install
+            else
+              npm ci
+            fi
+
+            # Build the application
             npm run build
-            pm2 restart app || npm start    # use pm2 if installed, else simply start the app
+
+            # Install pm2 globally if it is not installed
+            if ! command -v pm2 &> /dev/null; then
+              echo "pm2 not found. Installing pm2 globally..."
+              sudo npm install -g pm2
+            fi
+
+            # Restart the application with pm2 or start it if not running
+            pm2 restart app || pm2 start npm --name "app" -- start
