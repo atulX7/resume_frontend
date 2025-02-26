@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # set to your desired version
+          node-version: '18.18.0'  # Updated Node.js version to meet Next.js requirements
 
       - name: Install Dependencies
         run: npm ci
@@ -32,7 +32,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            cd /var/www/your-app-directory  # adjust to your deployment path
+            cd /var/www/resume_hosting # adjust to your deployment path
             git pull origin main            # update code; ensure repo is already cloned
             npm ci
             npm run build
