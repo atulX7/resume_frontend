@@ -16,14 +16,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.18.0'  # Use a supported Node.js version
+          node-version: '18.18.0'  # Using a Node.js version compatible with Next.js
 
       - name: Install Dependencies & Build Locally
         run: |
           npm ci
           npm run build
 
-      # Optionally prepare the key file to help with formatting (if needed)
       - name: Prepare SSH Key
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > ./id_rsa
@@ -37,16 +36,16 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            # Ensure Git is installed
+            # Ensure Git is installed using yum (if not already installed)
             if ! command -v git &> /dev/null; then
               echo "Git not found. Installing Git..."
-              sudo apt-get update && sudo apt-get install -y git
+              sudo yum install -y git
             fi
 
-            # Navigate to the deployment directory or clone if it doesn't exist
+            # Navigate to the deployment directory. Clone the repo if the directory doesn't exist.
             if [ ! -d /var/www/resume_hosting ]; then
               echo "Directory not found. Cloning repository..."
-              git clone https://github.com/your-username/your-repo.git /var/www/resume_hosting
+              git clone https://github.com/atulX7/resume_frontend.git /var/www/resume_hosting
               cd /var/www/resume_hosting
             else
               cd /var/www/resume_hosting
@@ -60,7 +59,7 @@ jobs:
               exit 1
             fi
 
-            # Use npm install if package-lock.json is missing
+            # Use npm install if package-lock.json is missing, otherwise use npm ci
             if [ ! -f package-lock.json ]; then
               echo "No package-lock.json found. Running npm install..."
               npm install
@@ -77,5 +76,5 @@ jobs:
               sudo npm install -g pm2
             fi
 
-            # Restart the application with pm2 or start it if not running
+            # Restart the application with pm2, or start it if it's not already running
             pm2 restart app || pm2 start npm --name "app" -- start
