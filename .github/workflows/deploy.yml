@@ -3,7 +3,7 @@ name: Deploy Next.js to EC2
 on:
   push:
     branches:
-      - feature-atul  # Change this if you use a different deployment branch
+      - feature-atul  # Deployment branch is feature-atul
 
 jobs:
   deploy:
@@ -46,7 +46,7 @@ jobs:
             if [ ! -d /var/www/resume_frontend ] || [ ! -d /var/www/resume_frontend/.git ]; then
               echo "Directory is missing or not a valid git repository. Cloning repository..."
               sudo rm -rf /var/www/resume_frontend
-              sudo git clone https://github.com/atulX7/resume_frontend.git /var/www/resume_frontend
+              sudo git clone -b feature-atul https://github.com/atulX7/resume_frontend.git /var/www/resume_frontend
               # Change ownership so the current user can work with the repository
               sudo chown -R $(whoami):$(whoami) /var/www/resume_frontend
               cd /var/www/resume_frontend
