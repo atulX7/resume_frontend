@@ -246,12 +246,16 @@ export class InterviewService {
         const questionId = questionIds[index];
         questionAudioMap[questionId] = `answer_${questionId}.mp3`;
       });
+      console.log('questionAudioMap', questionAudioMap);
 
       // Add question_audio_map as JSON string
       formData.append('question_audio_map', JSON.stringify(questionAudioMap));
+
       
       const combinedBlob = new Blob(recordings, { type: 'audio/mpeg' });
+      console.log('combinedBlob', combinedBlob);
       formData.append('audio_files', combinedBlob, 'recordings.mp3');
+
 
       console.log('Sending data to server:', {
         question_audio_map: questionAudioMap,
