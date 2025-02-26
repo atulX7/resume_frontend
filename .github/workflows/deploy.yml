@@ -46,12 +46,14 @@ jobs:
             if [ ! -d /var/www/resume_frontend ] || [ ! -d /var/www/resume_frontend/.git ]; then
               echo "Directory is missing or not a valid git repository. Cloning repository..."
               sudo rm -rf /var/www/resume_frontend
-              git clone https://github.com/atulX7/resume_frontend.git /var/www/resume_frontend
+              sudo git clone https://github.com/atulX7/resume_frontend.git /var/www/resume_frontend
+              # Change ownership so the current user can work with the repository
+              sudo chown -R $(whoami):$(whoami) /var/www/resume_frontend
               cd /var/www/resume_frontend
             else
               cd /var/www/resume_frontend
               echo "Pulling latest changes..."
-              git pull origin main
+              git pull origin feature-atul
             fi
 
             # Ensure package.json exists before installing dependencies
