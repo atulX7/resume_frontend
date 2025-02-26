@@ -99,7 +99,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
         currentVideoRef.srcObject = null;
       }
     };
-  }, []); // Remove stream from dependencies to prevent re-renders
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
