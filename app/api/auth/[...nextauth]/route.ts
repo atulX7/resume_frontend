@@ -1,12 +1,7 @@
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
 
 const handler = NextAuth({
-  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -20,18 +15,40 @@ const handler = NextAuth({
     strategy: 'jwt'
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      if (account) {
+        token.id_token = account.id_token
+      }
       if (user) {
         token.role = user.role || 'USER'
       }
       return token
     },
     async session({ session, token }) {
+      console.log("token.id_token", token.id_token)
       if (session?.user) {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/google-login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token.id_token}`
+            },
+            body: JSON.stringify({
+              id_token: token.id_token,
+            })
+          });
+          const data = await response.json();
+          console.log("data", data)
+          // Handle response if needed
+        } catch (error) {
+          console.error('Session callback POST error:', error);
+        }
+
         session.user = {
           ...session.user,
           id: token.sub as string,
-          role: token.role as string
+          role: token.role as string,
         }
       }
       return session
