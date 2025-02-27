@@ -110,6 +110,10 @@ export class ResumeTailorService {
 
       const response = await fetch(`${this.BASE_URL}/ai-resume/tailor`, {
         method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ya29.a0AeXRPp4DZqlA1BznTwIe1jP0xb567u-tHwTN6TUfW1NS53hy5dIFqJ8Rmq8o-BnPdlHo-9OYacD95xv6syP2xsdhiUOz_T305sP8Kk1CMln0kE6wQwuajwuNua0BbmmJ2Tvezn-WI7uAEQdoI2Lk_a5eqYFmt8ywGnI8fp9RaCgYKAfISARESFQHGX2MiGEHEN9_KE7O4HlZKV7ma4Q0175`,  // ✅ Send accessToken
+        },
         body: formData,
       });
 

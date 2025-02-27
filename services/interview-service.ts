@@ -155,7 +155,6 @@ export class InterviewService {
       });
 
       const formData = new FormData();
-      formData.append('user_id', data.user_id);
       formData.append('job_title', data.job_title);
       formData.append('job_description', data.job_description);
       
