@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google"
 
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 // ✅ Function to Refresh Access Token
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function refreshAccessToken(token: any) {
   try {
     const response = await fetch(GOOGLE_TOKEN_URL, {

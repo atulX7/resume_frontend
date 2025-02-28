@@ -1,3 +1,5 @@
+import { getSession } from "next-auth/react";
+
 interface TailorResumeData {
   jobTitle: string;
   jobDescription: string;
@@ -37,69 +39,12 @@ interface TailorResumeResponse {
 
 export class ResumeTailorService {
   private static BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-  private static USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
   static async tailorResume(data: TailorResumeData): Promise<TailorResumeResponse> {
     try {
-      if (this.USE_MOCK) {
-        return {
-          success: true,
-          data: {
-            sections: {
-              summary: {
-                current_text: "",
-                suggested_text: "Director-Level Data Scientist with extensive experience in developing data products and machine learning models, specializing in Risk, Fraud, and portfolio management. Proven track record of delivering business value through innovative solutions and stakeholder management.",
-                highlight_color: "yellow"
-              },
-              experience: [
-                {
-                  position: "Cloud Engineer",
-                  company: "Company XX",
-                  improvements: [
-                    {
-                      current_text: "Replaced the existing infrastructure with IaC using Cloud Deployment Manager and Terraform.",
-                      suggested_text: "Led the architecture transformation by implementing Infrastructure-as-Code (IaC) with Cloud Deployment Manager and Terraform, enhancing deployment efficiency by 40%.",
-                      highlight_color: "green"
-                    },
-                    {
-                      current_text: "Build and maintain software documentation sites using various programming languages involving Python, Java and Go",
-                      suggested_text: "Developed and maintained comprehensive software documentation utilizing Python, Java, and Go, streamlining knowledge sharing and collaboration across teams.",
-                      highlight_color: "green"
-                    }
-                  ]
-                },
-                {
-                  position: "Support Engineer",
-                  company: "Company XY",
-                  improvements: [
-                    {
-                      current_text: "Built and maintained cloud deployments for over 75 clients.",
-                      suggested_text: "Spearheaded the deployment and management of cloud infrastructures for over 75 clients, leveraging Google Cloud services to boost operational efficiency.",
-                      highlight_color: "green"
-                    },
-                    {
-                      current_text: "Developed an in-house monitoring and alerting agent for the entire infrastructure deployed on Cloud. Leading to $100k reduction in the infrastructure spend.",
-                      suggested_text: "Architected an in-house monitoring and alerting solution that reduced infrastructure costs by $100k through enhanced resource utilization and proactive issue resolution.",
-                      highlight_color: "green"
-                    }
-                  ]
-                }
-              ],
-              new_sections: [
-                {
-                  title: "Professional Summary",
-                  content: "Experienced Cloud and Data Professional with expertise in building scalable data solutions and cloud architectures. Strong leadership skills in managing cross-functional teams to deliver high-impact projects.",
-                  highlight_color: "blue"
-                },
-                {
-                  title: "Certifications",
-                  content: "AWS Certified Solutions Architect - Associate (2022-2025)",
-                  highlight_color: "blue"
-                }
-              ]
-            }
-          }
-        };
+      const session = await getSession();
+      if (!session?.accessToken) {
+        throw new Error('No active session');
       }
 
       const formData = new FormData();
@@ -111,8 +56,7 @@ export class ResumeTailorService {
       const response = await fetch(`${this.BASE_URL}/ai-resume/tailor`, {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ya29.a0AeXRPp4DZqlA1BznTwIe1jP0xb567u-tHwTN6TUfW1NS53hy5dIFqJ8Rmq8o-BnPdlHo-9OYacD95xv6syP2xsdhiUOz_T305sP8Kk1CMln0kE6wQwuajwuNua0BbmmJ2Tvezn-WI7uAEQdoI2Lk_a5eqYFmt8ywGnI8fp9RaCgYKAfISARESFQHGX2MiGEHEN9_KE7O4HlZKV7ma4Q0175`,  // ✅ Send accessToken
+          "Authorization": `Bearer ${session.accessToken}`,
         },
         body: formData,
       });
