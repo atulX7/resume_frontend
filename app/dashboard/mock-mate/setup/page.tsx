@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
@@ -28,7 +29,7 @@ export default function SetupPage() {
                 stream.getTracks().forEach(track => track.stop());
             }
 
-            // Request both video and audio permissions
+            // Request both video and audio permissions with improved audio settings
             const mediaStream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     width: { ideal: 1280 },
@@ -36,9 +37,9 @@ export default function SetupPage() {
                     facingMode: "user"
                 },
                 audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    autoGainControl: true
+                    echoCancellation: { ideal: true }, // Enable echo cancellation
+                    noiseSuppression: { ideal: true }, // Enable noise suppression
+                    autoGainControl: { ideal: true } // Enable automatic gain control
                 }
             });
             

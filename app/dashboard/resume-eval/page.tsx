@@ -47,7 +47,7 @@ export default function ResumeATS() {
         throw new Error('API URL is not configured');
       }
 
-      const response = await ResumeService.getResumeScore(file, user.id);
+      const response = await ResumeService.getResumeScore(file);
       
       if (response.success && response.scores) {
         setScores({ scores: response.scores });

@@ -97,7 +97,6 @@ export class InterviewService {
     }
 
     try {
-      // Validate required fields
       if (!data.job_title?.trim()) {
         return { success: false, error: 'Job title is required' };
       }
@@ -108,14 +107,6 @@ export class InterviewService {
         return { success: false, error: 'User ID is required' };
       }
 
-      // Log the incoming data (remove in production)
-      console.log('Creating interview with data:', {
-        user_id: data.user_id,
-        job_title: data.job_title,
-        job_description: data.job_description,
-        has_resume: !!data.resume_file
-      });
-
       const formData = new FormData();
       formData.append('job_title', data.job_title);
       formData.append('job_description', data.job_description);
@@ -124,8 +115,6 @@ export class InterviewService {
         formData.append('resume_file', data.resume_file);
       }
 
-      console.log('Making API request to:', `${this.BASE_URL}/mock-interview/start`);
-      
       const response = await fetch(`${this.BASE_URL}/mock-interview/start`, {
         method: 'POST',
         body: formData,
@@ -135,7 +124,6 @@ export class InterviewService {
       });
 
       const result = await response.json();
-      console.log('API Response:', result);
       
       if (!response.ok) {
         const errorMessage = result.message || result.error || `Failed to create interview (Status: ${response.status})`;
@@ -147,7 +135,6 @@ export class InterviewService {
         return { success: false, error: 'Invalid response format from server' };
       }
 
-      // Save questions to localStorage
       localStorage.setItem('current-interview-questions', JSON.stringify(result.questions));
       return { success: true, data: result };
     } catch (error) {
@@ -176,32 +163,18 @@ export class InterviewService {
       const formData = new FormData();
       
       const questionAudioMap: { [key: string]: string } = {};
-      const audioBlobs: Blob[] = [];
-
+      
+      const audioFiles: Blob[] = [];
       recordings.forEach((recording, index) => {
         const questionId = questionIds[index];
-        const audioFileName = `answer_${questionId}.mp3`;
+        const audioFileName = `recording_${questionId}.mp3`;
         questionAudioMap[questionId] = audioFileName;
-        audioBlobs.push(recording);
+        audioFiles.push(new File([recording], audioFileName));
       });
 
-      // Log the question audio map
-      console.log('questionAudioMap', questionAudioMap);
-
-      // Add question_audio_map as JSON string
+      formData.append('audio_files', new Blob(audioFiles)); 
+      console.log('audio_files', audioFiles);
       formData.append('question_audio_map', JSON.stringify(questionAudioMap));
-
-      // Combine all audio blobs into one Blob
-      const combinedBlob = new Blob(audioBlobs, { type: 'audio/mpeg' });
-      console.log('combinedBlob', combinedBlob);
-
-      // Append the combined audio blob to the form data
-      formData.append('audio_files', combinedBlob, 'combined_recordings.mp3');
-
-      console.log('Sending data to server:', {
-        question_audio_map: questionAudioMap,
-        recordings: recordings.map((_, index) => `answer_${questionIds[index]}.mp3`), // Log file names
-      });
 
       const response = await fetch(`${this.BASE_URL}/mock-interview/${interviewId}/process`, {
         method: 'POST',

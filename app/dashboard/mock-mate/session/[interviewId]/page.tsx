@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
@@ -167,9 +168,11 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
 
   const submitInterview = async () => {
     try {
+      // Collect the recordings and question IDs from the answers state
       const recordings = answers.map(a => a.recording);
       const questionIds = answers.map(a => a.questionId);
 
+      // Call the processInterview method with the actual audio blobs
       const response = await InterviewService.processInterview(
         interviewId,
         recordings,
@@ -312,6 +315,20 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
               </p>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Display recorded answers */}
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold">Your Recordings</h2>
+          {answers.map((answer, index) => (
+            <div key={index} className="mt-4">
+              <h3 className="font-medium">Question {answer.questionId}</h3>
+              <audio controls className="w-full">
+                <source src={URL.createObjectURL(answer.recording)} type="video/webm" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          ))}
         </div>
       </div>
     </div>
