@@ -164,16 +164,20 @@ export class InterviewService {
       
       const questionAudioMap: { [key: string]: string } = {};
       
-      const audioFiles: Blob[] = [];
+      const audioFiles: File[] = [];
       recordings.forEach((recording, index) => {
         const questionId = questionIds[index];
         const audioFileName = `recording_${questionId}.mp3`;
         questionAudioMap[questionId] = audioFileName;
-        audioFiles.push(new File([recording], audioFileName));
+        const audioFile = new File([recording], audioFileName, { type: "audio/mpeg" }); // ✅ Ensure correct type
+        audioFiles.push(audioFile);
       });
 
-      formData.append('audio_files', new Blob(audioFiles)); 
-      console.log('audio_files', audioFiles);
+      // ✅ Append files individually
+      audioFiles.forEach((file) => {
+       formData.append('audio_files', file);
+      });
+      
       formData.append('question_audio_map', JSON.stringify(questionAudioMap));
 
       const response = await fetch(`${this.BASE_URL}/mock-interview/${interviewId}/process`, {
