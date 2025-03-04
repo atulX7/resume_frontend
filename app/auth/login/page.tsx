@@ -14,7 +14,7 @@ export default function Login() {
       if (session.user.role === 'ADMIN') {
         router.push('/admin/dashboard')
       } else {
-        router.push('/dashboard')
+        router.push('/dashboard/mock-mate')
       }
     }
   }, [session, router])

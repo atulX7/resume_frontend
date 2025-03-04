@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useUser } from '@/lib/user';
 import { ResumeService } from '@/services/resume-service';
-import { toast } from "sonner";
+import { toast } from 'sonner';
+import { Upload, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface ATSScore {
   scores: {
@@ -20,93 +23,79 @@ export default function ResumeATS() {
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const resumeFile = e.target.files[0];
-      setFile(resumeFile);
+      setFile(e.target.files[0]);
     }
   };
 
   const handleSubmit = async () => {
     if (!user) {
-      toast.error("Authentication Required", {
-        description: "Please login to analyze your resume.",
+      toast.error('Authentication Required', {
+        description: 'Please login to analyze your resume.',
       });
       return;
     }
 
     if (!file) {
-      toast.error("File Required", {
-        description: "Please select a resume file first.",
+      toast.error('File Required', {
+        description: 'Please select a resume file first.',
       });
       return;
     }
 
     setLoading(true);
-    
     try {
-      if (!process.env.NEXT_PUBLIC_API_URL) {
-        throw new Error('API URL is not configured');
-      }
-
       const response = await ResumeService.getResumeScore(file);
-      
       if (response.success && response.scores) {
         setScores({ scores: response.scores });
-        toast.success("Analysis Complete");
-        window.location.href = `/dashboard/resume-eval/details?scores=${encodeURIComponent(JSON.stringify(response.scores))}`;
+        toast.success('Analysis Complete');
+        window.location.href = `/dashboard/resume-eval/details?scores=${encodeURIComponent(
+          JSON.stringify(response.scores)
+        )}`;
       } else {
-        toast.error("Analysis Failed", {
-          description: response.error || "Failed to analyze resume. Please try again.",
+        toast.error('Analysis Failed', {
+          description: response.error || 'Failed to analyze resume. Please try again.',
         });
       }
     } catch (error) {
-      console.error('Resume analysis error:', error);
-      
-      const errorMessage = error instanceof Error 
-        ? error.message.includes('CONNECTION_REFUSED')
-          ? "Cannot connect to the analysis server. Please ensure the server is running and try again."
-          : error.message.includes('API URL is not configured')
-            ? "Application configuration error. Please contact support."
-            : error.message
-        : "An unexpected error occurred. Please try again.";
-        
-      toast.error("Error", {
-        description: errorMessage
+      console.error('Error', error);
+      toast.error('Error', {
+        description: 'An unexpected error occurred. Please try again.',
       });
     } finally {
       setLoading(false);
     }
   };
 
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">EVAL My Resume</h1>
-      
-      <Card className="p-6 mb-8">
-        <div className="flex flex-col items-center">
-          <label className="w-64 flex flex-col items-center px-4 py-6 bg-white rounded-lg shadow-lg tracking-wide uppercase border border-blue-500 cursor-pointer hover:bg-blue-500 hover:text-white transition-colors duration-200">
-            <svg className="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-            </svg>
-            <span className="mt-2 text-sm">Select your resume</span>
-            <input type='file' className="hidden" onChange={handleFileUpload} accept=".pdf,.doc,.docx" />
-          </label>
-          {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
-          
-          <button
-            onClick={handleSubmit}
-            disabled={!file || loading}
-            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
-          >
-            {loading ? 'Analyzing...' : 'Analyze Resume'}
-          </button>
-        </div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-teal-50 px-6">
+      <h1 className="text-4xl font-bold text-teal-600 mb-6">EVAL My Resume</h1>
+      <Card className="p-8 shadow-xl rounded-2xl bg-white max-w-lg w-full flex flex-col items-center">
+        <Image
+          src="/images/resume-analysis.svg"
+          alt="Resume Analysis"
+          width={300}
+          height={200}
+          className="mb-4"
+        />
+        <label className="w-64 flex flex-col items-center px-6 py-4 border-2 border-dashed border-teal-500 rounded-lg cursor-pointer hover:bg-teal-100 transition">
+          <Upload className="h-8 w-8 text-teal-500" />
+          <span className="mt-2 text-teal-600 text-sm">Select your resume</span>
+          <input type='file' className="hidden" onChange={handleFileUpload} accept=".pdf,.doc,.docx" />
+        </label>
+        {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
+        <Button
+          onClick={handleSubmit}
+          disabled={!file || loading}
+          className="mt-4 bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-lg transition disabled:bg-gray-400"
+        >
+          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Analyze Resume'}
+        </Button>
       </Card>
 
       {loading && (
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4">Analyzing your resume...</p>
+        <div className="text-center mt-6">
+          <Loader2 className="animate-spin h-12 w-12 text-teal-500 mx-auto" />
+          <p className="mt-4 text-gray-600">Analyzing your resume...</p>
         </div>
       )}
     </div>
