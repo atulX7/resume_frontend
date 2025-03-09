@@ -60,80 +60,96 @@ export default function NewInterviewPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-[#0A2647] mb-2">Choose a Job</h1>
-      <p className="text-gray-600 mb-8">Choose the job position you wish to get interview-ready for!</p>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="jobTitle" className="block text-[#0A2647] font-semibold mb-2">
-              Job title
-            </label>
-            <input
-              type="text"
-              id="jobTitle"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              placeholder="Product Designer"
-              value={formData.job_title}
-              onChange={(e) => setFormData(prev => ({...prev, job_title: e.target.value}))}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="resume" className="block text-[#0A2647] font-semibold mb-2">
-              Resume
-            </label>
-            <label 
-              className={`w-full p-3 border border-gray-300 rounded-md text-gray-500 
-                flex items-center justify-center gap-2 cursor-pointer
-                ${resumeFile ? 'bg-green-50' : ''}`}
-            >
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="p-8">
+          <h1 className="text-3xl font-bold text-[#0A2647] mb-3">Prepare Your Interview</h1>
+          <p className="text-gray-600 mb-8 text-lg">Fill in the details below to start your mock interview session</p>
+          
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Job Title Section */}
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <label htmlFor="jobTitle" className="block text-[#0A2647] text-lg font-semibold mb-3">
+                What position are you applying for?
+              </label>
               <input
-                type="file"
-                id="resume"
-                className="hidden"
-                accept=".pdf,.doc,.docx"
-                onChange={handleFileChange}
+                type="text"
+                id="jobTitle"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                placeholder="e.g., Senior Product Designer"
+                value={formData.job_title}
+                onChange={(e) => setFormData(prev => ({...prev, job_title: e.target.value}))}
               />
-              <span>+</span>
-              {resumeFile ? resumeFile.name : 'Add Resume'}
-            </label>
-          </div>
-        </div>
+            </div>
 
-        <div>
-          <label htmlFor="description" className="block text-[#0A2647] font-semibold mb-2">
-            Job Description
-          </label>
-          <textarea
-            id="description"
-            rows={4}
-            className="w-full p-3 border border-gray-300 rounded-md"
-            placeholder="As a Product Designer, you will play a pivotal role in crafting intuitive and visually captivating digital products..."
-            value={formData.job_description}
-            onChange={(e) => setFormData(prev => ({...prev, job_description: e.target.value}))}
-          />
-        </div>
+            {/* Resume Upload Section */}
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <label htmlFor="resume" className="block text-[#0A2647] text-lg font-semibold mb-3">
+                Upload your resume
+              </label>
+              <label 
+                className={`w-full p-6 border-2 border-dashed border-gray-300 rounded-lg
+                  flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-blue-500
+                  transition-all duration-200 ${resumeFile ? 'bg-blue-50 border-blue-500' : ''}`}
+              >
+                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <input
+                  type="file"
+                  id="resume"
+                  className="hidden"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileChange}
+                />
+                <div className="text-center">
+                  <span className="text-blue-600 font-medium">Click to upload</span>
+                  <span className="text-gray-500"> or drag and drop</span>
+                  <p className="text-sm text-gray-500 mt-1">PDF, DOC, or DOCX (max 5MB)</p>
+                </div>
+                {resumeFile && (
+                  <div className="mt-2 text-sm text-blue-600 font-medium">{resumeFile.name}</div>
+                )}
+              </label>
+            </div>
 
-        <div className="flex justify-between mt-8">
-          <Button
-            variant="outline"
-            onClick={() => window.location.href = '/dashboard/mock-mate'}
-          >
-            Back
-          </Button>
-          <Button
-            type="submit"
-            variant="default"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Submitting...' : 'Next'}
-          </Button>
+            {/* Job Description Section */}
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <label htmlFor="description" className="block text-[#0A2647] text-lg font-semibold mb-3">
+                Paste the job description
+              </label>
+              <textarea
+                id="description"
+                rows={6}
+                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                placeholder="Copy and paste the job description here..."
+                value={formData.job_description}
+                onChange={(e) => setFormData(prev => ({...prev, job_description: e.target.value}))}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-between items-center pt-6">
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = '/dashboard/mock-mate'}
+                className="px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                ← Back
+              </Button>
+              <Button
+                type="submit"
+                variant="default"
+                disabled={isSubmitting}
+                className="px-8 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors"
+              >
+                {isSubmitting ? 'Processing...' : 'Continue →'}
+              </Button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   )
-} 
+}

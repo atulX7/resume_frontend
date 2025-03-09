@@ -94,70 +94,110 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-[#0A2647]">Interview Analysis</h1>
-          <p className="text-gray-600">Job Title: {analysis.job_title}</p>
-          <p className="text-gray-600">Date: {new Date(analysis.created_at).toLocaleDateString()}</p>
-        </div>
-        <Button
-          variant="outline"
-          onClick={() => router.push('/dashboard/mock-mate')}
-        >
-          Start New Interview
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Overall Score</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold text-[#2E8B57]">
-              {analysis.overall_score * 20}%
+    <div className="h-[calc(100vh-4rem)] bg-gradient-to-b from-gray-50 to-white overflow-auto">
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
+        {/* Header Section */}
+        <div className="bg-white rounded-xl shadow-sm p-6 flex justify-between items-start">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#0A2647] to-[#144272] bg-clip-text text-transparent">
+              Interview Analysis
+            </h1>
+            <div className="flex gap-4 text-gray-600">
+              <p className="flex items-center gap-2">
+                <span className="text-sm font-medium">Job Title:</span>
+                <span className="bg-blue-50 px-3 py-1 rounded-full text-sm">
+                  {analysis.job_title}
+                </span>
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="text-sm font-medium">Date:</span>
+                <span className="bg-blue-50 px-3 py-1 rounded-full text-sm">
+                  {new Date(analysis.created_at).toLocaleDateString()}
+                </span>
+              </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => router.push('/dashboard/mock-mate')}
+            className="hover:bg-blue-50 hover:text-blue-600 transition-colors"
+          >
+            Start New Interview
+          </Button>
+        </div>
 
-        {Object.entries(analysis.skill_assessment).map(([skill, score]) => (
-          <Card key={skill} className="col-span-1">
+        {/* Scores Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card className="col-span-1 bg-gradient-to-br from-[#0A2647] to-[#144272] text-white">
             <CardHeader>
-              <CardTitle className="text-sm capitalize">{skill.replace('_', ' ')}</CardTitle>
+              <CardTitle className="text-gray-100">Overall Score</CardTitle>
             </CardHeader>
             <CardContent>
-              <Progress value={(score as number) * 20} className="h-2" />
-              <span className="text-sm text-gray-600 mt-2">{(score as number) * 20}%</span>
+              <div className="text-5xl font-bold">
+                {analysis.overall_score * 20}%
+              </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        <Card>
-          <CardHeader>
+          {Object.entries(analysis.skill_assessment).map(([skill, score]) => (
+            <Card key={skill} className="col-span-1 hover:shadow-md transition-shadow">
+              <CardHeader>
+                <CardTitle className="text-sm capitalize">{skill.replace(/_/g, ' ')}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-2xl font-semibold text-[#2E8B57]">
+                  {(score as number) * 20}%
+                </div>
+                <Progress 
+                  value={(score as number) * 20} 
+                  className="h-2 bg-gray-100"
+                />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Question Analysis */}
+        <Card className="shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="border-b bg-gray-50">
             <CardTitle>Question Analysis</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="divide-y">
             {analysis.evaluation_results.map((result, index) => (
-              <div key={index} className="border-b pb-4 last:border-0">
-                <h3 className="font-semibold mb-2">{result.question}</h3>
-                <div className="flex items-center gap-4 mb-2">
-                  <Progress value={result.score * 20} className="h-2 flex-1" />
-                  <span className="text-sm font-medium">{result.score * 20}%</span>
+              <div key={index} className="py-6 first:pt-4 last:pb-4">
+                <div className="flex items-center gap-4 mb-3">
+                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
+                    Q{index + 1}
+                  </span>
+                  <h3 className="font-semibold text-gray-800">{result.question}</h3>
                 </div>
-                <p className="text-gray-600 mb-2">{result.feedback}</p>
+                <div className="flex items-center gap-4 mb-4">
+                  <Progress 
+                    value={result.score * 20} 
+                    className="h-2 flex-1 bg-gray-100" 
+                  />
+                  <span className="text-sm font-medium bg-green-50 text-green-700 px-3 py-1 rounded-full">
+                    {result.score * 20}%
+                  </span>
+                </div>
+                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                  {result.feedback}
+                </p>
                 {result.follow_up_question && (
-                  <p className="text-sm text-primary mt-2">
-                    Follow-up: {result.follow_up_question}
-                  </p>
+                  <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                    <p className="text-sm text-blue-700">
+                      <span className="font-medium">Follow-up Question: </span>
+                      {result.follow_up_question}
+                    </p>
+                  </div>
                 )}
                 {result.audio_presigned_url && (
-                  <audio controls className="mt-2 w-full">
-                    <source src={result.audio_presigned_url} type="audio/mpeg" />
-                    Your browser does not support the audio element.
-                  </audio>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <audio controls className="w-full h-8">
+                      <source src={result.audio_presigned_url} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
                 )}
               </div>
             ))}
@@ -166,4 +206,4 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
       </div>
     </div>
   )
-} 
+}

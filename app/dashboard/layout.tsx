@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex flex-col min-h-screen">
         <main
           className={cn(
-            "flex-1 bg-zinc-50 dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300",
+            "flex-1 bg-zinc-50 dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300 pb-4",
             !settings.disabled && (!isOpen ? "lg:ml-[90px]" : "lg:ml-72")
           )}
         >
@@ -26,7 +26,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </main>
         <footer
           className={cn(
-            "transition-[margin-left] ease-in-out duration-300",
+            "transition-[margin-left] ease-in-out duration-300 h-16",
             !settings.disabled && (!isOpen ? "lg:ml-[90px]" : "lg:ml-72")
           )}
         >

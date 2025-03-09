@@ -6,30 +6,7 @@ import { siteConfig } from '@/config/site'
 import { useSession } from 'next-auth/react'
 import { useTheme } from 'next-themes'
 import { Moon, Sun } from 'lucide-react'
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-import { cn } from "@/lib/utils"
-import { LucideIcon } from 'lucide-react'
 import React from 'react'
-
-type NavItem = {
-  title: string
-  href?: string
-  icon?: LucideIcon
-  items?: {
-    title: string
-    href: string
-    description: string
-    icon?: LucideIcon
-  }[]
-}
 
 interface NavbarProps {
   title?: string;
@@ -46,60 +23,7 @@ export function Navbar({ title }: NavbarProps) {
           <Link href="/" className="font-bold text-xl text-primary">
             {title || siteConfig.name}
           </Link>
-          
-          <NavigationMenu className="hidden md:flex">
-            <NavigationMenuList className="space-x-2">
-              {siteConfig.mainNav.map((item: NavItem) => (
-                <NavigationMenuItem key={item.href || `menu-item-${item.title}`}>
-                  {item.items ? (
-                    <NavigationMenuTrigger className="text-muted-foreground hover:text-primary-foreground">
-                      <span className="flex items-center gap-1">
-                        {item?.icon && <item.icon className="w-4 h-4" />}
-                        {item.title}
-                      </span>
-                    </NavigationMenuTrigger>
-                  ) : (
-                    <Link href={item.href || '#'} legacyBehavior passHref>
-                      <NavigationMenuLink className={cn(
-                        navigationMenuTriggerStyle(),
-                        "text-muted-foreground hover:text-primary-foreground"
-                      )}>
-                        <span className="flex items-center gap-1">
-                          {item?.icon && <item.icon className="w-4 h-4" />}
-                          {item.title}
-                        </span>
-                      </NavigationMenuLink>
-                    </Link>
-                  )}
-
-                  {item.items && (
-                    <NavigationMenuContent>
-                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                        {item.items.map((subItem) => (
-                          <li key={subItem.href}>
-                            <NavigationMenuLink asChild>
-                              <Link
-                                href={subItem.href}
-                                className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                              >
-                                <div className="flex items-center gap-2">
-                                  {subItem.icon && <subItem.icon className="h-4 w-4" />}
-                                  <div className="text-sm font-medium leading-none">{subItem.title}</div>
-                                </div>
-                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                  {subItem.description}
-                                </p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  )}
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
+        
         </div>
 
         <div className="ml-auto flex items-center gap-4">

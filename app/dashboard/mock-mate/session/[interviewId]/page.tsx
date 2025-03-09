@@ -204,52 +204,57 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-5xl mx-auto px-4">
-        {/* Camera status message */}
-        {!isCameraActive && (
-          <div className="absolute top-0 left-0 right-0 text-center bg-red-500 text-white p-2">
-            Camera is off. Please enable your camera.
+    <div className="h-[calc(100vh-4rem)] bg-gray-50 p-4 flex flex-col">
+      {/* Camera status message */}
+      {!isCameraActive && (
+        <div className="absolute top-0 left-0 right-0 text-center bg-red-500 text-white p-2">
+          Camera is off. Please enable your camera.
+        </div>
+      )}
+      
+      {/* Top section with progress */}
+      <Card className="mb-2 flex-none">
+        <CardContent className="py-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-500">
+              Progress: {currentQuestion + 1}/{questions.length}
+            </span>
+            <span className="flex items-center gap-2 text-sm font-medium text-gray-500">
+              <Timer className="w-4 h-4" />
+              {formatTime(recordingTime)}
+            </span>
           </div>
-        )}
-        <Card className="mb-8">
-          <CardContent className="py-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-gray-500">
-                Progress: {currentQuestion + 1}/{questions.length}
-              </span>
-              <span className="flex items-center gap-2 text-sm font-medium text-gray-500">
-                <Timer className="w-4 h-4" />
-                {formatTime(recordingTime)}
-              </span>
-            </div>
-            <Progress 
-              value={progress}
-              className="h-2"
-            />
-          </CardContent>
-        </Card>
-        <Card className="mb-8">
-          <CardContent className="py-6">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <AlertCircle className="w-6 h-6 text-primary" />
+          <Progress value={progress} className="h-2" />
+        </CardContent>
+      </Card>
+      
+      {/* Main content area */}
+      <div className="flex-1 grid grid-cols-12 gap-4 min-h-0">
+        {/* Left column */}
+        <div className="col-span-8 grid grid-rows-[auto_1fr] gap-4 min-h-0">
+          {/* Question card */}
+          <Card className="flex-none">
+            <CardContent className="py-4">
+              <div className="flex items-start gap-4">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <AlertCircle className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-[#0A2647] mb-1">
+                    Question {currentQuestion + 1}
+                  </h2>
+                  <p className="text-base text-gray-700">
+                    {questions[currentQuestion]?.question || 'Loading question...'}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-semibold text-[#0A2647] mb-2">
-                  Question {currentQuestion + 1}
-                </h2>
-                <p className="text-lg text-gray-700">
-                  {questions[currentQuestion]?.question || 'Loading question...'}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card>
-            <CardContent className="p-4">
-              <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden">
+            </CardContent>
+          </Card>
+
+          {/* Video card */}
+          <Card className="flex-1 min-h-0">
+            <CardContent className="p-4 h-full">
+              <div className="relative h-full bg-gray-900 rounded-lg overflow-hidden">
                 <video
                   ref={videoRef}
                   autoPlay
@@ -270,17 +275,21 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
               </div>
             </CardContent>
           </Card>
+        </div>
 
-          <Card>
-            <CardContent className="p-8 flex flex-col justify-center items-center gap-6">
+        {/* Right column */}
+        <div className="col-span-4 grid grid-rows-[auto_1fr] gap-4 min-h-0">
+          {/* Controls card */}
+          <Card className="flex-none">
+            <CardContent className="p-6">
               {isAllQuestionsAnswered ? (
                 <Button
                   onClick={submitInterview}
                   variant="default"
                   size="lg"
-                  className="w-full max-w-md h-16 text-lg gap-2"
+                  className="w-full h-12 text-base gap-2"
                 >
-                  <Send className="w-6 h-6" />
+                  <Send className="w-5 h-5" />
                   Submit Interview
                 </Button>
               ) : !recording ? (
@@ -288,9 +297,9 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
                   onClick={startAnswering}
                   variant="default"
                   size="lg"
-                  className="w-full max-w-md h-16 text-lg gap-2"
+                  className="w-full h-12 text-base gap-2"
                 >
-                  <PlayCircle className="w-6 h-6" />
+                  <PlayCircle className="w-5 h-5" />
                   Start Recording
                 </Button>
               ) : (
@@ -301,9 +310,9 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
                   }}
                   variant="destructive"
                   size="lg"
-                  className="w-full max-w-md h-16 text-lg gap-2"
+                  className="w-full h-12 text-base gap-2"
                 >
-                  <StopCircle className="w-6 h-6" />
+                  <StopCircle className="w-5 h-5" />
                   Stop Recording
                 </Button>
               )}
@@ -315,22 +324,26 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
               </p>
             </CardContent>
           </Card>
-        </div>
 
-        {/* Display recorded answers */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold">Your Recordings</h2>
-          {answers.map((answer, index) => (
-            <div key={index} className="mt-4">
-              <h3 className="font-medium">Question {answer.questionId}</h3>
-              <audio controls className="w-full">
-                <source src={URL.createObjectURL(answer.recording)} type="video/webm" />
-                Your browser does not support the audio element.
-              </audio>
-            </div>
-          ))}
+          {/* Recordings card */}
+          <Card className="flex-1 min-h-0">
+            <CardContent className="p-4 h-full overflow-auto">
+              <h2 className="text-lg font-semibold mb-4">Your Recordings</h2>
+              <div className="space-y-3">
+                {answers.map((answer, index) => (
+                  <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                    <h3 className="text-sm font-medium mb-2">Question {index + 1}</h3>
+                    <audio controls className="w-full h-8">
+                      <source src={URL.createObjectURL(answer.recording)} type="video/webm" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   )
-} 
+}

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client'
+"use client"
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
@@ -189,69 +189,98 @@ export default function SetupPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-4xl m-6">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center text-[#0A2647]">
-            Let&apos;s Test Your Devices
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4">
+      <Card className="w-full max-w-4xl mx-auto backdrop-blur-sm bg-white/90 shadow-xl border-0">
+        <CardHeader className="text-center space-y-3 pb-8">
+          <CardTitle className="text-3xl font-bold text-[#0A2647]">
+            Device Setup
           </CardTitle>
+          <p className="text-gray-600">Let&apos;s make sure your camera and microphone are working properly</p>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
+        
+        <CardContent className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Camera Preview Section */}
             <div className="space-y-4">
-              <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
+              <div className="relative aspect-video rounded-xl overflow-hidden shadow-inner bg-gradient-to-r from-gray-900 to-gray-800">
                 <video
                   ref={videoRef}
                   autoPlay
                   playsInline
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/50 text-white px-3 py-1 rounded-full">
-                  <VideoIcon size={16} className={devices.video ? "text-green-400" : "text-red-400"} />
-                  <span className="text-sm">Camera {devices.video ? 'Connected' : 'Not connected'}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/60 text-white px-4 py-2 rounded-full backdrop-blur-sm">
+                  <VideoIcon size={18} className={`${devices.video ? "text-green-400" : "text-red-400"} animate-pulse`} />
+                  <span className="text-sm font-medium">
+                    {devices.video ? 'Camera Active' : 'Camera Not Found'}
+                  </span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="bg-white p-6 rounded-lg border h-full flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <MicIcon size={20} className={devices.audio ? "text-green-500" : "text-red-500"} />
-                    <span>Microphone {devices.audio ? 'Connected' : 'Not connected'}</span>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-600">Audio Level:</p>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full bg-green-500 transition-all duration-150 w-[${(audioLevel / 255) * 100}%]`}
+            {/* Audio Section */}
+            <div className="space-y-6">
+              <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm">
+                <div className="space-y-6">
+                  {/* Microphone Status */}
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className={`p-3 rounded-full ${devices.audio ? "bg-green-100" : "bg-red-100"}`}>
+                      <MicIcon 
+                        size={24} 
+                        className={`${devices.audio ? "text-green-600" : "text-red-600"} ${devices.audio ? "animate-pulse" : ""}`} 
                       />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">
+                        {devices.audio ? 'Microphone Connected' : 'Microphone Not Found'}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {devices.audio ? 'Audio input is working properly' : 'Please check your microphone connection'}
+                      </p>
                     </div>
                   </div>
 
-                  <p className="text-sm text-gray-600 mt-4">
-                    Try saying &quot;Hello&quot; to test your microphone
-                  </p>
+                  {/* Audio Level Meter */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gray-700">Audio Level</span>
+                      <span className="text-xs text-gray-500">Try speaking to test</span>
+                    </div>
+                    <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-400 transition-all duration-150"
+                        style={{ width: `${Math.min((audioLevel / 255) * 100, 100)}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center pt-4">
+          {/* Action Button */}
+          <div className="flex flex-col items-center pt-6 space-y-4">
             <Button
               onClick={createAndStartInterview}
               disabled={!devices.video || !devices.audio}
-              variant="default"
-              size="lg"
-              className="w-full md:w-auto"
+              className={`
+                px-8 py-6 rounded-xl text-lg font-semibold shadow-lg
+                ${devices.video && devices.audio 
+                  ? 'bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white transform hover:scale-105 transition-all duration-200' 
+                  : 'bg-gray-200 text-gray-500 cursor-not-allowed'}
+              `}
             >
-              Start Interview
+              {devices.video && devices.audio ? 'Start Interview →' : 'Please Enable Devices'}
             </Button>
+            {!devices.video || !devices.audio ? (
+              <p className="text-sm text-red-500">
+                Please allow access to both camera and microphone to continue
+              </p>
+            ) : null}
           </div>
         </CardContent>
       </Card>
     </div>
   )
-} 
+}
