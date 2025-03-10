@@ -14,19 +14,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # ✅ Step 2: Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.18.0'  # Using a Node.js version compatible with Next.js
-
-      # ✅ Step 3: Prepare SSH Key
-      - name: Prepare SSH Key
-        run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > ./id_rsa
-          chmod 600 ./id_rsa
-
-      # ✅ Step 4: Deploy to EC2 via SSH
+      # ✅ Step 2: Deploy to EC2 via SSH
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -41,6 +29,18 @@ jobs:
             echo "🔹 Ensuring required packages are installed..."
             sudo apt-get update -y
             sudo apt-get install -y git curl unzip
+
+            # ✅ Step 4.2: Ensure Node.js & npm are Installed
+            echo "⚙️ Checking if Node.js is installed..."
+            if ! command -v node &> /dev/null; then
+              echo "🚀 Installing Node.js..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            else
+              echo "✅ Node.js is already installed."
+            fi
+            node -v
+            npm -v
 
             # ✅ Step 4.2: Ensure Frontend Directory Exists
             echo "🔄 Checking if resume_frontend directory exists..."
