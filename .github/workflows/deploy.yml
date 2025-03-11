@@ -101,7 +101,7 @@ jobs:
             echo "✅ PM2 is ready."
 
             echo "🚀 Restarting Frontend Application..."
-            pm2 restart resume_frontend || pm2 start npm --name "resume_frontend" -- start
+            pm2 restart resume_frontend --update-env || pm2 start npm --name "resume_frontend" -- start --update-env
             pm2 save
             echo "✅ Frontend restarted successfully."
           EOF
