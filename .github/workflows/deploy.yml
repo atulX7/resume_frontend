@@ -51,28 +51,23 @@ jobs:
           npm run build
           echo "✅ Build completed."
 
-      - name: debug ls strucutrue
-        run: ls
-      - name: debug dir strucutrue
-        run: find .
-
       # ✅ Step 6: Transfer Built Code to EC2
       - name: Transfer Files to EC2
         run: |
           echo "🔄 Connecting to EC2 & transferring files..."
           ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             echo "🔄 Checking if resume_frontend directory exists..."
+            export HOME=/home/${{ secrets.EC2_USER }}
             if [ -d "$HOME/resume_frontend" ]; then
               echo "📥 Directory already exists, removing old files..."
               rm -rf $HOME/resume_frontend
             fi
-            echo $HOME
             mkdir -p $HOME/resume_frontend
-            find .
             echo "✅ Directory ready."
           EOF
 
-          scp -o StrictHostKeyChecking=no -i ./id_rsa -r ./* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:$HOME/resume_frontend
+          scp -o StrictHostKeyChecking=no -i ./id_rsa -r ./build/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/
+          scp -o StrictHostKeyChecking=no -i ./id_rsa .env ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/.env
           echo "✅ Files transferred."
 
       # ✅ Step 7: Start Frontend on EC2
