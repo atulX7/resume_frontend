@@ -138,8 +138,4 @@ jobs:
             echo "🧹 Cleaning up package lists..."
             sudo apt-get autoremove -y
             sudo apt-get clean
-
-            echo "🔄 Restarting SSHD to refresh connections..."
-            sudo systemctl restart sshd
-            echo "✅ SSHD restarted."
           EOF
