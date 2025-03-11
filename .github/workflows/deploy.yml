@@ -55,6 +55,11 @@ jobs:
       - name: Transfer Files to EC2
         run: |
           echo "🔄 Connecting to EC2 & transferring files..."
+          if [ ! -d ".next" ]; then
+            echo "❌ Build directory does not exist! Make sure 'npm run build' succeeded."
+            exit 1
+          fi
+          
           ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             echo "🔄 Checking if resume_frontend directory exists..."
             export HOME=/home/${{ secrets.EC2_USER }}
@@ -66,7 +71,7 @@ jobs:
             echo "✅ Directory ready."
           EOF
 
-          scp -o StrictHostKeyChecking=no -i ./id_rsa -r ./build/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/
+          scp -o StrictHostKeyChecking=no -i ./id_rsa -r .next ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/
           scp -o StrictHostKeyChecking=no -i ./id_rsa .env ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/.env
           echo "✅ Files transferred."
 
