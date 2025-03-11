@@ -60,10 +60,10 @@ jobs:
             cat <<EOF > .env
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+            NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_USE_MOCK_DATA=${{ secrets.NEXT_PUBLIC_USE_MOCK_DATA }}
+            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_USE_MOCK_DATA=${{ vars.NEXT_PUBLIC_USE_MOCK_DATA }}
             EOF
             echo "✅ .env file created."
 
