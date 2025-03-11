@@ -61,6 +61,18 @@ interface ProcessInterviewResponse {
   error?: string;
 }
 
+interface UserInterviewsResponse {
+  success: boolean;
+  data?: Array<{
+    session_id: string;
+    job_title: string;
+    created_at: string;
+    status: 'completed' | 'in_progress' | 'pending';
+    score?: number;
+  }>;
+  error?: string;
+}
+
 export class InterviewService {
   private static BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -203,6 +215,38 @@ export class InterviewService {
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'An error occurred while processing the interview'
+      };
+    }
+  }
+
+  static async getUserInterviews(sessionId?: string): Promise<UserInterviewsResponse> {
+    const session = await getSession();
+    if (!session?.accessToken) {
+      throw new Error('No active session');
+    }
+
+    try {
+      const url = sessionId 
+        ? `${this.BASE_URL}/mock-interview/sessions/${sessionId}`
+        : `${this.BASE_URL}/mock-interview/sessions`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch interviews (Status: ${response.status})`);
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error fetching user interviews:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'An error occurred while fetching interviews'
       };
     }
   }
