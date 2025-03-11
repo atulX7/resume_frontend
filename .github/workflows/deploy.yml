@@ -14,69 +14,66 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # ✅ Step 2: Deploy to EC2 via SSH
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v0.1.7
+      # ✅ Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            echo "🔄 Connecting to EC2 instance..."
+          node-version: '18.18.0'  # Using a Node.js version compatible with Next.js
 
-            # ✅ Step 4.1: Ensure Required Packages are Installed
-            echo "🔹 Ensuring required packages are installed..."
-            sudo apt-get update -y
-            sudo apt-get install -y git curl unzip
+      # ✅ Step 3: Prepare SSH Key
+      - name: Prepare SSH Key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > ./id_rsa
+          chmod 600 ./id_rsa
 
-            # ✅ Step 4.2: Ensure Node.js & npm are Installed
-            echo "⚙️ Checking if Node.js is installed..."
-            if ! command -v node &> /dev/null; then
-              echo "🚀 Installing Node.js..."
-              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-              sudo apt-get install -y nodejs
-            else
-              echo "✅ Node.js is already installed."
-            fi
-            node -v
-            npm -v
+      # ✅ Step 4: Generate `.env` in GitHub Runner
+      - name: Generate `.env` file
+        run: |
+          echo "📌 Creating .env file locally..."
+          cat <<EOF > .env
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+          NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_USE_MOCK_DATA=${{ vars.NEXT_PUBLIC_USE_MOCK_DATA }}
+          EOF
+          echo "✅ .env file created."
 
-            # ✅ Step 4.2: Ensure Frontend Directory Exists
+      # ✅ Step 5: Install Dependencies & Build in GitHub Runner
+      - name: Install Dependencies & Build
+        run: |
+          echo "📦 Installing dependencies..."
+          npm ci
+          echo "✅ Dependencies installed."
+          
+          echo "🛠️ Building the frontend..."
+          npm run build
+          echo "✅ Build completed."
+
+      # ✅ Step 6: Transfer Built Code to EC2
+      - name: Transfer Files to EC2
+        run: |
+          echo "🔄 Connecting to EC2 & transferring files..."
+          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             echo "🔄 Checking if resume_frontend directory exists..."
-            if [ -d "$HOME/resume_frontend/.git" ]; then
-              echo "📥 Directory already exists, pulling latest changes..."
-              cd $HOME/resume_frontend
-              git reset --hard
-              git pull origin neelam-cicd
-            else
-              echo "🛑 Directory missing or not a valid git repository. Cloning fresh..."
-              rm -rf $HOME/resume_frontend  # Just in case there is a corrupted or non-git folder
-              git clone -b neelam-cicd https://github.com/atulX7/resume_frontend.git $HOME/resume_frontend
+            if [ -d "$HOME/resume_frontend" ]; then
+              echo "📥 Directory already exists, removing old files..."
+              rm -rf $HOME/resume_frontend
             fi
+            mkdir -p $HOME/resume_frontend
+            echo "✅ Directory ready."
+          EOF
 
-            # ✅ Step 3.6: Create .env File with GitHub Secrets
-            echo "📌 Creating .env file"
-            cat <<EOF > .env
-            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-            NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }}
-            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
-            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_USE_MOCK_DATA=${{ vars.NEXT_PUBLIC_USE_MOCK_DATA }}
-            EOF
-            echo "✅ .env file created."
+          scp -o StrictHostKeyChecking=no -i ./id_rsa -r ./* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:$HOME/resume_frontend
+          echo "✅ Files transferred."
 
-            # ✅ Step 4.4: Install Dependencies & Build
-            echo "📦 Installing dependencies..."
-            npm ci
-            echo "✅ Dependencies installed."
-
-            echo "🛠️ Building the frontend..."
-            npm run build
-            echo "✅ Build completed."
-
-            # ✅ Step 4.5: Ensure PM2 is Installed
+      # ✅ Step 7: Start Frontend on EC2
+      - name: Restart Frontend Application
+        run: |
+          echo "🚀 Restarting Frontend Application..."
+          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd $HOME/resume_frontend
             echo "⚙️ Ensuring PM2 is installed..."
             if ! command -v pm2 &> /dev/null; then
               echo "🚀 Installing PM2..."
@@ -84,13 +81,17 @@ jobs:
             fi
             echo "✅ PM2 is ready."
 
-            # ✅ Step 4.6: Restart the Frontend Application
             echo "🚀 Restarting Frontend Application..."
             pm2 restart resume_frontend || pm2 start npm --name "resume_frontend" -- start
             pm2 save
-            echo "✅ Frontend Application restarted successfully."
+            echo "✅ Frontend restarted successfully."
+          EOF
 
-            # ✅ Step 4.7: Verify Deployment
+      # ✅ Step 8: Verify Deployment
+      - name: Verify Frontend Deployment
+        run: |
+          echo "🛠️ Checking Frontend status..."
+          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             sleep 5
             if curl -f http://localhost:3000; then
               echo "✅ Frontend is running!"
@@ -98,3 +99,4 @@ jobs:
               echo "❌ Frontend failed to start! Check logs."
               exit 1
             fi
+          EOF
