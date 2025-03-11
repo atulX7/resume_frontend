@@ -61,6 +61,13 @@ jobs:
           fi
           
           ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            echo "🛑 Stopping running frontend application..."
+            pm2 stop resume_frontend || true  # Stop only the frontend, not all apps
+
+            echo "🧹 Cleaning up old files and caches..."
+            sudo apt-get autoremove -y
+            sudo apt-get clean
+          
             echo "🔄 Checking if resume_frontend directory exists..."
             export HOME=/home/${{ secrets.EC2_USER }}
             if [ -d "$HOME/resume_frontend" ]; then
@@ -71,8 +78,9 @@ jobs:
             echo "✅ Directory ready."
           EOF
 
-          scp -o StrictHostKeyChecking=no -i ./id_rsa -r .next ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/
-          scp -o StrictHostKeyChecking=no -i ./id_rsa .env ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/.env
+          rsync -avz --progress -e "ssh -o StrictHostKeyChecking=no -i ./id_rsa" .next ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/
+          rsync -avz --progress -e "ssh -o StrictHostKeyChecking=no -i ./id_rsa" .env ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend/
+
           echo "✅ Files transferred."
 
       # ✅ Step 7: Start Frontend on EC2
@@ -118,4 +126,17 @@ jobs:
               echo "❌ Frontend failed to start! Check logs."
               exit 1
             fi
+          EOF
+
+      - name: Final Cleanup & Restart SSHD
+        run: |
+          echo "🛑 Performing Final Cleanup..."
+          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            echo "🧹 Cleaning up package lists..."
+            sudo apt-get autoremove -y
+            sudo apt-get clean
+
+            echo "🔄 Restarting SSHD to refresh connections..."
+            sudo systemctl restart sshd
+            echo "✅ SSHD restarted."
           EOF
