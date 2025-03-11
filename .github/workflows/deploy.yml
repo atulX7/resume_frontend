@@ -51,6 +51,11 @@ jobs:
           npm run build
           echo "✅ Build completed."
 
+      - name: debug ls strucutrue
+        run: ls
+      - name: debug dir strucutrue
+        run: find .
+
       # ✅ Step 6: Transfer Built Code to EC2
       - name: Transfer Files to EC2
         run: |
@@ -61,7 +66,9 @@ jobs:
               echo "📥 Directory already exists, removing old files..."
               rm -rf $HOME/resume_frontend
             fi
+            echo $HOME
             mkdir -p $HOME/resume_frontend
+            find .
             echo "✅ Directory ready."
           EOF
 
