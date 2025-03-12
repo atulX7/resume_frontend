@@ -79,7 +79,6 @@ jobs:
           EOF
 
           rsync -avz --exclude=node_modules --exclude=.git -e "ssh -o StrictHostKeyChecking=no -i ./id_rsa" ./ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend
-
           echo "✅ Files transferred."
 
       # ✅ Step 6.1: Install & Configure NGINX for Reverse Proxy
