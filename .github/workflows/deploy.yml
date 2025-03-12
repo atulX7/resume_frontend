@@ -81,8 +81,8 @@ jobs:
           rsync -avz --exclude=node_modules --exclude=.git -e "ssh -o StrictHostKeyChecking=no -i ./id_rsa" ./ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend
           echo "✅ Files transferred."
 
-      # ✅ Step 6.1: Install & Configure NGINX for Reverse Proxy
-      - name: Configure NGINX Reverse Proxy
+      # ✅ Step 7: Install, Configure and Verify dployment
+      - name: Frontend Deployment
         run: |
           echo "⚙️ Setting up NGINX..."
           ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
@@ -139,14 +139,8 @@ jobs:
             sudo ufw allow 3000/tcp
             echo "y" | sudo ufw enable
             echo "✅ Firewall configured."
-          EOF
 
-
-      # ✅ Step 7: Start Frontend on EC2
-      - name: Restart Frontend Application
-        run: |
-          echo "🚀 Restarting Frontend Application..."
-          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            echo "🚀 Restarting Frontend Application..."
             cd $HOME/resume_frontend
 
             echo "⚙️ Checking if Node.js is installed..."
@@ -175,13 +169,8 @@ jobs:
             pm2 restart resume_frontend --update-env || pm2 start npm --name "resume_frontend" -- start --update-env
             pm2 save
             echo "✅ Frontend restarted successfully."
-          EOF
 
-      # ✅ Step 8: Verify Deployment
-      - name: Verify Frontend Deployment
-        run: |
-          echo "🛠️ Checking Frontend status..."
-          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            echo "🛠️ Checking Frontend status..."
             sleep 5
             if curl -f http://localhost; then
               echo "✅ Frontend is running!"
@@ -189,12 +178,8 @@ jobs:
               echo "❌ Frontend failed to start! Check logs."
               exit 1
             fi
-          EOF
-
-      - name: Final Cleanup & Restart SSHD
-        run: |
-          echo "🛑 Performing Final Cleanup..."
-          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+ 
+            echo "🛑 Performing Final Cleanup..."
             echo "🧹 Cleaning up package lists..."
             sudo apt-get autoremove -y
             sudo apt-get clean
