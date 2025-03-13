@@ -60,7 +60,7 @@ jobs:
             exit 1
           fi
           
-          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ./id_rsa -T ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             echo "🛑 Stopping running frontend application..."
             pm2 stop resume_frontend || true  # Stop only the frontend, not all apps
 
