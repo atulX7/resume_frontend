@@ -138,12 +138,25 @@ jobs:
             sudo systemctl restart nginx
             echo "✅ NGINX restarted."
 
-            # Configure Firewall
             echo "🌐 Configuring firewall rules..."
-            sudo ufw allow 80/tcp
-            sudo ufw allow 3000/tcp
-            echo "y" | sudo ufw enable
+            sudo ufw allow 22/tcp  # Ensure SSH is not blocked
+            sudo ufw allow 80/tcp   # Ensure NGINX is accessible
+            sudo ufw allow 3000/tcp # Ensure frontend is accessible
+            sudo ufw enable
             echo "✅ Firewall configured."
+
+      - name: Ensure SSH Service is Running
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "⚙️ Ensuring SSH is running..."
+            sudo systemctl restart ssh
+            sudo ufw allow 22/tcp
+            echo "✅ SSH is active."
 
 
       # ✅ Step 7: Start Frontend on EC2
