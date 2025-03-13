@@ -79,13 +79,19 @@ jobs:
           EOF
 
           rsync -avz --exclude=node_modules --exclude=.git -e "ssh -o StrictHostKeyChecking=no -i ./id_rsa" ./ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend
+
           echo "✅ Files transferred."
 
-      # ✅ Step 7: Install, Configure and Verify dployment
-      - name: Frontend Deployment
-        run: |
-          echo "⚙️ Setting up NGINX..."
-          ssh -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+      # ✅ Step 6.1: Install & Configure NGINX for Reverse Proxy
+      - name: Configure NGINX Reverse Proxy
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "⚙️ Setting up NGINX..."
             # Install NGINX if not installed
             if ! command -v nginx &> /dev/null; then
               echo "🚀 Installing NGINX..."
@@ -140,6 +146,16 @@ jobs:
             echo "y" | sudo ufw enable
             echo "✅ Firewall configured."
 
+
+      # ✅ Step 7: Start Frontend on EC2
+      - name: Restart Frontend Application
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
             echo "🚀 Restarting Frontend Application..."
             cd $HOME/resume_frontend
 
@@ -178,7 +194,7 @@ jobs:
               echo "❌ Frontend failed to start! Check logs."
               exit 1
             fi
- 
+
             echo "🛑 Performing Final Cleanup..."
             echo "🧹 Cleaning up package lists..."
             sudo apt-get autoremove -y
@@ -186,4 +202,3 @@ jobs:
             echo "🔄 Restarting NGINX..."
             sudo systemctl restart nginx
             echo "✅ NGINX restarted successfully."
-          EOF
