@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CalendarDays, Clock, ArrowRight } from "lucide-react"
+import { CalendarDays, ArrowRight, Check, Clock } from "lucide-react"
 import { InterviewService } from "@/services/interview-service"
 import { Button } from "@/components/ui/button"
 import { FileText } from "lucide-react" // Add this import
@@ -150,9 +150,9 @@ export default function MockMatePage() {
                 {interviews.map((interview) => (
                   <Link 
                     key={interview.session_id}
-                    href={`/dashboard/mock-mate/session/${interview.session_id}`}
+                    href={`/dashboard/mock-mate/analysis/${interview.session_id}`}
                   >
-                    <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full border-2 border-gray-100">
+                    <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full border-2 border-gray-100 group">
                       <CardHeader>
                         <CardTitle className="text-lg font-semibold truncate">
                           {interview.job_title}
@@ -164,7 +164,13 @@ export default function MockMatePage() {
                           {new Date(interview.created_at).toLocaleDateString()}
                         </div>
                         <div className="flex items-center text-sm">
-                          <Clock className="w-4 h-4 mr-2" />
+                          {interview.status === 'completed' ? (
+                            <Check className="w-4 h-4 mr-2" />
+                          ) : interview.status === 'in_progress' ? (
+                            <Clock className="w-4 h-4 mr-2" />
+                          ) : (
+                            <Check className="w-4 h-4 mr-2" />
+                          )}
                           <span className={`
                             capitalize px-2 py-1 rounded-full text-xs
                             ${interview.status === 'completed' ? 'bg-green-100 text-green-700' : ''}
@@ -174,8 +180,11 @@ export default function MockMatePage() {
                             {interview.status}
                           </span>
                         </div>
-                        <div className="flex justify-end">
-                          <ArrowRight className="w-5 h-5 text-gray-400" />
+                        <div className="flex justify-end items-center">
+                          <span className="text-sm text-gray-500 mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            View Analysis
+                          </span>
+                          <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" />
                         </div>
                       </CardContent>
                     </Card>
