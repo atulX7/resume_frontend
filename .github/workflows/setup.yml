@@ -1,0 +1,56 @@
+name: One-Time Setup Ubuntu EC2
+
+on:
+  push:
+    branches:
+      - neelam-cicd  # Deployment branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure NGINX Reverse Proxy
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "⚙️ Setting up machine"
+            sudo apt install certbot python3-certbot-nginx -y
+            # Create new frontend NGINX config
+            echo "🔧 Configuring frontend server block..."
+            sudo systemctl stop nginx
+            sudo bash -c 'cat <<EOL > /etc/nginx/sites-available/frontend
+            server {
+              listen 80;
+              server_name ${{ vars.SERVER_CERT_NAME }};
+          
+              location / {
+                proxy_pass http://localhost:3000;
+                proxy_set_header Host \$host;
+                proxy_set_header X-Real-IP \$remote_addr;
+                proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto \$scheme;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade \$http_upgrade;
+                proxy_set_header Connection "Upgrade";
+              }
+
+              error_page 502 /502.html;
+            }
+            EOL'
+
+            sudo certbot certonly --standalone -d ${{ vars.SERVER_CERT_NAME }}
+            sudo certbot --nginx --cert-name ${{ vars.SERVER_CERT_NAME }} -d ${{ vars.SERVER_CERT_NAME }}
+            sudo systemctl restart nginx
+
+            echo "🌐 Configuring firewall rules..."
+            sudo ufw allow 22/tcp  # Ensure SSH is not blocked
+            sudo ufw allow 80/tcp
+            sudo ufw allow 3000/tcp
+            sudo ufw allow 443/tcp
+            echo "y" | sudo ufw enable
+            echo "✅ Firewall configured."
