@@ -3,7 +3,7 @@ name: Deploy Next.js to Ubuntu EC2
 on:
   push:
     branches:
-      - main  # Deployment branch
+      - neelam-cicd  # Deployment branch
 
 jobs:
   deploy:
