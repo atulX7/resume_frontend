@@ -1,9 +1,7 @@
 name: One-Time Setup Ubuntu EC2
 
 on:
-  push:
-    branches:
-      - neelam-cicd  # Deployment branch
+  workflow_dispatch:
 
 jobs:
   deploy:
