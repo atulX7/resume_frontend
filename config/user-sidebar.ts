@@ -1,4 +1,5 @@
 import { 
+  Construction,
   FileText,
   User,
   type LucideIcon 
@@ -35,6 +36,12 @@ export const userMenuItems: MenuGroup[] = [
         label: "Resume Eval",
         icon: FileText,
       },
+      {
+        href: "/dashboard/pricing",
+        label: "Pricing",
+        icon: Construction,
+      },
+
     ],
   },
   {
