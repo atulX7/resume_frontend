@@ -1,9 +1,10 @@
 name: Deploy Next.js to Ubuntu EC2
 
 on:
-  push:
-    branches:
-      - main  # Deployment branch
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main  # Deployment branch
 
 jobs:
   deploy:
@@ -81,83 +82,6 @@ jobs:
           rsync -avz --exclude=node_modules --exclude=.git -e "ssh -o StrictHostKeyChecking=no -i ./id_rsa" ./ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend
           echo "✅ Files transferred."
 
-      # ✅ Step 6.1: Install & Configure NGINX for Reverse Proxy
-      - name: Configure NGINX Reverse Proxy
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            echo "⚙️ Setting up NGINX..."
-            # Install NGINX if not installed
-            if ! command -v nginx &> /dev/null; then
-              echo "🚀 Installing NGINX..."
-              sudo apt-get update
-              sudo apt-get install -y nginx
-            else
-              echo "✅ NGINX is already installed."
-            fi
-
-            # Test NGINX Configuration
-            sudo nginx -t
-            
-            # Remove default NGINX config if exists
-            if [ -f "/etc/nginx/sites-enabled/default" ]; then
-              echo "🛑 Removing default NGINX configuration..."
-              sudo rm /etc/nginx/sites-enabled/default
-            fi
-
-            # Create new frontend NGINX config
-            echo "🔧 Configuring frontend server block..."
-            sudo bash -c 'cat <<EOL > /etc/nginx/sites-available/frontend
-            server {
-              listen 80;
-              server_name _;
-          
-              location / {
-                proxy_pass http://localhost:3000;
-                proxy_set_header Host \$host;
-                proxy_set_header X-Real-IP \$remote_addr;
-                proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto \$scheme;
-                proxy_http_version 1.1;
-                proxy_set_header Upgrade \$http_upgrade;
-                proxy_set_header Connection "Upgrade";
-              }
-
-              error_page 502 /502.html;
-            }
-            EOL'
-
-            # Enable frontend configuration
-            sudo ln -sf /etc/nginx/sites-available/frontend /etc/nginx/sites-enabled/frontend
-
-            # Test and restart NGINX
-            sudo nginx -t && sudo systemctl restart nginx
-            echo "✅ NGINX restarted."
-
-            echo "🌐 Configuring firewall rules..."
-            sudo ufw allow 22/tcp  # Ensure SSH is not blocked
-            sudo ufw allow 80/tcp   # Ensure NGINX is accessible
-            sudo ufw allow 443/tcp # Ensure frontend is accessible
-            echo "y" | sudo ufw enable
-            echo "✅ Firewall configured."
-
-      - name: Ensure SSH Service is Running
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            echo "⚙️ Ensuring SSH is running..."
-            sudo systemctl restart ssh
-            sudo ufw allow 22/tcp
-            echo "✅ SSH is active."
-
 
       # ✅ Step 7: Start Frontend on EC2
       - name: Restart Frontend Application
@@ -206,6 +130,26 @@ jobs:
               echo "❌ Frontend failed to start! Check logs."
               exit 1
             fi
+
+            echo "🌐 Configuring firewall rules..."
+            sudo ufw allow 22/tcp  # Ensure SSH is not blocked
+            sudo ufw allow 80/tcp   # Ensure NGINX is accessible
+            sudo ufw allow 443/tcp # Ensure frontend is accessible
+            echo "y" | sudo ufw enable
+            echo "✅ Firewall configured."
+
+      - name: Ensure SSH Service is Running
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "⚙️ Ensuring SSH is running..."
+            sudo systemctl restart ssh
+            sudo ufw allow 22/tcp
+            echo "✅ SSH is active."
 
       - name: Cleanup
         uses: appleboy/ssh-action@v0.1.7
