@@ -19,15 +19,16 @@ jobs:
             echo "⚙️ Setting up machine"
             sudo apt-get update
             sudo apt-get install nginx certbot python3-certbot-nginx -y
+      
+            echo "🧼 Removing default NGINX site..."
+            sudo rm -f /etc/nginx/sites-enabled/default
+      
             echo "🔧 Configuring frontend server block..."
-            sudo systemctl status nginx.service
-            sudo systemctl start nginx
-            sudo systemctl stop nginx
             sudo bash -c 'cat <<EOL > /etc/nginx/sites-available/frontend
             server {
               listen 80;
               server_name ${{ vars.SERVER_CERT_NAME }};
-          
+      
               location / {
                 proxy_pass http://localhost:3000;
                 proxy_set_header Host \$host;
@@ -38,25 +39,33 @@ jobs:
                 proxy_set_header Upgrade \$http_upgrade;
                 proxy_set_header Connection "Upgrade";
               }
-
+      
               error_page 502 /502.html;
             }
             EOL'
-
-            sudo certbot --nginx \
-            --non-interactive \
-            --agree-tos \
-            --redirect \
-            --email neelamvivaan23@gmail.com \
-            --cert-name ${{ vars.SERVER_CERT_NAME }} \
-            -d ${{ vars.SERVER_CERT_NAME }}
-
+      
+            echo "🔗 Enabling frontend site..."
+            sudo ln -sf /etc/nginx/sites-available/frontend /etc/nginx/sites-enabled/frontend
+      
+            echo "🚦 Restarting NGINX"
             sudo systemctl restart nginx
-
+      
+            echo "🔐 Issuing SSL certificate using Certbot"
+            sudo certbot --nginx \
+              --non-interactive \
+              --agree-tos \
+              --redirect \
+              --email neelamvivaan23@gmail.com \
+              --cert-name ${{ vars.SERVER_CERT_NAME }} \
+              -d ${{ vars.SERVER_CERT_NAME }}
+      
+            echo "🔁 Restarting NGINX after Certbot setup"
+            sudo systemctl restart nginx
+      
             echo "🌐 Configuring firewall rules..."
-            sudo ufw allow 22/tcp  # Ensure SSH is not blocked
+            sudo ufw allow 22/tcp
             sudo ufw allow 80/tcp
-            sudo ufw allow 3000/tcp
             sudo ufw allow 443/tcp
+            sudo ufw allow 3000/tcp
             echo "y" | sudo ufw enable
             echo "✅ Firewall configured."
