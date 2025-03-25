@@ -18,8 +18,7 @@ jobs:
           script: |
             echo "⚙️ Setting up machine"
             sudo apt-get update
-            sudo apt-get install -y nginx
-            sudo apt install certbot python3-certbot-nginx -y
+            sudo apt-get install nginx certbot python3-certbot-nginx -y
             echo "🔧 Configuring frontend server block..."
             sudo systemctl status nginx.service
             sudo systemctl start nginx
