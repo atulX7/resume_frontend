@@ -84,7 +84,7 @@ jobs:
 
 
       # ✅ Step 7: Start Frontend on EC2
-      - name: Restart Frontend Application
+      - name: Deploy Frontend Application
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -124,7 +124,7 @@ jobs:
 
             echo "🛠️ Checking Frontend status..."
             sleep 5
-            if curl -f http://localhost; then
+            if curl -f https://${{ vars.SERVER_CERT_NAME }}; then
               echo "✅ Frontend is running!"
             else
               echo "❌ Frontend failed to start! Check logs."
