@@ -43,8 +43,7 @@ jobs:
             }
             EOL'
 
-            sudo certbot certonly --standalone -d ${{ vars.SERVER_CERT_NAME }}
-            sudo certbot --nginx --cert-name ${{ vars.SERVER_CERT_NAME }} -d ${{ vars.SERVER_CERT_NAME }}
+            sudo certbot --nginx --non-interactive --agree-tos -redirect --email neelamvivaan23@gmail.com --cert-name ${{ vars.SERVER_CERT_NAME }} -d ${{ vars.SERVER_CERT_NAME }}
             sudo systemctl restart nginx
 
             echo "🌐 Configuring firewall rules..."
