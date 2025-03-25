@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Configure NGINX Reverse Proxy
+      - name: One Time Setup
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -20,7 +20,6 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y nginx
             sudo apt install certbot python3-certbot-nginx -y
-            # Create new frontend NGINX config
             echo "🔧 Configuring frontend server block..."
             sudo systemctl stop nginx
             sudo bash -c 'cat <<EOL > /etc/nginx/sites-available/frontend
@@ -43,6 +42,7 @@ jobs:
             }
             EOL'
 
+            sudo certbot delete --cert-name ${{ vars.SERVER_CERT_NAME }} --non-interactive || true
             sudo certbot --nginx --non-interactive --agree-tos -redirect --email neelamvivaan23@gmail.com --cert-name ${{ vars.SERVER_CERT_NAME }} -d ${{ vars.SERVER_CERT_NAME }}
             sudo systemctl restart nginx
 
