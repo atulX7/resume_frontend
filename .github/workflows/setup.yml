@@ -42,7 +42,6 @@ jobs:
             }
             EOL'
 
-            sudo certbot delete --cert-name ${{ vars.SERVER_CERT_NAME }} --non-interactive || true
             sudo certbot --nginx \
             --non-interactive \
             --agree-tos \
