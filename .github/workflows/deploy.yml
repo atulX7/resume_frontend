@@ -141,7 +141,7 @@ jobs:
             echo "🌐 Configuring firewall rules..."
             sudo ufw allow 22/tcp  # Ensure SSH is not blocked
             sudo ufw allow 80/tcp   # Ensure NGINX is accessible
-            sudo ufw allow 3000/tcp # Ensure frontend is accessible
+            sudo ufw allow 443/tcp # Ensure frontend is accessible
             echo "y" | sudo ufw enable
             echo "✅ Firewall configured."
 
