@@ -47,8 +47,9 @@ jobs:
             echo "🔗 Enabling frontend site..."
             sudo ln -sf /etc/nginx/sites-available/frontend /etc/nginx/sites-enabled/frontend
       
-            echo "🚦 Restarting NGINX"
-            sudo systemctl restart nginx
+            # Test and restart NGINX
+            sudo nginx -t && sudo systemctl restart nginx
+            echo "✅ NGINX restarted."
       
             echo "🔐 Issuing SSL certificate using Certbot"
             sudo certbot --nginx \
@@ -66,6 +67,5 @@ jobs:
             sudo ufw allow 22/tcp
             sudo ufw allow 80/tcp
             sudo ufw allow 443/tcp
-            sudo ufw allow 3000/tcp
             echo "y" | sudo ufw enable
             echo "✅ Firewall configured."
