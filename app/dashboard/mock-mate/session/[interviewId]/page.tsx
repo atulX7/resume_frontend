@@ -200,9 +200,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
       })
 
       // Redirect after a short delay
-      setTimeout(() => {
-        window.location.href = '/dashboard/mock-mate'
-      }, 1500)
+      window.location.href = '/dashboard/mock-mate'
     } catch (error) {
       console.error('Error submitting interview:', error)
       toast.error('Failed to submit interview', {
