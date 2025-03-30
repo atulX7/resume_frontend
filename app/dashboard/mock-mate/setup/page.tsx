@@ -143,7 +143,6 @@ export default function SetupPage() {
     try {
       const formDataStr = localStorage.getItem('interview-form-data');
       if (!formDataStr) {
-        console.log('Interview form data not found. Please try again.');
         return;
       }
 
@@ -170,21 +169,19 @@ export default function SetupPage() {
         resume_file: resumeFile
       });
 
-      // Debugging: Log the entire response
-      console.log('Create Interview Response:', response);
+
 
       if (response.success && response.data) {
         if (response.data.session_id) {
           router.push(`/dashboard/mock-mate/session/${response.data.session_id}`);
         } else {
-          console.log('Session ID not found in response data:', response.data);
+          console.error('Session ID not found in response data:', response.data);
         }
       } else {
-        console.log('Failed to create interview. Response was not successful:', response);
+        console.error('Failed to create interview. Response was not successful:', response);
       }
     } catch (error) {
       console.error('Error creating interview:', error);
-      console.log('An error occurred while creating the interview.');
     }
   }
 

@@ -62,7 +62,6 @@ export class ResumeTailorService {
       });
 
       const result = await response.json();
-      console.log("result-------->", result)
 
       if (!response.ok) {
         console.error('API Error:', result);

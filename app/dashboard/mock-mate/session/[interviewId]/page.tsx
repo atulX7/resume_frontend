@@ -39,7 +39,6 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
 
   useEffect(() => {
     const savedQuestions = localStorage.getItem('current-interview-questions');
-    console.log('Saved questions:', savedQuestions);
     if (savedQuestions && savedQuestions !== 'undefined') {
       setQuestions(JSON.parse(savedQuestions));
     }
@@ -345,23 +344,6 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
               </CardContent>
             </Card>
 
-            {/* Recordings card */}
-            <Card className="flex-1 min-h-0">
-              <CardContent className="p-4 h-full overflow-auto">
-                <h2 className="text-lg font-semibold mb-4">Your Recordings</h2>
-                <div className="space-y-3">
-                  {answers.map((answer, index) => (
-                    <div key={index} className="bg-gray-50 p-3 rounded-lg">
-                      <h3 className="text-sm font-medium mb-2">Question {index + 1}</h3>
-                      <audio controls className="w-full h-8">
-                        <source src={URL.createObjectURL(answer.recording)} type="video/webm" />
-                        Your browser does not support the audio element.
-                      </audio>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
