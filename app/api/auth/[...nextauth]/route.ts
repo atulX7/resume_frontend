@@ -65,9 +65,7 @@ const handler = NextAuth({
           console.error("⚠️ No expires_at found in account response.");
           token.accessTokenExpires = Date.now() + (60 * 60 * 1000);  // Fallback to 1 hour
         }
-        console.log("==========");
-        console.log(account.expires_at);
-        console.log(token.accessTokenExpires);
+
 
         // ✅ Step 1: Sync user with FastAPI
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/sync-user`, {
@@ -81,14 +79,10 @@ const handler = NextAuth({
         const data = await res.json();
         token.id = data.user_id;  // ✅ Step 2: Store user.id in token
       }
-      // ✅ If token is still valid, return it
       if (Date.now() < (token.accessTokenExpires as number)) {
-        console.log("token valid");
         return token;
       }
 
-      // ✅ Otherwise, refresh the token
-      console.log("refresh token");
       return await refreshAccessToken(token);
     },
     async session({ session, token }) {
