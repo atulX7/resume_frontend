@@ -1,4 +1,4 @@
-import { FileText, Wand2, FileSearch, ScrollText, DollarSign, MessageSquare } from 'lucide-react'
+import { FileText, Wand2, FileSearch, ScrollText, MessageSquare } from 'lucide-react'
 
 export const siteConfig = {
   name: "ResuWin",
@@ -34,11 +34,6 @@ export const siteConfig = {
           icon: MessageSquare
         },
       ],
-    },
-    {
-      title: "Pricing",
-      href: "/pricing",
-      icon: DollarSign
     },
   ],
 } 

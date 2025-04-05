@@ -1,6 +1,7 @@
 import { 
-  Construction,
-  FileText,
+  ClipboardCheck,
+  FileEdit,
+  MessageSquare,
   User,
   type LucideIcon 
 } from "lucide-react";
@@ -19,27 +20,22 @@ interface MenuGroup {
 
 export const userMenuItems: MenuGroup[] = [
   {
-    groupLabel: "Career Toolkit",
+    groupLabel: "ResuBox",
     menus: [
       {
         href: "/dashboard/mock-mate",
-        label: "Mock Mate",
-        icon: FileText,
+        label: "Mock mate",
+        icon: MessageSquare,
       },
       {
-        href: "/dashboard/resume-perfect",
-        label: "Resume Perfect",
-        icon: FileText,
+        href: "/dashboard/resume-refiner",
+        label: "Resume Refiner",
+        icon: FileEdit,
       },
       {
-        href: "/dashboard/resume-eval",
-        label: "Resume Eval",
-        icon: FileText,
-      },
-      {
-        href: "/dashboard/pricing",
-        label: "Pricing",
-        icon: Construction,
+        href: "/dashboard/resume-analyzer",
+        label: "Resume Analyzer",
+        icon: ClipboardCheck,
       },
 
     ],

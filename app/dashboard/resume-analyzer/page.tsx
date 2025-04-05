@@ -68,7 +68,7 @@ export default function ResumeATS() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-indigo-50 px-6">
-      <h1 className="text-4xl font-bold text-indigo-600 mb-6">EVAL My Resume</h1>
+      <h1 className="text-4xl font-bold text-indigo-600 mb-6">Resume Analyzer</h1>
       <Card className="p-8 shadow-xl rounded-2xl bg-white max-w-lg w-full flex flex-col items-center">
         <Image
           src="/images/resume-analysis.svg"

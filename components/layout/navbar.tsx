@@ -22,8 +22,9 @@ export function Navbar({ title }: NavbarProps) {
         <div className="flex items-center space-x-8">
           <Link href="/" className="font-bold text-xl text-primary">
             {title || siteConfig.name}
+            <i><p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>Triumph Starts Here</p></i>
           </Link>
-        
+
         </div>
 
         <div className="ml-auto flex items-center gap-4">
