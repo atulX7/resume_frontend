@@ -49,7 +49,6 @@ const secondRow = reviews.slice(reviews.length / 2);
 const ReviewCard = ({
   img,
   name,
-  username,
   body,
 }: {
   img: string;
@@ -79,7 +78,6 @@ const ReviewCard = ({
           <figcaption className="text-sm font-medium dark:text-white">
             {name}
           </figcaption>
-          <p className="text-xs font-medium dark:text-white/40">{username}</p>
         </div>
       </div>
       <blockquote className="mt-2 text-sm dark:text-gray-300">{body}</blockquote>

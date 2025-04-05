@@ -7,22 +7,22 @@ const features = [
   {
     name: 'Smart ATS Analysis',
     description:
-      'Our AI-powered system analyzes your resume against job descriptions in real-time, providing detailed feedback on ATS compatibility and optimization suggestions.',
+      'Uncover how your resume performs in real-world hiring systems.Instantly evaluate ATS compatibility with AI-driven insights.',
     icon: Target,
   },
   {
-    name: 'Resume Enhancement',
-    description: 'Get personalized recommendations to improve your resume content, formatting, and keywords based on industry standards and job requirements.',
+    name: 'Precision Resume Boost ',
+    description: 'Stand out with expert-backed resume enhancements.Refine content, layout & language  to enhance your chances of getting the job you deserve.',
     icon: FileCheck,
   },
   {
     name: 'AI Mock Interviews',
-    description: 'Practice with our advanced AI interviewer that adapts to your industry and experience level, providing instant feedback on your responses.',
+    description: 'Practice like it’s the real deal with an AI that adjusts to you.Role-specific questions based on your resume to ensure a fair and accurate mock interview experience.',
     icon: Users,
   },
   {
     name: 'Career Insights',
-    description: 'Access AI-driven career advice and industry insights to make informed decisions about your professional development.',
+    description: 'Navigate your career with confidence using real-time insights.Get AI-curated growth suggestions to enhance your career trajectory.',
     icon: Brain,
   },
 ];

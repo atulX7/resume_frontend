@@ -1,7 +1,7 @@
 import { FileText, Wand2, FileSearch, ScrollText, DollarSign, MessageSquare } from 'lucide-react'
 
 export const siteConfig = {
-  name: "Boost Resume",
+  name: "ResuWin",
   description: "Create professional resumes and cover letters",
   mainNav: [
     {
