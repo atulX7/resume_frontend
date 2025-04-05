@@ -67,8 +67,8 @@ export default function ResumeATS() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-teal-50 px-6">
-      <h1 className="text-4xl font-bold text-teal-600 mb-6">EVAL My Resume</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-indigo-50 px-6">
+      <h1 className="text-4xl font-bold text-indigo-600 mb-6">EVAL My Resume</h1>
       <Card className="p-8 shadow-xl rounded-2xl bg-white max-w-lg w-full flex flex-col items-center">
         <Image
           src="/images/resume-analysis.svg"
@@ -77,16 +77,16 @@ export default function ResumeATS() {
           height={200}
           className="mb-4"
         />
-        <label className="w-64 flex flex-col items-center px-6 py-4 border-2 border-dashed border-teal-500 rounded-lg cursor-pointer hover:bg-teal-100 transition">
-          <Upload className="h-8 w-8 text-teal-500" />
-          <span className="mt-2 text-teal-600 text-sm">Select your resume</span>
+        <label className="w-64 flex flex-col items-center px-6 py-4 border-2 border-dashed border-indigo-500 rounded-lg cursor-pointer hover:bg-indigo-100 transition">
+          <Upload className="h-8 w-8 text-indigo-500" />
+          <span className="mt-2 text-indigo-600 text-sm">Select your resume</span>
           <input type='file' className="hidden" onChange={handleFileUpload} accept=".pdf,.doc,.docx" />
         </label>
         {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
         <Button
           onClick={handleSubmit}
           disabled={!file || loading}
-          className="mt-4 bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-lg transition disabled:bg-gray-400"
+          className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg transition disabled:bg-gray-400"
         >
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Analyze Resume'}
         </Button>
@@ -94,7 +94,7 @@ export default function ResumeATS() {
 
       {loading && (
         <div className="text-center mt-6">
-          <Loader2 className="animate-spin h-12 w-12 text-teal-500 mx-auto" />
+          <Loader2 className="animate-spin h-12 w-12 text-indigo-500 mx-auto" />
           <p className="mt-4 text-gray-600">Analyzing your resume...</p>
         </div>
       )}

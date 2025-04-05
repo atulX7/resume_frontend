@@ -55,9 +55,9 @@ const SCORE_CATEGORIES = {
 };
 
 function ResumeATSDetailsContent() {
-  const searchParams = useSearchParams();
-  const scoresParam = searchParams.get('scores');
-  const scores = scoresParam ? JSON.parse(decodeURIComponent(scoresParam)) as Record<string, number> : null;
+    const searchParams = useSearchParams();
+    const scoresParam = searchParams?.get('scores');
+    const scores = scoresParam ? JSON.parse(decodeURIComponent(scoresParam)) as Record<string, number> : null;
   
   const overallScore = scores ? Math.round(Object.values(scores).reduce((a, b) => a + b, 0) / Object.values(scores).length) : 0;
   

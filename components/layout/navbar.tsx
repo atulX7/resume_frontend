@@ -40,6 +40,7 @@ export function Navbar({ title }: NavbarProps) {
           {session ? (
             <Button
               variant="default"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white"
               onClick={() => {
                 const dashboardPath = session.user.role === 'ADMIN' ? '/admin/dashboard/mock-mate' : '/dashboard/mock-mate';
                 window.location.href = dashboardPath;
@@ -58,4 +59,4 @@ export function Navbar({ title }: NavbarProps) {
       </div>
     </nav>
   )
-} 
+}

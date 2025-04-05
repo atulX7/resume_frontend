@@ -264,7 +264,7 @@ export default function SetupPage() {
               className={`
                 px-8 py-6 rounded-xl text-lg font-semibold shadow-lg
                 ${devices.video && devices.audio 
-                  ? 'bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white transform hover:scale-105 transition-all duration-200' 
+                  ? 'bg-gradient-to-r from-indigo-500 to-emerald-500 hover:from-indigo-600 hover:to-emerald-600 text-white transform hover:scale-105 transition-all duration-200' 
                   : 'bg-gray-200 text-gray-500 cursor-not-allowed'}
               `}
             >

@@ -41,7 +41,7 @@ interface TailoredData {
 
 function TailorResumeDetailsContent() {
   const searchParams = useSearchParams();
-  const dataParam = searchParams.get('data');
+  const dataParam = searchParams?.get('data');
   const [tailoredData, setTailoredData] = useState<TailoredData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,14 +68,14 @@ function TailorResumeDetailsContent() {
     };
 
     return (
-      <div className={`p-4 rounded-lg border ${bgColorMap[color] || 'bg-teal-100 border-teal-300 text-teal-900'}`}>
+      <div className={`p-4 rounded-lg border ${bgColorMap[color] || 'bg-indigo-100 border-indigo-300 text-indigo-900'}`}>
         {text}
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-teal-50 flex justify-center py-12">
+    <div className="min-h-screen bg-indigo-50 flex justify-center py-12">
       <div className="w-full max-w-screen-lg bg-white shadow-xl rounded-2xl overflow-hidden">
         {error ? (
           <Card className="bg-red-100 border-red-300 p-6 text-center">
@@ -90,13 +90,13 @@ function TailorResumeDetailsContent() {
           </Card>
         ) : tailoredData?.sections ? (
           <Card className="p-8">
-            <CardHeader className="bg-teal-100/50 p-6 rounded-t-2xl flex items-center gap-4">
-              <ArrowUpCircle className="h-8 w-8 text-teal-600" />
+            <CardHeader className="bg-indigo-100/50 p-6 rounded-t-2xl flex items-center gap-4">
+              <ArrowUpCircle className="h-8 w-8 text-indigo-600" />
               <div>
-                <CardTitle className="text-2xl font-bold text-teal-800">
+                <CardTitle className="text-2xl font-bold text-indigo-800">
                   Resume Tailoring Insights
                 </CardTitle>
-                <CardDescription className="text-teal-600">
+                <CardDescription className="text-indigo-600">
                   Optimize your resume to stand out
                 </CardDescription>
               </div>
@@ -105,12 +105,12 @@ function TailorResumeDetailsContent() {
               {tailoredData.sections.summary && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <Edit className="h-6 w-6 text-teal-600" />
-                    <h3 className="text-xl font-semibold text-teal-800">
+                    <Edit className="h-6 w-6 text-indigo-600" />
+                    <h3 className="text-xl font-semibold text-indigo-800">
                       Professional Summary
                     </h3>
                   </div>
-                  <Separator className="bg-teal-300" />
+                  <Separator className="bg-indigo-300" />
                   <div className="space-y-3">
                     <p className="text-gray-700 font-medium">Current Summary</p>
                     <div className="p-4 bg-gray-100 rounded-lg">
@@ -127,13 +127,13 @@ function TailorResumeDetailsContent() {
 
               {tailoredData.sections.experience && (
                 <div className="space-y-6">
-                  <h3 className="text-xl font-semibold text-teal-800 flex items-center gap-3">
-                    <Award className="h-6 w-6 text-teal-600" /> Professional Experience
+                  <h3 className="text-xl font-semibold text-indigo-800 flex items-center gap-3">
+                    <Award className="h-6 w-6 text-indigo-600" /> Professional Experience
                   </h3>
-                  <Separator className="bg-teal-300" />
+                  <Separator className="bg-indigo-300" />
                   {tailoredData.sections.experience.map((exp, index) => (
                     <div key={index} className="bg-gray-100 p-6 rounded-xl space-y-4">
-                      <h4 className="text-lg font-medium text-teal-800">
+                      <h4 className="text-lg font-medium text-indigo-800">
                         {exp.position} at {exp.company}
                       </h4>
                       {exp.improvements.map((improvement, i) => (
@@ -164,7 +164,7 @@ function TailorResumeDetailsContent() {
 
 export default function TailorResumeDetails() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-teal-800">Optimizing your resume...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-indigo-800">Optimizing your resume...</div>}>
       <TailorResumeDetailsContent />
     </Suspense>
   );
