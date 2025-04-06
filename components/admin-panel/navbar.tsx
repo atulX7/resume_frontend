@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 export function Navbar() {
   const pathname = usePathname();
-  const paths = pathname.split('/').filter(path => path);
+  const paths = pathname?.split('/').filter(path => path) ?? [];
 
   return (
     <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">

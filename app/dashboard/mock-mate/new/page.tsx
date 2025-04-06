@@ -142,7 +142,7 @@ export default function NewInterviewPage() {
                 type="submit"
                 variant="default"
                 disabled={isSubmitting}
-                className="px-8 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors"
+                className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
               >
                 {isSubmitting ? 'Processing...' : 'Continue →'}
               </Button>

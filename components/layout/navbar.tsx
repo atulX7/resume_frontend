@@ -22,8 +22,9 @@ export function Navbar({ title }: NavbarProps) {
         <div className="flex items-center space-x-8">
           <Link href="/" className="font-bold text-xl text-primary">
             {title || siteConfig.name}
+            <i><p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>Triumph Starts Here</p></i>
           </Link>
-        
+
         </div>
 
         <div className="ml-auto flex items-center gap-4">
@@ -40,6 +41,7 @@ export function Navbar({ title }: NavbarProps) {
           {session ? (
             <Button
               variant="default"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white dark:bg-indigo-500 dark:hover:bg-indigo-600"
               onClick={() => {
                 const dashboardPath = session.user.role === 'ADMIN' ? '/admin/dashboard/mock-mate' : '/dashboard/mock-mate';
                 window.location.href = dashboardPath;
@@ -49,7 +51,7 @@ export function Navbar({ title }: NavbarProps) {
             </Button>
           ) : (
             <Link href="/auth/login">
-              <Button variant="default">
+              <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700 text-white dark:bg-indigo-500 dark:hover:bg-indigo-600">
                 Sign In
               </Button>
             </Link>
@@ -58,4 +60,4 @@ export function Navbar({ title }: NavbarProps) {
       </div>
     </nav>
   )
-} 
+}

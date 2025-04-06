@@ -9,15 +9,17 @@ body {
 
 @layer base {
   :root {
-    --background: var(--color-white);
-    --foreground: var(--color-slate-900);
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 246 83.3% 53.3%; /* Indigo-600 */
+    --primary-foreground: 210 40% 98%;
     --card: var(--color-white);
     --card-foreground: var(--color-slate-900);
     --popover: var(--color-white);
     --popover-foreground: var(--color-slate-900);
-    --primary: var(--color-teal-500);
+    --primary: var(--color-indigo-500);
     --primary-foreground: var(--color-slate-50);
-    --primary-hover: var(--color-teal-600);
+    --primary-hover: var(--color-indigo-600);
     --secondary: var(--color-gray-200);
     --secondary-foreground: var(--color-slate-900);
     --muted: var(--color-gray-200);
@@ -28,7 +30,7 @@ body {
     --destructive-foreground: var(--color-slate-50);
     --border: var(--color-gray-200);
     --input: var(--color-gray-200);
-    --ring: var(--color-teal-500);
+    --ring: var(--color-indigo-500);
     --chart-1: var(--color-chart-1);
     --chart-2: var(--color-chart-2);
     --chart-3: var(--color-chart-3);
@@ -45,15 +47,17 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: var(--color-slate-900);
-    --foreground: var(--color-slate-50);
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --primary: 246 83.3% 65.3%; /* Lighter indigo for dark mode */
+    --primary-foreground: 222.2 47.4% 11.2%;
     --card: var(--color-slate-900);
     --card-foreground: var(--color-slate-50);
     --popover: var(--color-slate-900);
     --popover-foreground: var(--color-slate-50);
-    --primary: var(--color-teal-600);
+    --primary: var(--color-indigo-600);
     --primary-foreground: var(--color-slate-900);
-    --primary-hover: var(--color-teal-500);
+    --primary-hover: var(--color-indigo-500);
     --secondary: var(--color-gray-700);
     --secondary-foreground: var(--color-slate-50);
     --muted: var(--color-gray-700);
@@ -64,7 +68,7 @@ body {
     --destructive-foreground: var(--color-slate-50);
     --border: var(--color-gray-700);
     --input: var(--color-gray-700);
-    --ring: var(--color-teal-600);
+    --ring: var(--color-indigo-600);
     --chart-1: var(--color-chart-1);
     --chart-2: var(--color-chart-2);
     --chart-3: var(--color-chart-3);
@@ -124,4 +128,46 @@ body {
 
 .animate-fade-left {
   animation: fade-left 0.5s ease-out;
+}
+
+.bg-grid-gray-900\/\[0\.04\] {
+  background-image: linear-gradient(to right, rgb(17 24 39 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(17 24 39 / 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-grid-white\/\[0\.02\] {
+  background-image: linear-gradient(to right, rgb(255 255 255 / 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.02) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes scroll-reverse {
+  from {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--duration) linear infinite;
+}
+
+.animate-scroll-reverse {
+  animation: scroll-reverse var(--duration) linear infinite;
+}
+
+.animate-pause {
+  animation-play-state: paused;
 }

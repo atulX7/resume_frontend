@@ -1,21 +1,27 @@
-import CallToAction from "@/sections/CallToAction";
-import Faqs from "@/sections/Faqs";
-import Features from "@/sections/Features";
-import Hero from "@/sections/Hero";
-import Testimonials from "@/sections/Testimonials";
-import Introduction from "@/sections/Introduction";
-import LogoTicker from "@/sections/LogoTicker";
+import { AccordionComponent } from "@/components/homepage/accordion-component";
+import { BetaBanner } from "@/components/homepage/beta-banner";
+import CareerTips from "@/components/homepage/career-tips";
+import HeroSection from "@/components/homepage/hero-section";
+import MarketingCards from "@/components/homepage/marketing-cards";
+import { MarqueeDemo } from "@/components/homepage/marquee-demo";
+import SideBySide from "@/components/homepage/side-by-side";
+import { Footer } from "@/components/layout/footer";
 
-export default function Home() {
-    return (
-        <>
-            <Hero />
-            <LogoTicker />
-            <Introduction />
-            <Features />
-            <Testimonials />
-            <Faqs />
-            <CallToAction />
-        </>
-    );
+export default async function Home() {
+  return (
+    <>
+      <main>
+        <div className="flex flex-col justify-center items-center w-full mt-[1rem] p-3">
+          <HeroSection />
+        </div>
+        <BetaBanner />
+        <SideBySide />
+        <MarketingCards />
+        <CareerTips />
+        <MarqueeDemo />
+        <AccordionComponent />
+      </main>
+      <Footer />
+    </>
+  );
 }
