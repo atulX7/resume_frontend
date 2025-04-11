@@ -52,7 +52,7 @@ function TailorResumeDetailsContent() {
       }
       const decodedData = atob(dataParam);
       const parsedData = JSON.parse(decodedData);
-      const reviewSuggestions = parsedData.review_suggestions.review_suggestions;
+      const reviewSuggestions = parsedData.review_suggestions;
       setTailoredData(reviewSuggestions);
     } catch (err) {
       setError((err as Error).message);
