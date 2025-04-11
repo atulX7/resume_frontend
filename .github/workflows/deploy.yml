@@ -1,0 +1,168 @@
+name: Deploy Next.js to Ubuntu EC2
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main  # Deployment branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ✅ Step 1: Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # ✅ Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.18.0'  # Using a Node.js version compatible with Next.js
+
+      # ✅ Step 3: Prepare SSH Key
+      - name: Prepare SSH Key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > ./id_rsa
+          chmod 600 ./id_rsa
+
+      # ✅ Step 4: Generate `.env` in GitHub Runner
+      - name: Generate `.env` file
+        run: |
+          echo "📌 Creating .env file locally..."
+          cat <<EOF > .env
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+          NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_USE_MOCK_DATA=${{ vars.NEXT_PUBLIC_USE_MOCK_DATA }}
+          EOF
+          echo "✅ .env file created."
+
+      # ✅ Step 5: Install Dependencies & Build in GitHub Runner
+      - name: Install Dependencies & Build
+        run: |
+          echo "📦 Installing dependencies..."
+          npm ci
+          echo "✅ Dependencies installed."
+          
+          echo "🛠️ Building the frontend..."
+          npm run build
+          echo "✅ Build completed."
+
+      # ✅ Step 6: Transfer Built Code to EC2
+      - name: Transfer Files to EC2
+        run: |
+          echo "🔄 Connecting to EC2 & transferring files..."
+          if [ ! -d ".next" ]; then
+            echo "❌ Build directory does not exist! Make sure 'npm run build' succeeded."
+            exit 1
+          fi
+          
+          ssh -o StrictHostKeyChecking=no -i ./id_rsa -T ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            echo "🛑 Stopping running frontend application..."
+            pm2 stop resume_frontend || true  # Stop only the frontend, not all apps
+
+            echo "🧹 Cleaning up old files and caches..."
+            sudo apt-get autoremove -y
+            sudo apt-get clean
+          
+            echo "🔄 Checking if resume_frontend directory exists..."
+            export HOME=/home/${{ secrets.EC2_USER }}
+            if [ -d "$HOME/resume_frontend" ]; then
+              echo "📥 Directory already exists, removing old files..."
+              rm -rf $HOME/resume_frontend
+            fi
+            mkdir -p $HOME/resume_frontend
+            echo "✅ Directory ready."
+          EOF
+
+          rsync -avz --exclude=node_modules --exclude=.git -e "ssh -o StrictHostKeyChecking=no -i ./id_rsa" ./ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/resume_frontend
+          echo "✅ Files transferred."
+
+
+      # ✅ Step 7: Start Frontend on EC2
+      - name: Deploy Frontend Application
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "🚀 Restarting Frontend Application..."
+            cd $HOME/resume_frontend
+
+            echo "⚙️ Checking if Node.js is installed..."
+            if ! command -v node &> /dev/null; then
+              echo "🚀 Installing Node.js & npm..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            else
+              echo "✅ Node.js is already installed."
+            fi
+            node -v
+            npm -v
+
+            echo "📦 Installing dependencies..."
+            npm ci --omit=dev
+            echo "✅ Dependencies installed."
+      
+            echo "⚙️ Ensuring PM2 is installed..."
+            if ! command -v pm2 &> /dev/null; then
+              echo "🚀 Installing PM2..."
+              sudo npm install -g pm2
+            fi
+            echo "✅ PM2 is ready."
+
+            echo "🚀 Restarting Frontend Application..."
+            pm2 restart resume_frontend --update-env || pm2 start npm --name "resume_frontend" -- start --update-env
+            pm2 save
+            echo "✅ Frontend restarted successfully."
+
+            echo "🛠️ Checking Frontend status..."
+            sleep 5
+            if curl -f https://${{ vars.SERVER_CERT_NAME }}; then
+              echo "✅ Frontend is running!"
+            else
+              echo "❌ Frontend failed to start! Check logs."
+              exit 1
+            fi
+
+            echo "🌐 Configuring firewall rules..."
+            sudo ufw allow 22/tcp  # Ensure SSH is not blocked
+            sudo ufw allow 80/tcp   # Ensure NGINX is accessible
+            sudo ufw allow 443/tcp # Ensure frontend is accessible
+            echo "y" | sudo ufw enable
+            echo "✅ Firewall configured."
+
+      - name: Ensure SSH Service is Running
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "⚙️ Ensuring SSH is running..."
+            sudo systemctl restart ssh
+            sudo ufw allow 22/tcp
+            echo "✅ SSH is active."
+
+      - name: Cleanup
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "🛑 Performing Final Cleanup..."
+            echo "🧹 Cleaning up package lists..."
+            sudo apt-get autoremove -y
+            sudo apt-get clean
+            echo "🔄 Restarting NGINX..."
+            sudo systemctl restart nginx
+            echo "✅ NGINX restarted successfully."
