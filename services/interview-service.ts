@@ -213,21 +213,17 @@ export class InterviewService {
         },
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        return { 
-          success: false, 
-          error: data.message || `Failed to process interview (Status: ${response.status})`
-        };
+        let error = `Failed to process interview (Status: ${response.status})`;
+        try {
+          const data = await response.json();
+          error = data.message || error;
+        } catch (_) {}
+        return { success: false, error };
       }
-
-      if (response.status === 403) {
-        handle403Error();
-        return { success: false, error: 'Usage limit reached' };
-      }
-
-      return { success: true, data };
+      // The backend now returns a JSON with "status" and "message"
+      const data = await response.json();
+      return { success: data.status, data: data.message };
     } catch (error) {
       console.error('Error processing interview:', error);
       return { 

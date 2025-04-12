@@ -48,7 +48,7 @@ export default function ResumeATS() {
       if (response.success && response.scores) {
         setScores({ scores: response.scores });
         toast.success('Analysis Complete');
-        window.location.href = `/dashboard/resume-eval/details?scores=${encodeURIComponent(
+        window.location.href = `/dashboard/resume-analyzer/details?scores=${encodeURIComponent(
           JSON.stringify(response.scores)
         )}`;
       } else {

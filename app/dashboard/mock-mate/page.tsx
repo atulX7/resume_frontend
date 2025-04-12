@@ -148,7 +148,7 @@ export default function MockMatePage() {
                 {interviews.map((interview) => (
                   <Link 
                     key={interview.session_id}
-                    href={`/dashboard/mock-mate/analysis/${interview.session_id}`}
+                    href={`/dashboard/mock-mate/${interview.session_id}`}
                   >
                     <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full border-2 border-gray-100 group">
                       <CardHeader>
