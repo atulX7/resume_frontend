@@ -218,7 +218,9 @@ export class InterviewService {
         try {
           const data = await response.json();
           error = data.message || error;
-        } catch (_) {}
+        } catch {
+          // Silently handle JSON parse error
+        }
         return { success: false, error };
       }
       // The backend now returns a JSON with "status" and "message"
