@@ -17,6 +17,7 @@ export default function SetupPage() {
   const audioContext = useRef<AudioContext | null>(null)
   const analyser = useRef<AnalyserNode | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [isStarting, setIsStarting] = useState(false)
 
   useEffect(() => {
     let mounted = true;
@@ -140,12 +141,15 @@ export default function SetupPage() {
   const createAndStartInterview = async () => {
     if (!devices.video || !devices.audio || !user?.id) return;
     
+    setIsStarting(true); // Set loading state when starting
+    
     try {
       const formDataStr = localStorage.getItem('interview-form-data');
       if (!formDataStr) {
+        setIsStarting(false);
         return;
       }
-
+  
       const formData = JSON.parse(formDataStr);
       
       let resumeFile = null;
@@ -168,20 +172,21 @@ export default function SetupPage() {
         job_description: formData.job_description,
         resume_file: resumeFile
       });
-
-
-
+  
       if (response.success && response.data) {
         if (response.data.session_id) {
           router.push(`/dashboard/mock-mate/session/${response.data.session_id}`);
         } else {
           console.error('Session ID not found in response data:', response.data);
+          setIsStarting(false);
         }
       } else {
         console.error('Failed to create interview. Response was not successful:', response);
+        setIsStarting(false);
       }
     } catch (error) {
       console.error('Error creating interview:', error);
+      setIsStarting(false);
     }
   }
 
@@ -258,18 +263,21 @@ export default function SetupPage() {
 
           {/* Action Button */}
           <div className="flex flex-col items-center pt-6 space-y-4">
-            <Button
-              onClick={createAndStartInterview}
-              disabled={!devices.video || !devices.audio}
-              className={`
-                px-8 py-6 rounded-xl text-lg font-semibold shadow-lg
-                ${devices.video && devices.audio 
-                  ? 'bg-gradient-to-r from-indigo-500 to-emerald-500 hover:from-indigo-600 hover:to-emerald-600 text-white transform hover:scale-105 transition-all duration-200' 
-                  : 'bg-gray-200 text-gray-500 cursor-not-allowed'}
-              `}
-            >
-              {devices.video && devices.audio ? 'Start Interview →' : 'Please Enable Devices'}
-            </Button>
+          <Button
+  onClick={createAndStartInterview}
+  disabled={!devices.video || !devices.audio || isStarting}
+  className={`
+    px-8 py-6 rounded-xl text-lg font-semibold shadow-lg
+    ${devices.video && devices.audio && !isStarting
+      ? 'bg-gradient-to-r from-indigo-500 to-emerald-500 hover:from-indigo-600 hover:to-emerald-600 text-white transform hover:scale-105 transition-all duration-200' 
+      : 'bg-gray-200 text-gray-500 cursor-not-allowed'}
+  `}
+>
+  {isStarting 
+    ? 'Starting Interview...' 
+    : (devices.video && devices.audio ? 'Start Interview →' : 'Please Enable Devices')
+  }
+</Button>
             {!devices.video || !devices.audio ? (
               <p className="text-sm text-red-500">
                 Please allow access to both camera and microphone to continue

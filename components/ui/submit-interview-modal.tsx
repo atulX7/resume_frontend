@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { CheckCircle, Clock, Mail } from "lucide-react"
+import { useRouter } from 'next/navigation'
 
 interface SubmitInterviewModalProps {
   isOpen: boolean
@@ -24,73 +25,100 @@ export function SubmitInterviewModal({
   isLoading = false,
   userEmail,
 }: SubmitInterviewModalProps) {
+  const router = useRouter()
+
+  const handleSubmit = async () => {
+    try {
+      await onConfirm()
+      router.push('/dashboard/mock-mate')
+    } catch (error) {
+      console.error('Error submitting interview:', error)
+    }
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-gray-900">
-            Submit Interview
+      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-white">
+        <DialogHeader className="p-6 pb-4 bg-gradient-to-r from-indigo-500 to-blue-600">
+          <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
+            <CheckCircle className="w-6 h-6" />
+            Ready to Submit
           </DialogTitle>
-          <DialogDescription>
-            Please review your information before submitting
+          <DialogDescription className="text-indigo-100">
+            Your interview session is complete. Let&apos;s review before processing.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="bg-white rounded-lg overflow-hidden">
+        <div className="p-6 space-y-6">
           {/* User Info Section */}
-          <div className="space-y-4 mb-6">
-            <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-              <Mail className="w-5 h-5 text-indigo-500 mr-3" />
-              <span className="text-gray-600 w-24 font-medium">Email</span>
-              <span className="text-gray-900">{userEmail}</span>
+          <div className="space-y-4">
+            <div className="flex items-center p-4 bg-gray-50 rounded-xl shadow-sm border border-gray-100">
+              <Mail className="w-6 h-6 text-indigo-600 mr-3" />
+              <div className="flex flex-col">
+                <span className="text-sm text-indigo-600 font-medium">Your Email</span>
+                <span className="text-gray-900 font-medium">{userEmail}</span>
+              </div>
             </div>
             <div className="text-sm text-indigo-600 flex items-center gap-2 px-1">
-              <CheckCircle className="w-4 h-4" />
-              We&apos;ll send your interview feedback to this email address
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              Interview feedback will be sent to this email
             </div>
           </div>
 
           {/* Process Info */}
-          <div className="space-y-3 bg-indigo-50 p-4 rounded-lg mb-6">
-            <h3 className="font-medium text-indigo-900 flex items-center gap-2">
-              <CheckCircle className="w-5 h-5" />
+          <div className="space-y-4 bg-indigo-50 p-5 rounded-xl border border-indigo-100">
+            <h3 className="font-semibold text-indigo-900 flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-indigo-600" />
               What happens next?
             </h3>
-            <ul className="space-y-2 text-sm text-indigo-800">
-              <li className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
-                Your interview will be processed by our AI system
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-3 bg-white/80 p-3 rounded-lg">
+                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <div className="w-2 h-2 bg-indigo-600 rounded-full" />
+                </div>
+                <span className="text-gray-700">AI processes your interview responses</span>
               </li>
-              <li className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
-                Detailed feedback will be sent to your email
+              <li className="flex items-center gap-3 bg-white/80 p-3 rounded-lg">
+                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-indigo-600" />
+                </div>
+                <span className="text-gray-700">Detailed feedback sent to your email</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                Processing typically takes 5-10 minutes
+              <li className="flex items-center gap-3 bg-white/80 p-3 rounded-lg">
+                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-indigo-600" />
+                </div>
+                <span className="text-gray-700">Processing takes 5-10 minutes</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button 
-            onClick={onConfirm} 
-            disabled={isLoading}
-            className="gap-2 bg-indigo-600 hover:bg-indigo-700"
-          >
-            {isLoading ? (
-              <>
-                <span className="animate-spin">⏳</span>
-                Processing...
-              </>
-            ) : (
-              "Confirm Submission"
-            )}
-          </Button>
+        <DialogFooter className="p-6 pt-0">
+          <div className="flex gap-3 w-full">
+            <Button 
+              variant="outline" 
+              onClick={onClose} 
+              disabled={isLoading}
+              className="flex-1 border-indigo-200 hover:bg-indigo-50"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSubmit} 
+              disabled={isLoading}
+              className="flex-1 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200"
+            >
+              {isLoading ? (
+                <>
+                  <span className="animate-spin">⏳</span>
+                  Processing...
+                </>
+              ) : (
+                "Submit Interview"
+              )}
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

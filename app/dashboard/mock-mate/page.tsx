@@ -38,18 +38,17 @@ export default function MockMatePage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <div className="p-6 space-y-8 container mx-auto max-w-7xl">
-        {/* Hero Section - Show only when there are NO interviews */}
+        {/* Hero Section */}
         {!isLoading && interviews.length === 0 ? (
           <div className="flex justify-between items-center min-h-[80vh] gap-8">
             <div className="max-w-xl space-y-6">
-              <h1 className="text-5xl font-bold mb-4 text-[#0A2647] leading-tight">
-                Welcome to <span className="text-primary">Mock Mate</span>
+              <h1 className="text-5xl font-bold mb-4 text-[#0A2647] dark:text-white leading-tight">
+                Welcome to <span className="text-primary dark:text-primary-foreground">Mock Mate</span>
               </h1>
-              <p className="text-gray-700 mb-8 text-lg leading-relaxed">
-                Get more job offers by improving your interview skills, master the process, breakdown your
-                interviews into manageable parts, and finally conquer your desired job.
+              <p className="text-gray-700 dark:text-gray-300 mb-8 text-lg leading-relaxed">
+                Get more job offers by improving your interview skills...
               </p>
               <Link 
                 href="/dashboard/mock-mate/new"
@@ -71,16 +70,15 @@ export default function MockMatePage() {
           </div>
         ) : null}
 
-        {/* Modified header section when interviews exist */}
+        {/* Modified header section */}
         {interviews.length > 0 && (
           <div className="flex justify-between items-center gap-8 pt-8">
             <div className="max-w-xl space-y-6">
-              <h1 className="text-5xl font-bold mb-4 text-[#0A2647] leading-tight">
-                Welcome to <span className="text-primary">Mock Mate</span>
+              <h1 className="text-5xl font-bold mb-4 text-[#0A2647] dark:text-white leading-tight">
+                Welcome to <span className="text-primary dark:text-primary-foreground">Mock Mate</span>
               </h1>
-              <p className="text-gray-700 mb-8 text-lg leading-relaxed">
-                Get more job offers by improving your interview skills, master the process, breakdown your
-                interviews into manageable parts, and finally conquer your desired job.
+              <p className="text-gray-700 dark:text-gray-300 mb-8 text-lg leading-relaxed">
+                Get more job offers by improving your interview skills...
               </p>
               <Link 
                 href="/dashboard/mock-mate/new"
@@ -106,11 +104,11 @@ export default function MockMatePage() {
         {interviews.length > 0 && (
           <div className="relative space-y-4 pt-16">
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
-              <ArrowRight className="w-8 h-8 text-primary transform rotate-90" />
-              <span className="text-sm font-medium text-gray-600">Your Interviews</span>
+              <ArrowRight className="w-8 h-8 text-primary dark:text-primary-foreground transform rotate-90" />
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Your Interviews</span>
             </div>
             
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">Your Mock Interviews</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Your Mock Interviews</h2>
             
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
