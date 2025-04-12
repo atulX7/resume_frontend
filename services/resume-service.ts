@@ -1,4 +1,5 @@
 import { getSession } from "next-auth/react";
+import { handle403Error } from '@/utils/error-handler';
 
 interface ResumeScoreResponse {
   success: boolean;
@@ -32,6 +33,10 @@ export class ResumeService {
       const result = await response.json();
       
       if (!response.ok) {
+        if (response.status === 403) {
+          handle403Error();
+          return { success: false, error: 'Usage limit reached' };
+        }
         return { success: false, error: result.message || 'Failed to analyze resume' };
       }
 
@@ -43,4 +48,4 @@ export class ResumeService {
       };
     }
   }
-} 
+}

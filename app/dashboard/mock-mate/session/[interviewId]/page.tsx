@@ -306,7 +306,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
                     onClick={() => setIsSubmitModalOpen(true)}
                     variant="default"
                     size="lg"
-                    className="w-full h-12 text-base gap-2"
+                    className="w-full h-12 text-base gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
                   >
                     <Send className="w-5 h-5" />
                     Submit Interview
@@ -316,7 +316,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
                     onClick={startAnswering}
                     variant="default"
                     size="lg"
-                    className="w-full h-12 text-base gap-2"
+                    className="w-full h-12 text-base gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
                   >
                     <PlayCircle className="w-5 h-5" />
                     Start Recording
@@ -329,7 +329,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
                     }}
                     variant="destructive"
                     size="lg"
-                    className="w-full h-12 text-base gap-2"
+                    className="w-full h-12 text-base gap-2 bg-red-600 hover:bg-red-700 text-white"
                   >
                     <StopCircle className="w-5 h-5" />
                     Stop Recording
@@ -344,6 +344,50 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
               </CardContent>
             </Card>
 
+            {/* New Interview Tips Card */}
+            <Card className="flex-1 min-h-0">
+              <CardContent className="h-full p-4">
+                <div className="h-full flex flex-col">
+                  <div className="mb-3">
+                    <h3 className="text-lg font-semibold text-indigo-900">AI Interview Tips</h3>
+                    <p className="text-xs text-gray-600">
+                      Our AI analyzes these key aspects of your responses:
+                    </p>
+                  </div>
+
+                  <div className="flex-1 grid grid-cols-1 gap-2 auto-rows-min">
+                    <div className="p-2 bg-indigo-50 rounded-lg">
+                      <h4 className="font-medium text-sm text-indigo-900">Communication</h4>
+                      <p className="text-xs text-gray-600">
+                        Speak clearly with steady pace. AI evaluates articulation.
+                      </p>
+                    </div>
+
+                    <div className="p-2 bg-indigo-50 rounded-lg">
+                      <h4 className="font-medium text-sm text-indigo-900">STAR Method</h4>
+                      <p className="text-xs text-gray-600">
+                        Situation, Task, Action, Result. Keep responses structured.
+                      </p>
+                    </div>
+
+                    <div className="p-2 bg-indigo-50 rounded-lg">
+                      <h4 className="font-medium text-sm text-indigo-900">Professionalism</h4>
+                      <p className="text-xs text-gray-600">
+                        Good posture, eye contact, show enthusiasm.
+                      </p>
+                    </div>
+
+                    {recording && (
+                      <div className="p-2 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-xs text-green-800 font-medium">
+                          🎯 Recording: Focus on clear, structured response
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

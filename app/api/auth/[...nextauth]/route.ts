@@ -3,7 +3,6 @@ import GoogleProvider from "next-auth/providers/google"
 
 
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
-// ✅ Function to Refresh Access Token
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function refreshAccessToken(token: any) {
   try {
@@ -27,8 +26,8 @@ async function refreshAccessToken(token: any) {
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
-      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000, // Extend expiry
-      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Keep existing refresh token
+      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000, 
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
     };
   } catch (error) {
     console.error("Failed to refresh access token", error);
@@ -58,16 +57,15 @@ const handler = NextAuth({
         token.email = user.email;
         token.image = user.image;
         token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token; // ✅ Store refresh token
+        token.refreshToken = account.refresh_token; 
         if (account.expires_at) {
-          token.accessTokenExpires = account.expires_at * 1000; // ✅ Convert to milliseconds
+          token.accessTokenExpires = account.expires_at * 1000;
         } else {
           console.error("⚠️ No expires_at found in account response.");
-          token.accessTokenExpires = Date.now() + (60 * 60 * 1000);  // Fallback to 1 hour
+          token.accessTokenExpires = Date.now() + (60 * 60 * 1000);
         }
 
 
-        // ✅ Step 1: Sync user with FastAPI
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/sync-user`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -76,16 +74,33 @@ const handler = NextAuth({
           }),
         });
 
+        if (res.status === 401) {
+          return { ...token, signOut: true };
+        }
+
         const data = await res.json();
-        token.id = data.user_id;  // ✅ Step 2: Store user.id in token
+        token.id = data.user_id;
       }
       if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
 
-      return await refreshAccessToken(token);
+      const refreshedToken = await refreshAccessToken(token);
+      
+      if (refreshedToken.error) {
+        return { ...refreshedToken, signOut: true };
+      }
+
+      return refreshedToken;
     },
     async session({ session, token }) {
+      if (token.error === "RefreshAccessTokenError" || token.signOut) {
+        return {
+          expires: "0",
+          user: { name: null, email: null, image: null }
+        }
+      }
+
       if (session?.user) {
         session.user = {
           ...session.user,

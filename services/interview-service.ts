@@ -1,5 +1,6 @@
 import { ApiError } from "next/dist/server/api-utils";
 import { getSession } from "next-auth/react";
+import { handle403Error } from "@/utils/error-handler";
 
 export interface AnalysisResponse {
   success: boolean;
@@ -73,6 +74,7 @@ interface UserInterviewsResponse {
   error?: string;
 }
 
+
 export class InterviewService {
   private static BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -92,7 +94,13 @@ export class InterviewService {
         throw new Error(`Failed to fetch analysis (Status: ${response.status})`);
       }
       const data = await response.json();
+      if (response.status === 403) {
+        handle403Error();
+        return { success: false, error: 'Usage limit reached' };
+      }
       return { success: true, data };
+
+
     } catch (error) {
       console.error('Error fetching analysis:', error);
       return { 
@@ -145,6 +153,11 @@ export class InterviewService {
 
       if (!result.session_id || !result.questions) {
         return { success: false, error: 'Invalid response format from server' };
+      }
+
+      if (response.status === 403) {
+        handle403Error();
+        return { success: false, error: 'Usage limit reached' };
       }
 
       localStorage.setItem('current-interview-questions', JSON.stringify(result.questions));
@@ -209,6 +222,11 @@ export class InterviewService {
         };
       }
 
+      if (response.status === 403) {
+        handle403Error();
+        return { success: false, error: 'Usage limit reached' };
+      }
+
       return { success: true, data };
     } catch (error) {
       console.error('Error processing interview:', error);
@@ -238,6 +256,11 @@ export class InterviewService {
 
       if (!response.ok) {
         throw new Error(`Failed to fetch interviews (Status: ${response.status})`);
+      }
+
+      if (response.status === 403) {
+        handle403Error();
+        return { success: false, error: 'Usage limit reached' };
       }
 
       const data = await response.json();
