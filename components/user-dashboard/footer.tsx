@@ -5,9 +5,14 @@ import { useTheme } from 'next-themes'
 export function Footer() {
   const { theme, setTheme } = useTheme()
   const emailLink = "mailto:support@resuwin.com?subject=Contact%20ResuWin"
-  
+  const privacyPolicyLink = "/privacy-policy"
+
   const handleContact = () => {
     window.location.href = emailLink
+  }
+
+  const handlePrivacyPolicy = () => {
+    window.location.href = privacyPolicyLink
   }
 
   const currentYear = new Date().getFullYear()
@@ -37,6 +42,14 @@ export function Footer() {
           >
             <Mail className="h-4 w-4" />
             Contact Us
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handlePrivacyPolicy}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+          >
+            Privacy Policy
           </Button>
         </div>
       </div>

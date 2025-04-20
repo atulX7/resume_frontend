@@ -41,8 +41,10 @@ export default function TailorResumePage() {
       });
 
       if (response.success && response.data) {
-        const encodedData = btoa(JSON.stringify(response.data.sections));
-        router.push(`/dashboard/resume-refiner/details?data=${encodedData}`);
+        const queryParams = new URLSearchParams({
+          data: JSON.stringify(response.data)
+        });
+        router.push(`/dashboard/resume-refiner/details?${queryParams.toString()}`);
       } else {
         console.error('Failed to tailor resume:', response.error);
       }
@@ -54,25 +56,25 @@ export default function TailorResumePage() {
   };
 
   return (
-    <div className="min-h-screen bg-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-indigo-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold text-indigo-800 mb-4 flex items-center justify-center">
-            <Award className="w-12 h-12 mr-4 text-indigo-600" />
+          <h1 className="text-4xl font-extrabold text-indigo-800 dark:text-indigo-400 mb-4 flex items-center justify-center">
+            <Award className="w-12 h-12 mr-4 text-indigo-600 dark:text-indigo-400" />
             Resume Tailoring Wizard
           </h1>
-          <p className="text-indigo-600 max-w-2xl mx-auto">
+          <p className="text-indigo-600 dark:text-indigo-300 max-w-2xl mx-auto">
             Transform your resume to perfectly match your dream job. Our intelligent tailoring service helps you highlight your most relevant skills and experiences.
           </p>
         </div>
 
-        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden ring-4 ring-indigo-200 ring-opacity-50">
+        <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden ring-4 ring-indigo-200 dark:ring-indigo-500 ring-opacity-50">
           <div className="p-8 space-y-6">
-            <div className="flex items-center bg-indigo-50 p-4 rounded-lg">
-              <Star className="h-6 w-6 text-indigo-600 mr-4" />
+            <div className="flex items-center bg-indigo-50 dark:bg-gray-700 p-4 rounded-lg">
+              <Star className="h-6 w-6 text-indigo-600 dark:text-indigo-400 mr-4" />
               <div>
-                <h2 className="text-lg font-semibold text-indigo-800">Boost Your Job Application</h2>
-                <p className="text-indigo-600 text-sm">
+                <h2 className="text-lg font-semibold text-indigo-800 dark:text-indigo-300">Boost Your Job Application</h2>
+                <p className="text-indigo-600 dark:text-indigo-300 text-sm">
                   Customize your resume to match the job description and increase your chances of getting an interview.
                 </p>
               </div>
@@ -81,7 +83,7 @@ export default function TailorResumePage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="jobTitle" className="block text-sm font-medium text-indigo-800 mb-2">
+                  <label htmlFor="jobTitle" className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
                     Job Title
                   </label>
                   <Input
@@ -91,11 +93,11 @@ export default function TailorResumePage() {
                     value={formData.jobTitle}
                     onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
                     required
-                    className="border-indigo-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="border-indigo-300 dark:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500"
                   />
                 </div>
                 <div>
-                  <label htmlFor="skills" className="block text-sm font-medium text-indigo-800 mb-2">
+                  <label htmlFor="skills" className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
                   Your Skills
                   </label>
                   <Input
@@ -105,13 +107,13 @@ export default function TailorResumePage() {
                     value={formData.skills}
                     onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
                     required
-                    className="border-indigo-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="border-indigo-300 dark:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="jobDescription" className="block text-sm font-medium text-indigo-800 mb-2">
+                <label htmlFor="jobDescription" className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
                   Job Description
                 </label>
                 <Textarea
@@ -121,12 +123,12 @@ export default function TailorResumePage() {
                   onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
                   required
                   rows={5}
-                  className="border-indigo-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="border-indigo-300 dark:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500"
                 />
               </div>
 
               <div>
-                <label htmlFor="resumeFile" className="block text-sm font-medium text-indigo-800 mb-2">
+                <label htmlFor="resumeFile" className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
                   Upload Resume
                 </label>
                 <div className="flex items-center space-x-4">
@@ -136,16 +138,16 @@ export default function TailorResumePage() {
                     accept=".pdf,.doc,.docx"
                     onChange={(e) => setFormData({ ...formData, resumeFile: e.target.files?.[0] || null })}
                     required
-                    className="border-indigo-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="border-indigo-300 dark:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500"
                   />
-                  <FileText className="w-6 h-6 text-indigo-500" />
+                  <FileText className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
                 </div>
               </div>
 
               <Button 
                 type="submit" 
                 disabled={isLoading}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white transition-colors duration-300 shadow-lg hover:shadow-xl"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white transition-colors duration-300 shadow-lg hover:shadow-xl"
               >
                 {isLoading ? 'Tailoring...' : 'Perfect My Resume'}
               </Button>

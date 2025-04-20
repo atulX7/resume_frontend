@@ -10,7 +10,7 @@ const ServicesData = [
     name: "ATS Score Analysis",
     description: "Get detailed insights on how your resume performs against ATS systems. Our AI analyzes and scores your resume, providing actionable improvements.",
     imageUrl: "https://img.icons8.com/fluency/96/analytics.png",
-    url: "/ats-analysis",
+    url: "/auth/login",
     color: "from-[#2563eb] to-[#3b82f6]",
   },
   {
@@ -18,7 +18,7 @@ const ServicesData = [
     name: "Resume Enhancement",
     description: "Transform your resume with AI-powered suggestions, professional formatting, and industry-specific optimization to stand out from the competition.",
     imageUrl: "https://img.icons8.com/fluency/96/resume.png",
-    url: "/resume-enhance",
+    url: "/auth/login",
     color: "from-[#059669] to-[#34d399]",
   },
   {
@@ -26,7 +26,7 @@ const ServicesData = [
     name: "Mock Interviews",
     description: "Practice with AI-driven interview simulations tailored to your industry. Receive instant feedback on your responses and communication skills.",
     imageUrl: "https://img.icons8.com/fluency/96/communication.png",
-    url: "/mock-interview",
+    url: "/auth/login",
     color: "from-[#7c3aed] to-[#8b5cf6]",
   },
   {
@@ -34,7 +34,7 @@ const ServicesData = [
     name: "Smart Career Tips",
     description: "Access personalized career advice and industry insights powered by AI to help you make informed decisions about your professional journey.",
     imageUrl: "https://img.icons8.com/fluency/96/light-on.png",
-    url: "/career-tips",
+    url: "/auth/login",
     color: "from-[#db2777] to-[#ec4899]",
   }
 ];

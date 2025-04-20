@@ -14,25 +14,77 @@ interface ResumeSection {
   highlight_color: string;
 }
 
+interface MatchedPoint {
+  text: string;
+  justification: string;
+  highlight_color: string;
+}
+
+interface ModifiedPoint {
+  current_text: string;
+  suggested_text: string;
+  highlight_color: string;
+}
+
+interface MissingPoint {
+  expected_topic: string;
+  suggestion: string;
+  highlight_color: string;
+}
+
 interface ExperienceImprovement {
   position: string;
   company: string;
-  improvements: ResumeSection[];
+  matched_points: MatchedPoint[];
+  modified_points: ModifiedPoint[];
+  missing_points: MissingPoint[];
 }
 
-interface NewSection {
-  title: string;
-  content: string;
-  highlight_color: string;
+interface SkillMapping {
+  skill: string;
+  currently_in_resume: boolean;
+  recommended_section: string;
+  action: string;
+}
+
+interface SkillsAnalysis {
+  used_well: string[];
+  underutilized: string[];
+  missing_keywords: string[];
+  suggested_action: string;
+}
+
+interface JdAlignmentSummary {
+  total_jd_points: number;
+  matched: number;
+  partially_matched: number;
+  missing: number;
+  match_score_percent: number;
 }
 
 interface TailorResumeResponse {
   success: boolean;
   data?: {
-    sections: {
-      summary?: ResumeSection;
-      experience?: ExperienceImprovement[];
-      new_sections?: NewSection[];
+    review_suggestions: {
+      summary: ResumeSection;
+      experience: ExperienceImprovement[];
+      user_skills_mapping: SkillMapping[];
+      skills: SkillsAnalysis;
+      jd_alignment_summary: JdAlignmentSummary;
+      section_scores: {
+        summary: number;
+        experience: number;
+        skills: number;
+        projects: number;
+        education: number;
+      };
+      new_sections: Array<{
+        title: string;
+        content: string;
+        highlight_color: string;
+      }>;
+      recommendations: string[];
+      final_notes: string[];
     };
   };
   error?: string;
@@ -64,6 +116,11 @@ export class ResumeTailorService {
 
       const result = await response.json();
 
+      if (response.status === 403) {
+        handle403Error();
+        return { success: false, error: 'Usage limit reached' };
+      }
+
       if (!response.ok) {
         console.error('API Error:', result);
         return {
@@ -72,16 +129,9 @@ export class ResumeTailorService {
         };
       }
 
-      if (response.status === 403) {
-        handle403Error();
-        return { success: false, error: 'Usage limit reached' };
-      }
-
       return { 
         success: true, 
-        data: {
-          sections: result
-        } 
+        data: result
       };
     } catch (error) {
       console.error('Detailed error:', error);

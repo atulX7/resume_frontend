@@ -1,11 +1,23 @@
 import { getSession } from "next-auth/react";
 import { handle403Error } from '@/utils/error-handler';
 
-interface ResumeScoreResponse {
-  success: boolean;
-  scores?: {
+interface ResumeAnalysisResult {
+  scores: {
     [key: string]: number;
   };
+  overall_summary: string;
+  detailed_evaluation: Array<{
+    criterion: string;
+    description: string;
+    score: number;
+    status: 'green' | 'yellow' | 'red';
+    assessment: string;
+  }>;
+}
+
+interface ResumeScoreResponse {
+  success: boolean;
+  data?: ResumeAnalysisResult;
   error?: string;
 }
 
@@ -40,7 +52,7 @@ export class ResumeService {
         return { success: false, error: result.message || 'Failed to analyze resume' };
       }
 
-      return { success: true, scores: result.scores };
+      return { success: true, data: result };
     } catch (error) {
       return { 
         success: false, 
