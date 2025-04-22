@@ -1,5 +1,6 @@
 import { getSession } from "next-auth/react";
 import { handle403Error } from '@/utils/error-handler';
+import { handle401Error } from "@/utils/error-handler";
 
 interface TailorResumeData {
   jobTitle: string;
@@ -119,6 +120,11 @@ export class ResumeTailorService {
       if (response.status === 403) {
         handle403Error();
         return { success: false, error: 'Usage limit reached' };
+      }
+
+      if (response.status === 401) {
+        handle401Error();
+        return { success: false, error: 'Session expired' };
       }
 
       if (!response.ok) {

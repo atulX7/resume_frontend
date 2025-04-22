@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { FileText, Star, Award } from 'lucide-react';
 import { ResumeTailorService } from '@/services/resume-tailor-service';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function TailorResumePage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function TailorResumePage() {
     review_suggestions?: string;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,6 +145,37 @@ export default function TailorResumePage() {
                   <FileText className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
                 </div>
               </div>
+
+              {/* Added margin-top to create space */}
+              <div className="bg-gray-50 p-6 rounded-xl mt-8">
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label htmlFor="terms" className="text-sm text-gray-600">
+                  I have read and agree to the{" "}
+                  <Link 
+                    href="/legal/terms" 
+                    target="_blank"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Terms and Conditions
+                  </Link>
+                  {" "}and{" "}
+                  <Link 
+                    href="/legal/privacy-policy" 
+                    target="_blank"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Privacy Policy
+                  </Link>
+                </label>
+              </div>
+            </div>
 
               <Button 
                 type="submit" 

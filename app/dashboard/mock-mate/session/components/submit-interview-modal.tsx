@@ -27,10 +27,41 @@ export function SubmitInterviewModal({
 }: SubmitInterviewModalProps) {
   const router = useRouter()
 
+  const stopAllMediaTracks = () => {
+    // Get all video elements and stop their streams
+    const videoElements = document.querySelectorAll('video')
+    videoElements.forEach(video => {
+      if (video.srcObject instanceof MediaStream) {
+        video.srcObject.getTracks().forEach(track => {
+          track.stop()
+        })
+        video.srcObject = null
+      }
+    })
+
+    // Also try to stop any active media streams
+    navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+      .then(stream => {
+        stream.getTracks().forEach(track => {
+          track.stop()
+        })
+      })
+      .catch(() => {
+        // No media streams to cleanup
+      })
+  }
+
   const handleSubmit = async () => {
     try {
       await onConfirm()
-      router.push('/dashboard/mock-mate')
+      
+      // Clean up media devices before redirecting
+      stopAllMediaTracks()
+      
+      // Small delay to ensure cleanup is complete
+      setTimeout(() => {
+        router.push('/dashboard/mock-mate')
+      }, 100)
     } catch (error) {
       console.error('Error submitting interview:', error)
     }

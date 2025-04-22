@@ -3,10 +3,13 @@
 import { useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { DetailCard } from './components/DetailCard';
-import { FileText } from 'lucide-react';
+import { FileText, ArrowLeft } from 'lucide-react';
 import { Suspense } from 'react';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 interface ResumeAnalysisData {
+  overall_score: number;
   overall_summary: string;
   detailed_evaluation: Array<{
     criterion: string;
@@ -17,7 +20,54 @@ interface ResumeAnalysisData {
   }>;
 }
 
+function getScoreColor(score: number): string {
+  if (score >= 80) return 'text-green-500';
+  if (score >= 60) return 'text-yellow-500';
+  return 'text-red-500';
+}
+
+function CircularProgress({ score }: { score: number }) {
+  const radius = 30;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (score / 100) * circumference;
+  const colorClass = getScoreColor(score);
+
+  return (
+    <div className="relative inline-flex items-center justify-center">
+      <svg className="w-24 h-24 transform -rotate-90">
+        {/* Background circle */}
+        <circle
+          cx="48"
+          cy="48"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="4"
+          fill="transparent"
+          className="text-gray-100"
+        />
+        {/* Progress circle */}
+        <circle
+          cx="48"
+          cy="48"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="4"
+          fill="transparent"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          className={`${colorClass} transition-all duration-1000 ease-out`}
+        />
+      </svg>
+      <span className={`absolute text-xl font-bold ${colorClass}`}>
+        {Math.round(score)}%
+      </span>
+    </div>
+  );
+}
+
 function ResumeATSDetailsContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const analysisDataParam = searchParams?.get('analysisData');
   const analysisData = analysisDataParam ? JSON.parse(decodeURIComponent(analysisDataParam)) as ResumeAnalysisData : null;
@@ -25,16 +75,36 @@ function ResumeATSDetailsContent() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Overall Summary */}
+        {/* Back Button */}
+        <Button
+          variant="ghost"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          onClick={() => router.push('/dashboard/resume-analyzer')}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Analyze New Resume
+        </Button>
+
+        {/* Overall Summary with Score */}
         <Card className="border-2">
           <CardHeader className="flex flex-row items-center gap-2 pb-2">
             <FileText className="h-6 w-6 text-blue-600" />
             <h2 className="text-2xl font-bold text-gray-900">Resume Analysis Summary</h2>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-700 leading-relaxed">
-              {analysisData?.overall_summary || 'No summary available'}
-            </p>
+            <div className="flex items-start gap-8">
+              <div className="flex flex-col items-center space-y-2">
+                <CircularProgress score={analysisData?.overall_score || 0} />
+                <p className={`text-sm font-medium ${getScoreColor(analysisData?.overall_score || 0)}`}>
+                  ATS Friendly Score
+                </p>
+              </div>
+              <div className="flex-1">
+                <p className="text-gray-700 leading-relaxed">
+                  {analysisData?.overall_summary || 'No summary available'}
+                </p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 

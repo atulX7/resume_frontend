@@ -40,7 +40,7 @@ export function ResumeAnalysisCard({ error, tailoredData, parsedData, renderHigh
               </div>
             </CardHeader>
 
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 border-y border-indigo-100">
+            {/* <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 border-y border-indigo-100">
               <h3 className="text-lg font-semibold text-indigo-800 mb-4">Section Performance</h3>
               <div className="grid grid-cols-5 gap-4">
                 {parsedData && Object.entries(parsedData.review_suggestions.section_scores).map(([section, score]) => (
@@ -57,7 +57,7 @@ export function ResumeAnalysisCard({ error, tailoredData, parsedData, renderHigh
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             <CardContent className="p-8 space-y-8">
               {/* Summary Section */}

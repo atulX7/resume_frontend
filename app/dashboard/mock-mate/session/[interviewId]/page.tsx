@@ -1,23 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
+
 import { useState, useEffect, useRef } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import {
-  PlayCircle,
-  StopCircle,
-  Timer,
-  Video,
-  Mic,
-  AlertCircle,
-  Send,
-} from "lucide-react"
 import { use } from 'react'
+import { Card, CardContent } from "@/components/ui/card"
 import { InterviewService } from '@/services/interview-service'
 import { toast } from 'sonner'
-import { SubmitInterviewModal } from "@/components/ui/submit-interview-modal"
+import { SubmitInterviewModal } from "@/app/dashboard/mock-mate/session/components/submit-interview-modal"
 import { useSession } from 'next-auth/react'
+import { ProgressBar } from '../components/progress-bar'
+import { QuestionCard } from '../components/question-card'
+import { VideoPreview } from '../components/video-preview'
+import { InterviewControls } from '../components/interview-controls'
 
 interface Answer {
   questionId: string;
@@ -26,13 +20,13 @@ interface Answer {
 
 export default function InterviewSession({ params }: { params: Promise<{ interviewId: string }> }) {
   const { data: session } = useSession()
-  const { interviewId } = use(params)
+  const { interviewId } = use(params)  // Using React.use() to unwrap the Promise
   const videoRef = useRef<HTMLVideoElement>(null)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [recording, setRecording] = useState<MediaRecorder | null>(null)
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [recordingTime, setRecordingTime] = useState(0)
-  const [answers, setAnswers] = useState<Answer[]>([])
+  const [, setAnswers] = useState<Answer[]>([])
   const [questions, setQuestions] = useState<Array<{ question_id: string, question: string }>>([])
   const [isAllQuestionsAnswered, setIsAllQuestionsAnswered] = useState(false)
   const [isCameraActive, setIsCameraActive] = useState(false)
@@ -125,21 +119,42 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
       chunks.push(e.data)
     }
 
-    mediaRecorder.onstop = () => {
+    // Modify the mediaRecorder.onstop handler in startAnswering function
+    mediaRecorder.onstop = async () => {
       const blob = new Blob(chunks, { type: 'video/webm' })
       const currentQuestionId = questions[currentQuestion]?.question_id
-
+    
       if (currentQuestionId) {
-        setAnswers(prev => [...prev, {
-          questionId: currentQuestionId,
-          recording: blob
-        }])
-      }
-
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(prev => prev + 1)
-      } else {
-        setIsAllQuestionsAnswered(true)
+        try {
+          // Upload the answer immediately
+          const response = await InterviewService.uploadAnswer(
+            interviewId,
+            currentQuestionId,
+            blob
+          );
+    
+          if (!response.success) {
+            throw new Error(response.error);
+          }
+    
+          // Store answer in local state
+          setAnswers(prev => [...prev, {
+            questionId: currentQuestionId,
+            recording: blob
+          }]);
+    
+          // Move to next question or finish
+          if (currentQuestion < questions.length - 1) {
+            setCurrentQuestion(prev => prev + 1);
+          } else {
+            setIsAllQuestionsAnswered(true);
+          }
+        } catch (error) {
+          console.error('Error uploading answer:', error);
+          toast.error('Failed to upload answer', {
+            description: 'Please try recording again.',
+          });
+        }
       }
     }
 
@@ -175,15 +190,9 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   const submitInterview = async () => {
     try {
       setIsSubmitting(true)
-      // Collect the recordings and question IDs from the answers state
-      const recordings = answers.map(a => a.recording)
-      const questionIds = answers.map(a => a.questionId)
-
-      // Call the processInterview method with the actual audio blobs
+      
       const response = await InterviewService.processInterview(
         interviewId,
-        recordings,
-        questionIds
       )
 
       if (!response.success) {
@@ -217,132 +226,48 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-  const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   return (
     <>
       <div className="h-[calc(100vh-4rem)] bg-gray-50 p-4 flex flex-col">
-        {/* Camera status message */}
         {!isCameraActive && (
           <div className="absolute top-0 left-0 right-0 text-center bg-red-500 text-white p-2">
             Camera is off. Please enable your camera.
           </div>
         )}
 
-        {/* Top section with progress */}
-        <Card className="mb-2 flex-none">
-          <CardContent className="py-3">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-500">
-                Progress: {currentQuestion + 1}/{questions.length}
-              </span>
-              <span className="flex items-center gap-2 text-sm font-medium text-gray-500">
-                <Timer className="w-4 h-4" />
-                {formatTime(recordingTime)}
-              </span>
-            </div>
-            <Progress value={progress} className="h-2" />
-          </CardContent>
-        </Card>
+        <ProgressBar
+          currentQuestion={currentQuestion}
+          totalQuestions={questions.length}
+          recordingTime={recordingTime}
+          formatTime={formatTime}
+        />
 
-        {/* Main content area */}
         <div className="flex-1 grid grid-cols-12 gap-4 min-h-0">
-          {/* Left column */}
           <div className="col-span-8 grid grid-rows-[auto_1fr] gap-4 min-h-0">
-            {/* Question card */}
-            <Card className="flex-none">
-              <CardContent className="py-4">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-[#0A2647] mb-1">
-                      Question {currentQuestion + 1}
-                    </h2>
-                    <p className="text-base text-gray-700">
-                      {questions[currentQuestion]?.question || 'Loading question...'}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Video card */}
-            <Card className="flex-1 min-h-0">
-              <CardContent className="p-4 h-full">
-                <div className="relative h-full bg-gray-900 rounded-lg overflow-hidden">
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute bottom-4 left-4 flex items-center gap-4">
-                    <div className="flex items-center gap-2 bg-black/50 text-white px-3 py-1 rounded-full">
-                      <Video className="w-4 h-4" />
-                      <span className="text-sm">Live</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-black/50 text-white px-3 py-1 rounded-full">
-                      <Mic className="w-4 h-4" />
-                      <span className="text-sm">Recording {recording ? 'On' : 'Off'}</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <QuestionCard
+              currentQuestion={currentQuestion}
+              question={questions[currentQuestion]?.question}
+            />
+            <VideoPreview
+              videoRef={videoRef}
+              recording={recording}
+            />
           </div>
 
-          {/* Right column */}
           <div className="col-span-4 grid grid-rows-[auto_1fr] gap-4 min-h-0">
-            {/* Controls card */}
-            <Card className="flex-none">
-              <CardContent className="p-6">
-                {isAllQuestionsAnswered ? (
-                  <Button
-                    onClick={() => setIsSubmitModalOpen(true)}
-                    variant="default"
-                    size="lg"
-                    className="w-full h-12 text-base gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
-                  >
-                    <Send className="w-5 h-5" />
-                    Submit Interview
-                  </Button>
-                ) : !recording ? (
-                  <Button
-                    onClick={startAnswering}
-                    variant="default"
-                    size="lg"
-                    className="w-full h-12 text-base gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
-                  >
-                    <PlayCircle className="w-5 h-5" />
-                    Start Recording
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      recording?.stop()
-                      setRecording(null)
-                    }}
-                    variant="destructive"
-                    size="lg"
-                    className="w-full h-12 text-base gap-2 bg-red-600 hover:bg-red-700 text-white"
-                  >
-                    <StopCircle className="w-5 h-5" />
-                    Stop Recording
-                  </Button>
-                )}
-                <p className="text-sm text-gray-500 text-center">
-                  {!recording
-                    ? "Click to start recording your answer"
-                    : "Recording in progress... Click to stop when finished"
-                  }
-                </p>
-              </CardContent>
-            </Card>
+            <InterviewControls
+              isAllQuestionsAnswered={isAllQuestionsAnswered}
+              recording={recording}
+              onStartRecording={startAnswering}
+              onStopRecording={() => {
+                recording?.stop()
+                setRecording(null)
+              }}
+              onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
+            />
 
-            {/* New Interview Tips Card */}
+            {/* Keep the Interview Tips Card in the main component or create a separate component if needed */}
             <Card className="flex-1 min-h-0">
               <CardContent className="h-full p-4">
                 <div className="h-full flex flex-col">

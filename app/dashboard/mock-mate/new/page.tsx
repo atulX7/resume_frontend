@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { useUser } from '@/lib/user'
+import Link from 'next/link'
 
 export default function NewInterviewPage() {
   const router = useRouter()
@@ -19,6 +20,7 @@ export default function NewInterviewPage() {
   })
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [isSubmitting] = useState(false)
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -33,6 +35,11 @@ export default function NewInterviewPage() {
     
     if (!user?.id) {
       alert('Please sign in to continue');
+      return;
+    }
+
+    if (!acceptedTerms) {
+      alert('Please accept the Terms and Conditions and Privacy Policy');
       return;
     }
 
@@ -56,7 +63,7 @@ export default function NewInterviewPage() {
       resume_file: base64Resume
     }));
 
-    router.push('/dashboard/mock-mate/setup');
+    router.push('/dashboard/mock-mate/session/setup');
   }
 
   return (
@@ -127,6 +134,37 @@ export default function NewInterviewPage() {
                 value={formData.job_description}
                 onChange={(e) => setFormData(prev => ({...prev, job_description: e.target.value}))}
               />
+            </div>
+
+            {/* Terms and Privacy Policy Section */}
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <div className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="terms" className="text-sm text-gray-600">
+                  I have read and agree to the{" "}
+                  <Link 
+                    href="/legal/terms" 
+                    target="_blank"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Terms and Conditions
+                  </Link>
+                  {" "}and{" "}
+                  <Link 
+                    href="/legal/privacy-policy" 
+                    target="_blank"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Privacy Policy
+                  </Link>
+                </label>
+              </div>
             </div>
 
             {/* Action Buttons */}

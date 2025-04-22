@@ -30,11 +30,12 @@ export default function RootLayout({
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const hideNavbar = pathname?.startsWith('/admin') || pathname?.startsWith('/dashboard')
+  const isLegalPage = pathname?.startsWith('/legal')  // Add this line
 
   useEffect(() => {
     const handleStart = () => {
-      // Don't show loading for mailto links
-      if (!window.location.href.startsWith('mailto:')) {
+      // Don't show loading for mailto links and legal pages
+      if (!window.location.href.startsWith('mailto:') && !isLegalPage) {
         setIsLoading(true)
       }
     }
@@ -58,7 +59,7 @@ export default function RootLayout({
       document.removeEventListener('navigationend', handleComplete)
       window.removeEventListener('beforeunload', handleStart)
     }
-  }, [router])
+  }, [router, isLegalPage])  // Add isLegalPage to dependencies
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -70,13 +71,13 @@ export default function RootLayout({
         <Providers>
           <LoadingProvider>
             {!hideNavbar && <Navbar />}
-            <Suspense fallback={<Loading />}>
-              {isLoading && <Loading />}
+            <Suspense fallback={isLegalPage ? null : <Loading />}>
+              {isLoading && !isLegalPage && <Loading />}
               <main>{children}</main>
             </Suspense>
           </LoadingProvider>
         </Providers>
       </body>
     </html>
-  );
+  )
 }

@@ -1,10 +1,9 @@
 import { getSession } from "next-auth/react";
 import { handle403Error } from '@/utils/error-handler';
+import { handle401Error } from "@/utils/error-handler";
 
 interface ResumeAnalysisResult {
-  scores: {
-    [key: string]: number;
-  };
+  overall_score: number;
   overall_summary: string;
   detailed_evaluation: Array<{
     criterion: string;
@@ -49,7 +48,17 @@ export class ResumeService {
           handle403Error();
           return { success: false, error: 'Usage limit reached' };
         }
+        if (response.status === 401) {
+          handle401Error();
+          return { success: false, error: 'Session expired' };
+        }
         return { success: false, error: result.message || 'Failed to analyze resume' };
+      }
+
+      // Ensure overall_score is a number
+      if (typeof result.overall_score === 'object') {
+        // If it's still coming as an object, take the first value or default to 0
+        result.overall_score = Object.values(result.overall_score)[0] || 0;
       }
 
       return { success: true, data: result };

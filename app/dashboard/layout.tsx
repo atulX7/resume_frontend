@@ -5,11 +5,21 @@ import { Sidebar } from "@/components/user-dashboard/sidebar";
 import { useUserSidebarStore } from "@/hooks/use-user-sidebar-store";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/user-dashboard/navbar";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const sidebar = useUserSidebarStore();
+  const pathname = usePathname();
   if (!sidebar) return null;
   const { isOpen, settings } = sidebar;
+
+  // Check if current path is mock-mate session
+  const isMockMateSession = pathname?.includes('/dashboard/mock-mate/session');
+
+  // Return a clean layout for mock-mate session
+  if (isMockMateSession) {
+    return <div className="min-h-screen">{children}</div>;
+  }
 
   return (
     <>

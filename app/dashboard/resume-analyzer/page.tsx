@@ -8,18 +8,15 @@ import { ResumeService } from '@/services/resume-service';
 import { toast } from 'sonner';
 import { Upload, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-
-interface ATSScore {
-  scores: {
-    [key: string]: number;
-  };
-}
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ResumeATS() {
+  const router = useRouter();
   const { user } = useUser();
   const [file, setFile] = useState<File | null>(null);
-  const [, setScores] = useState<ATSScore | null>(null);
   const [loading, setLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -42,23 +39,31 @@ export default function ResumeATS() {
       return;
     }
 
+    if (!acceptedTerms) {
+      toast.error('Agreement Required', {
+        description: 'Please agree to the terms and privacy policy.',
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await ResumeService.getResumeScore(file);
       if (response.success && response.data) {
-        setScores({ scores: response.data.scores });
         toast.success('Analysis Complete');
         
-        // Redirect with all analysis data
+        // Encode the entire analysis data
+        const analysisData = {
+          overall_score: response.data.overall_score,
+          overall_summary: response.data.overall_summary,
+          detailed_evaluation: response.data.detailed_evaluation
+        };
+        
         const queryParams = new URLSearchParams({
-          scores: JSON.stringify(response.data.scores),
-          analysisData: JSON.stringify({
-            overall_summary: response.data.overall_summary,
-            detailed_evaluation: response.data.detailed_evaluation
-          })
+          analysisData: encodeURIComponent(JSON.stringify(analysisData))
         });
         
-        window.location.href = `/dashboard/resume-analyzer/details?${queryParams.toString()}`;
+        router.push(`/dashboard/resume-analyzer/details?${queryParams.toString()}`);
       } else {
         toast.error('Analysis Failed', {
           description: response.error || 'Failed to analyze resume. Please try again.',
@@ -91,9 +96,40 @@ export default function ResumeATS() {
           <input type='file' className="hidden" onChange={handleFileUpload} accept=".pdf,.doc,.docx" />
         </label>
         {file && <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{file.name}</p>}
+
+        {/* Added margin-top (mt-8) to create space */}
+        <div className="bg-gray-50 p-6 rounded-xl mt-8">
+          <div className="flex items-start space-x-3">
+            <input
+              type="checkbox"
+              id="terms"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <label htmlFor="terms" className="text-sm text-gray-600">
+              I have read and agree to the{" "}
+              <Link 
+                href="/legal/terms" 
+                target="_blank"
+                className="text-blue-600 hover:underline"
+              >
+                Terms and Conditions
+              </Link>
+              {" "}and{" "}
+              <Link 
+                href="/legal/privacy-policy" 
+                target="_blank"
+                className="text-blue-600 hover:underline"
+              >
+                Privacy Policy
+              </Link>
+            </label>
+          </div>
+        </div>
         <Button
           onClick={handleSubmit}
-          disabled={!file || loading}
+          disabled={!file || loading || !acceptedTerms}
           className="mt-4 bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-400 dark:hover:bg-indigo-500 text-white px-6 py-2 rounded-lg transition disabled:bg-gray-400 dark:disabled:bg-gray-600"
         >
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Analyze Resume'}

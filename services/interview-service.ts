@@ -1,6 +1,7 @@
 import { ApiError } from "next/dist/server/api-utils";
 import { getSession } from "next-auth/react";
 import { handle403Error } from "@/utils/error-handler";
+import { handle401Error } from "@/utils/error-handler";
 
 export interface AnalysisResponse {
   success: boolean;
@@ -94,6 +95,10 @@ export class InterviewService {
         throw new Error(`Failed to fetch analysis (Status: ${response.status})`);
       }
       const data = await response.json();
+      if (response.status === 401) {
+        handle401Error();
+        return { success: false, error: 'Session expired' };
+      }
       if (response.status === 403) {
         handle403Error();
         return { success: false, error: 'Usage limit reached' };
@@ -155,6 +160,10 @@ export class InterviewService {
         return { success: false, error: 'Invalid response format from server' };
       }
 
+      if (response.status === 401) {
+        handle401Error();
+        return { success: false, error: 'Session expired' };
+      }
       if (response.status === 403) {
         handle403Error();
         return { success: false, error: 'Usage limit reached' };
@@ -176,8 +185,6 @@ export class InterviewService {
 
   static async processInterview(
     interviewId: string, 
-    recordings: Blob[], 
-    questionIds: string[]
   ): Promise<ProcessInterviewResponse> {
     const session = await getSession();
     if (!session?.accessToken) {
@@ -185,47 +192,43 @@ export class InterviewService {
     }
 
     try {
-      const formData = new FormData();
-      
-      const questionAudioMap: { [key: string]: string } = {};
-      
-      const audioFiles: File[] = [];
-      recordings.forEach((recording, index) => {
-        const questionId = questionIds[index];
-        const audioFileName = `recording_${questionId}.mp3`;
-        questionAudioMap[questionId] = audioFileName;
-        const audioFile = new File([recording], audioFileName, { type: "audio/mpeg" }); // ✅ Ensure correct type
-        audioFiles.push(audioFile);
-      });
-
-      // ✅ Append files individually
-      audioFiles.forEach((file) => {
-       formData.append('audio_files', file);
-      });
-      
-      formData.append('question_audio_map', JSON.stringify(questionAudioMap));
-
       const response = await fetch(`${this.BASE_URL}/mock-interview/${interviewId}/process`, {
         method: 'POST',
-        body: formData,
         headers: {
-          Authorization: `Bearer ${session.accessToken}`,
+          'Authorization': `Bearer ${session.accessToken}`,
+          'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) {
-        let error = `Failed to process interview (Status: ${response.status})`;
-        try {
-          const data = await response.json();
-          error = data.message || error;
-        } catch {
-          // Silently handle JSON parse error
-        }
-        return { success: false, error };
-      }
-      // The backend now returns a JSON with "status" and "message"
       const data = await response.json();
-      return { success: data.status, data: data.message };
+
+      if (!response.ok) {
+        // Log detailed error information
+        console.error('Process Interview Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          data
+        });
+
+        if (response.status === 401) {
+          handle401Error();
+          return { success: false, error: 'Session expired' };
+        }
+        if (response.status === 403) {
+          handle403Error();
+          return { success: false, error: 'Usage limit reached' };
+        }
+        if (response.status === 500) {
+          return { 
+            success: false, 
+            error: data.message || data.error || 'Server error occurred while processing the interview'
+          };
+        }
+
+        throw new Error(data.message || data.error || `Failed to process interview (Status: ${response.status})`);
+      }
+
+      return { success: true, data };
     } catch (error) {
       console.error('Error processing interview:', error);
       return { 
@@ -256,6 +259,10 @@ export class InterviewService {
         throw new Error(`Failed to fetch interviews (Status: ${response.status})`);
       }
 
+      if (response.status === 401) {
+        handle401Error();
+        return { success: false, error: 'Session expired' };
+      }
       if (response.status === 403) {
         handle403Error();
         return { success: false, error: 'Usage limit reached' };
@@ -268,6 +275,50 @@ export class InterviewService {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'An error occurred while fetching interviews'
+      };
+    }
+  }
+
+  // Add this new method to InterviewService class
+  static async uploadAnswer(
+    interviewId: string,
+    questionId: string,
+    audioBlob: Blob
+  ): Promise<ProcessInterviewResponse> {
+    const session = await getSession();
+    if (!session?.accessToken) {
+      throw new Error('No active session');
+    }
+  
+    try {
+      const formData = new FormData();
+      const audioFile = new File([audioBlob], `q${questionId}.mp3`, { type: "audio/mpeg" });
+      
+      formData.append('question_id', questionId);
+      formData.append('answer_audio', audioFile);
+  
+      const response = await fetch(
+        `${this.BASE_URL}/mock-interview/${interviewId}/upload-answer`,
+        {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`Failed to upload answer (Status: ${response.status})`);
+      }
+  
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error uploading answer:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'An error occurred while uploading the answer'
       };
     }
   }
