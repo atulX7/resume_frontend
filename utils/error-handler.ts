@@ -1,4 +1,5 @@
 import { signOut } from 'next-auth/react'
+import { toast } from 'sonner';
 
 export const handle403Error = () => {
   if (typeof window !== 'undefined') {
@@ -8,13 +9,13 @@ export const handle403Error = () => {
 
 export const handle401Error = () => {
   // Clear any auth related storage
+  toast.error('Session Expired', {
+    description: 'Please Sign in again.',
+  });
+
   localStorage.clear();
   sessionStorage.clear();
   
   // Redirect to home page
-  await signOut({ redirect: true, callbackUrl: '/' })
-  
-  // You might want to show a toast/notification here
-  // If you have a toast system, use it here
-  alert('Session expired. Please login again.');
+  signOut({ redirect: true, callbackUrl: '/' })
 };
