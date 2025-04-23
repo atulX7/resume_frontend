@@ -1,3 +1,5 @@
+import { signOut } from 'next-auth/react'
+
 export const handle403Error = () => {
   if (typeof window !== 'undefined') {
     window.location.href = '/error-403';
@@ -10,7 +12,7 @@ export const handle401Error = () => {
   sessionStorage.clear();
   
   // Redirect to home page
-  window.location.href = '/';
+  await signOut({ redirect: true, callbackUrl: '/' })
   
   // You might want to show a toast/notification here
   // If you have a toast system, use it here

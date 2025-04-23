@@ -74,6 +74,8 @@ const handler = NextAuth({
           }),
         });
 
+        console.log(token.accessToken);
+
         if (res.status === 401) {
           return { ...token, signOut: true };
         }

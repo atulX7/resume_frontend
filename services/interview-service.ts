@@ -91,17 +91,19 @@ export class InterviewService {
           Authorization: `Bearer ${session.accessToken}`,
         },
       });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch analysis (Status: ${response.status})`);
-      }
       const data = await response.json();
-      if (response.status === 401) {
-        handle401Error();
-        return { success: false, error: 'Session expired' };
-      }
-      if (response.status === 403) {
-        handle403Error();
-        return { success: false, error: 'Usage limit reached' };
+      if (!response.ok) {
+          if (response.status === 401) {
+            handle401Error();
+            return { success: false, error: 'Session expired' };
+          }
+          else if (response.status === 403) {
+            handle403Error();
+            return { success: false, error: 'Usage limit reached' };
+          }
+          else {
+            throw new Error(`Failed to fetch analysis (Status: ${response.status})`);
+          }
       }
       return { success: true, data };
 
@@ -151,22 +153,23 @@ export class InterviewService {
       const result = await response.json();
       
       if (!response.ok) {
-        const errorMessage = result.message || result.error || `Failed to create interview (Status: ${response.status})`;
-        console.error('API Error:', errorMessage);
-        return { success: false, error: errorMessage };
+          if (response.status === 401) {
+            handle401Error();
+            return { success: false, error: 'Session expired' };
+          }
+          else if (response.status === 403) {
+            handle403Error();
+            return { success: false, error: 'Usage limit reached' };
+          }
+          else {
+            const errorMessage = result.message || result.error || `Failed to create interview (Status: ${response.status})`;
+            console.error('API Error:', errorMessage);
+            return { success: false, error: errorMessage };
+          }
       }
 
       if (!result.session_id || !result.questions) {
         return { success: false, error: 'Invalid response format from server' };
-      }
-
-      if (response.status === 401) {
-        handle401Error();
-        return { success: false, error: 'Session expired' };
-      }
-      if (response.status === 403) {
-        handle403Error();
-        return { success: false, error: 'Usage limit reached' };
       }
 
       localStorage.setItem('current-interview-questions', JSON.stringify(result.questions));
@@ -254,19 +257,21 @@ export class InterviewService {
           Authorization: `Bearer ${session.accessToken}`,
         },
       });
-
+      console.log(response);
       if (!response.ok) {
-        throw new Error(`Failed to fetch interviews (Status: ${response.status})`);
+          if (response.status === 401) {
+            handle401Error();
+            return { success: false, error: 'Session expired' };
+          }
+          else if (response.status === 403) {
+            handle403Error();
+            return { success: false, error: 'Usage limit reached' };
+          }
+          else {
+            throw new Error(`Failed to fetch interviews (Status: ${response.status})`);
+          }
       }
 
-      if (response.status === 401) {
-        handle401Error();
-        return { success: false, error: 'Session expired' };
-      }
-      if (response.status === 403) {
-        handle403Error();
-        return { success: false, error: 'Usage limit reached' };
-      }
 
       const data = await response.json();
       return { success: true, data };
