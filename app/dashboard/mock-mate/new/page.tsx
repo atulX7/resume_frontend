@@ -6,17 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useUser } from '@/lib/user'
 import Link from 'next/link'
 import { toast } from 'sonner'
-
-// Helper function to compress base64 data
-const compressBase64 = (base64Data: string) => {
-  // Split the data into smaller chunks
-  const chunkSize = 512 * 1024; // 512KB chunks
-  const chunks = [];
-  for (let i = 0; i < base64Data.length; i += chunkSize) {
-    chunks.push(base64Data.slice(i, i + chunkSize));
-  }
-  return chunks;
-}
+import { InterviewService } from '@/services/interview-service'
 
 export default function NewInterviewPage() {
   const router = useRouter()
@@ -75,15 +65,13 @@ export default function NewInterviewPage() {
         return;
       }
 
-      let base64Resume = null;
+      let processedResume = null;
       if (resumeFile) {
-        const buffer = await resumeFile.arrayBuffer();
-        const base64Data = Buffer.from(buffer).toString('base64');
-        base64Resume = {
-          name: resumeFile.name,
-          type: resumeFile.type,
-          data: compressBase64(base64Data) // Store as chunks
-        };
+        const response = await InterviewService.processResume(resumeFile);
+        if (!response.success) {
+          throw new Error(response.error || 'Failed to process resume');
+        }
+        processedResume = response.data;
       }
 
       // Try to store each piece separately to avoid quota issues
@@ -91,18 +79,8 @@ export default function NewInterviewPage() {
         localStorage.setItem('interview-form-job-title', formData.job_title);
         localStorage.setItem('interview-form-job-description', formData.job_description);
         
-        if (base64Resume) {
-          // Store resume chunks
-          const chunks = base64Resume.data;
-          localStorage.setItem('interview-form-resume-info', JSON.stringify({
-            name: base64Resume.name,
-            type: base64Resume.type,
-            chunks: chunks.length
-          }));
-          
-          chunks.forEach((chunk, index) => {
-            localStorage.setItem(`interview-form-resume-chunk-${index}`, chunk);
-          });
+        if (processedResume) {
+          localStorage.setItem('interview-form-resume', JSON.stringify(processedResume));
         }
 
         router.push('/dashboard/mock-mate/session/setup');

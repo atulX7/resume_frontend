@@ -76,6 +76,14 @@ interface UserInterviewsResponse {
   error?: string;
 }
 
+interface ProcessResumeResponse {
+  success: boolean;
+  data?: {
+    text: string;
+  };
+  error?: string;
+}
+
 const handleUnauthorizedError = async () => {
   toast.error("Session expired. Please log in again.");
   await signOut({ redirect: false });
@@ -338,6 +346,40 @@ export class InterviewService {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'An error occurred while uploading the answer'
+      };
+    }
+  }
+
+  static async processResume(resumeFile: File): Promise<ProcessResumeResponse> {
+    const session = await getSession();
+    if (!session?.accessToken) {
+      throw new Error('No active session');
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('resume_file', resumeFile);
+
+      // Dummy API endpoint
+      const response = await fetch(`${this.BASE_URL}/process-resume`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to process resume (Status: ${response.status})`);
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error processing resume:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'An error occurred while processing the resume'
       };
     }
   }
