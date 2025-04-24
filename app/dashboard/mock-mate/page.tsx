@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CalendarDays, ArrowRight, Check, Clock } from "lucide-react"
 import { InterviewService } from "@/services/interview-service"
 import { Button } from "@/components/ui/button"
-import { FileText } from "lucide-react" // Add this import
+import { FileText } from "lucide-react"
+import { toast } from "sonner"
 
 interface Interview {
   session_id: string
@@ -26,9 +27,12 @@ export default function MockMatePage() {
         const response = await InterviewService.getUserInterviews()
         if (response.success && response.data) {
           setInterviews(response.data)
+        } else if (response.error) {
+          toast.error(response.error)
         }
       } catch (error) {
         console.error('Error fetching interviews:', error)
+        toast.error('Failed to fetch interviews. Please try again later.')
       } finally {
         setIsLoading(false)
       }

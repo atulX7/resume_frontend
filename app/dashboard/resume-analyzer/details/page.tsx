@@ -73,12 +73,12 @@ function ResumeATSDetailsContent() {
   const analysisData = analysisDataParam ? JSON.parse(decodeURIComponent(analysisDataParam)) as ResumeAnalysisData : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-6">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Back Button */}
         <Button
           variant="ghost"
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
           onClick={() => router.push('/dashboard/resume-analyzer')}
         >
           <ArrowLeft className="h-4 w-4" />
@@ -86,10 +86,10 @@ function ResumeATSDetailsContent() {
         </Button>
 
         {/* Overall Summary with Score */}
-        <Card className="border-2">
+        <Card className="border-2 dark:border-gray-700">
           <CardHeader className="flex flex-row items-center gap-2 pb-2">
-            <FileText className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold text-gray-900">Resume Analysis Summary</h2>
+            <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Resume Analysis Summary</h2>
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-8">
@@ -100,7 +100,7 @@ function ResumeATSDetailsContent() {
                 </p>
               </div>
               <div className="flex-1">
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                   {analysisData?.overall_summary || 'No summary available'}
                 </p>
               </div>
@@ -110,8 +110,8 @@ function ResumeATSDetailsContent() {
 
         {/* Detailed Evaluation Grid */}
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-gray-900">Detailed Evaluation</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Detailed Evaluation</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {analysisData?.detailed_evaluation.map((evaluation, index) => (
               <DetailCard key={index} evaluation={evaluation} />
             ))}

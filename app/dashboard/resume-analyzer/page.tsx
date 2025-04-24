@@ -98,21 +98,21 @@ export default function ResumeATS() {
         {file && <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{file.name}</p>}
 
         {/* Added margin-top (mt-8) to create space */}
-        <div className="bg-gray-50 p-6 rounded-xl mt-8">
+        <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl mt-8">
           <div className="flex items-start space-x-3">
             <input
               type="checkbox"
               id="terms"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="mt-1 h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
             />
-            <label htmlFor="terms" className="text-sm text-gray-600">
+            <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-300">
               I have read and agree to the{" "}
               <Link 
                 href="/legal/terms" 
                 target="_blank"
-                className="text-blue-600 hover:underline"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Terms and Conditions
               </Link>
@@ -120,7 +120,7 @@ export default function ResumeATS() {
               <Link 
                 href="/legal/privacy-policy" 
                 target="_blank"
-                className="text-blue-600 hover:underline"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Privacy Policy
               </Link>

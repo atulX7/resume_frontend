@@ -10,7 +10,7 @@ const TipsData = [
     name: "Industry Insights",
     description: "Stay updated with the latest trends and requirements in your target industry.",
     icon: Target,
-    url: "/career-tips/industry",
+    url: "/auth/login",
     color: "from-[#2563eb] to-[#3b82f6]",
   },
   {
@@ -18,7 +18,7 @@ const TipsData = [
     name: "Career Growth",
     description: "Learn strategies for career advancement and professional development opportunities.",
     icon: Sparkles,
-    url: "/career-tips/growth",
+    url: "/auth/login",
     color: "from-[#059669] to-[#34d399]",
   },
   {
@@ -26,7 +26,7 @@ const TipsData = [
     name: "Learning Resources",
     description: "Access curated learning materials and courses to enhance your skills.",
     icon: BookOpen,
-    url: "/career-tips/resources",
+    url: "/auth/login",
     color: "from-[#7c3aed] to-[#8b5cf6]",
   },
   {
@@ -34,7 +34,7 @@ const TipsData = [
     name: "AI Career Coach",
     description: "Get personalized career advice and guidance from our AI-powered career coach.",
     icon: Brain,
-    url: "/career-tips/ai-coach",
+    url: "/auth/login",
     color: "from-[#db2777] to-[#ec4899]",
   }
 ];

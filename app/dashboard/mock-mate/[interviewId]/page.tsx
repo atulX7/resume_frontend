@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { InterviewService } from '@/services/interview-service'
 import type { AnalysisResponse } from '@/services/interview-service'
 import { use } from 'react'
+import { ArrowLeft } from 'lucide-react'
 
 function LoadingAnalysis() {
   return (
@@ -93,25 +94,35 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
     )
   }
 
+  // Update the main container background
   return (
-    <div className="h-[calc(100vh-4rem)] bg-gradient-to-b from-gray-50 to-white overflow-auto">
+    <div className="h-[calc(100vh-4rem)] bg-gradient-to-b from-background to-background/80 overflow-auto">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <Button
+          variant="ghost"
+          onClick={() => router.back()}
+          className="hover:bg-accent"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
+
         {/* Header Section */}
-        <div className="bg-white rounded-xl shadow-sm p-6 flex justify-between items-start">
+        <div className="bg-card rounded-xl shadow-sm p-6 flex justify-between items-start">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#0A2647] to-[#144272] bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-300 dark:to-blue-500 bg-clip-text text-transparent">
               Interview Analysis
             </h1>
-            <div className="flex gap-4 text-gray-600">
+            <div className="flex gap-4 text-muted-foreground">
               <p className="flex items-center gap-2">
                 <span className="text-sm font-medium">Job Title:</span>
-                <span className="bg-blue-50 px-3 py-1 rounded-full text-sm">
+                <span className="bg-accent px-3 py-1 rounded-full text-sm">
                   {analysis.job_title}
                 </span>
               </p>
               <p className="flex items-center gap-2">
                 <span className="text-sm font-medium">Date:</span>
-                <span className="bg-blue-50 px-3 py-1 rounded-full text-sm">
+                <span className="bg-accent px-3 py-1 rounded-full text-sm">
                   {new Date(analysis.created_at).toLocaleDateString()}
                 </span>
               </p>
@@ -120,15 +131,15 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
           <Button
             variant="outline"
             onClick={() => router.push('/dashboard/mock-mate')}
-            className="hover:bg-blue-50 hover:text-blue-600 transition-colors"
+            className="hover:bg-accent"
           >
             Start New Interview
           </Button>
         </div>
-
+  
         {/* Scores Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="col-span-1 bg-gradient-to-br from-[#0A2647] to-[#144272] text-white">
+          <Card className="col-span-1 bg-gradient-to-br from-blue-500 to-blue-700 text-white">
             <CardHeader>
               <CardTitle className="text-gray-100">Overall Score</CardTitle>
             </CardHeader>
@@ -138,61 +149,61 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
               </div>
             </CardContent>
           </Card>
-
+  
           {Object.entries(analysis.skill_assessment).map(([skill, score]) => (
-            <Card key={skill} className="col-span-1 hover:shadow-md transition-shadow">
+            <Card key={skill} className="col-span-1 hover:shadow-md transition-shadow bg-card">
               <CardHeader>
                 <CardTitle className="text-sm capitalize">{skill.replace(/_/g, ' ')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="text-2xl font-semibold text-[#2E8B57]">
+                <div className="text-2xl font-semibold text-emerald-500 dark:text-emerald-400">
                   {(score as number) * 20}%
                 </div>
                 <Progress 
                   value={(score as number) * 20} 
-                  className="h-2 bg-gray-100"
+                  className="h-2 bg-accent"
                 />
               </CardContent>
             </Card>
           ))}
         </div>
-
+  
         {/* Question Analysis */}
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="border-b bg-gray-50">
+        <Card className="shadow-sm hover:shadow-md transition-shadow bg-card">
+          <CardHeader className="border-b bg-muted/50">
             <CardTitle>Question Analysis</CardTitle>
           </CardHeader>
-          <CardContent className="divide-y">
+          <CardContent className="divide-y divide-border">
             {analysis.evaluation_results.map((result, index) => (
               <div key={index} className="py-6 first:pt-4 last:pb-4">
                 <div className="flex items-center gap-4 mb-3">
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
+                  <span className="bg-blue-500/20 text-blue-500 dark:bg-blue-400/20 dark:text-blue-400 px-2 py-1 rounded text-sm">
                     Q{index + 1}
                   </span>
-                  <h3 className="font-semibold text-gray-800">{result.question}</h3>
+                  <h3 className="font-semibold text-foreground">{result.question}</h3>
                 </div>
                 <div className="flex items-center gap-4 mb-4">
                   <Progress 
                     value={result.score * 20} 
-                    className="h-2 flex-1 bg-gray-100" 
+                    className="h-2 flex-1 bg-accent" 
                   />
-                  <span className="text-sm font-medium bg-green-50 text-green-700 px-3 py-1 rounded-full">
+                  <span className="text-sm font-medium bg-emerald-500/20 text-emerald-500 dark:bg-emerald-400/20 dark:text-emerald-400 px-3 py-1 rounded-full">
                     {result.score * 20}%
                   </span>
                 </div>
-                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
                   {result.feedback}
                 </p>
                 {result.follow_up_question && (
-                  <div className="bg-blue-50 p-4 rounded-lg mb-4">
-                    <p className="text-sm text-blue-700">
+                  <div className="bg-blue-500/10 dark:bg-blue-400/10 p-4 rounded-lg mb-4">
+                    <p className="text-sm text-blue-500 dark:text-blue-400">
                       <span className="font-medium">Follow-up Question: </span>
                       {result.follow_up_question}
                     </p>
                   </div>
                 )}
                 {result.audio_presigned_url && (
-                  <div className="bg-gray-50 p-3 rounded-lg">
+                  <div className="bg-muted/50 p-3 rounded-lg">
                     <audio controls className="w-full h-8">
                       <source src={result.audio_presigned_url} type="audio/mpeg" />
                       Your browser does not support the audio element.

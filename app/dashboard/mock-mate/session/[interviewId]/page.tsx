@@ -229,9 +229,9 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
 
   return (
     <>
-      <div className="h-[calc(100vh-4rem)] bg-gray-50 p-4 flex flex-col">
+      <div className="h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 p-4 flex flex-col">
         {!isCameraActive && (
-          <div className="absolute top-0 left-0 right-0 text-center bg-red-500 text-white p-2">
+          <div className="absolute top-0 left-0 right-0 text-center bg-red-500 dark:bg-red-600 text-white p-2">
             Camera is off. Please enable your camera.
           </div>
         )}
@@ -248,6 +248,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
             <QuestionCard
               currentQuestion={currentQuestion}
               question={questions[currentQuestion]?.question}
+              isRecording={!!recording}
             />
             <VideoPreview
               videoRef={videoRef}
@@ -267,42 +268,41 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
               onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
             />
 
-            {/* Keep the Interview Tips Card in the main component or create a separate component if needed */}
-            <Card className="flex-1 min-h-0">
+            <Card className="flex-1 min-h-0 dark:bg-gray-800 dark:border-gray-700">
               <CardContent className="h-full p-4">
                 <div className="h-full flex flex-col">
                   <div className="mb-3">
-                    <h3 className="text-lg font-semibold text-indigo-900">AI Interview Tips</h3>
-                    <p className="text-xs text-gray-600">
+                    <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">AI Interview Tips</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
                       Our AI analyzes these key aspects of your responses:
                     </p>
                   </div>
 
                   <div className="flex-1 grid grid-cols-1 gap-2 auto-rows-min">
-                    <div className="p-2 bg-indigo-50 rounded-lg">
-                      <h4 className="font-medium text-sm text-indigo-900">Communication</h4>
-                      <p className="text-xs text-gray-600">
+                    <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+                      <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">Communication</h4>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">
                         Speak clearly with steady pace. AI evaluates articulation.
                       </p>
                     </div>
 
-                    <div className="p-2 bg-indigo-50 rounded-lg">
-                      <h4 className="font-medium text-sm text-indigo-900">STAR Method</h4>
-                      <p className="text-xs text-gray-600">
+                    <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+                      <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">STAR Method</h4>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">
                         Situation, Task, Action, Result. Keep responses structured.
                       </p>
                     </div>
 
-                    <div className="p-2 bg-indigo-50 rounded-lg">
-                      <h4 className="font-medium text-sm text-indigo-900">Professionalism</h4>
-                      <p className="text-xs text-gray-600">
+                    <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+                      <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">Professionalism</h4>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">
                         Good posture, eye contact, show enthusiasm.
                       </p>
                     </div>
 
                     {recording && (
-                      <div className="p-2 bg-green-50 border border-green-200 rounded-lg">
-                        <p className="text-xs text-green-800 font-medium">
+                      <div className="p-2 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p className="text-xs text-green-800 dark:text-green-200 font-medium">
                           🎯 Recording: Focus on clear, structured response
                         </p>
                       </div>

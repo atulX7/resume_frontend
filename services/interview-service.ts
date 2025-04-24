@@ -1,7 +1,8 @@
 import { ApiError } from "next/dist/server/api-utils";
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import { handle403Error } from "@/utils/error-handler";
 import { handle401Error } from "@/utils/error-handler";
+import { toast } from "sonner";
 
 export interface AnalysisResponse {
   success: boolean;
@@ -75,6 +76,20 @@ interface UserInterviewsResponse {
   error?: string;
 }
 
+const handleUnauthorizedError = async () => {
+  toast.error("Session expired. Please log in again.");
+  await signOut({ redirect: false });
+  window.location.href = "/auth/login";
+};
+
+const checkAuthorization = async () => {
+  const session = await getSession();
+  if (!session?.accessToken) {
+    await handleUnauthorizedError();
+    throw new Error("Unauthorized");
+  }
+  return session.accessToken;
+};
 
 export class InterviewService {
   private static BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -239,30 +254,29 @@ export class InterviewService {
   }
 
   static async getUserInterviews(sessionId?: string): Promise<UserInterviewsResponse> {
-    const session = await getSession();
-    if (!session?.accessToken) {
-      throw new Error('No active session');
-    }
-
     try {
+      const accessToken = await checkAuthorization();
       const url = sessionId 
         ? `${this.BASE_URL}/mock-interview/sessions/${sessionId}`
         : `${this.BASE_URL}/mock-interview/sessions`;
 
       const response = await fetch(url, {
         headers: {
-          Authorization: `Bearer ${session.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch interviews (Status: ${response.status})`);
+      if (response.status === 401) {
+        await handleUnauthorizedError();
+        throw new Error("Unauthorized");
       }
 
-      if (response.status === 401) {
-        handle401Error();
-        return { success: false, error: 'Session expired' };
+      if (!response.ok) {
+        const errorMessage = `Failed to fetch interviews (Status: ${response.status})`;
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
       }
+
       if (response.status === 403) {
         handle403Error();
         return { success: false, error: 'Usage limit reached' };
@@ -271,6 +285,11 @@ export class InterviewService {
       const data = await response.json();
       return { success: true, data };
     } catch (error) {
+      if (error instanceof Error && error.message === "Unauthorized") {
+        await handleUnauthorizedError();
+      } else {
+        toast.error('Failed to fetch interviews. Please try again later.');
+      }
       console.error('Error fetching user interviews:', error);
       return {
         success: false,

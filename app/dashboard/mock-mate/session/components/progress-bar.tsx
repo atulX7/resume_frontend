@@ -13,18 +13,18 @@ export function ProgressBar({ currentQuestion, totalQuestions, recordingTime, fo
   const progress = totalQuestions > 0 ? ((currentQuestion + 1) / totalQuestions) * 100 : 0
 
   return (
-    <Card className="mb-2 flex-none">
+    <Card className="mb-2 flex-none dark:bg-gray-800 dark:border-gray-700">
       <CardContent className="py-3">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-500">
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
             Progress: {currentQuestion + 1}/{totalQuestions}
           </span>
-          <span className="flex items-center gap-2 text-sm font-medium text-gray-500">
+          <span className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400">
             <Timer className="w-4 h-4" />
             {formatTime(recordingTime)}
           </span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress value={progress} className="h-2 dark:bg-gray-700" />
       </CardContent>
     </Card>
   )

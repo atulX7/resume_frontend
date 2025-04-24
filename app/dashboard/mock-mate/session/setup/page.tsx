@@ -198,14 +198,14 @@ export default function SetupPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-gray-50 to-indigo-50 p-4 md:p-8">
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-gray-50 to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-indigo-900/20 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-[#0A2647] mb-3">
+          <h1 className="text-4xl font-bold text-[#0A2647] dark:text-blue-300 mb-3">
             Device Setup
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
             Let&apos;s make sure your camera and microphone are working properly
           </p>
         </div>
@@ -214,7 +214,7 @@ export default function SetupPage() {
         <div className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Camera Preview Section */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
               <div className="relative aspect-video rounded-xl overflow-hidden shadow-inner bg-gradient-to-r from-gray-900 to-gray-800">
                 <video
                   ref={videoRef}
@@ -233,21 +233,21 @@ export default function SetupPage() {
             </div>
 
             {/* Audio Section */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
               <div className="space-y-6">
                 {/* Microphone Status */}
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`p-3 rounded-full ${devices.audio ? "bg-green-100" : "bg-red-100"}`}>
+                  <div className={`p-3 rounded-full ${devices.audio ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30"}`}>
                     <MicIcon 
                       size={24} 
-                      className={`${devices.audio ? "text-green-600" : "text-red-600"} ${devices.audio ? "animate-pulse" : ""}`} 
+                      className={`${devices.audio ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"} ${devices.audio ? "animate-pulse" : ""}`} 
                     />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
                       {devices.audio ? 'Microphone Connected' : 'Microphone Not Found'}
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {devices.audio ? 'Audio input is working properly' : 'Please check your microphone connection'}
                     </p>
                   </div>
@@ -256,12 +256,12 @@ export default function SetupPage() {
                 {/* Audio Level Meter */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">Audio Level</span>
-                    <span className="text-xs text-gray-500">Try speaking to test</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Audio Level</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Try speaking to test</span>
                   </div>
-                  <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-blue-500 to-indigo-400 transition-all duration-150"
+                      className="h-full bg-gradient-to-r from-blue-500 to-indigo-400 dark:from-blue-400 dark:to-indigo-300 transition-all duration-150"
                       style={{ width: `${Math.min((audioLevel / 255) * 100, 100)}%` }}
                     />
                   </div>
@@ -278,8 +278,8 @@ export default function SetupPage() {
               className={`
                 px-12 py-6 rounded-xl text-lg font-semibold shadow-lg
                 ${devices.video && devices.audio && !isStarting
-                  ? 'bg-gradient-to-r from-indigo-500 to-emerald-500 hover:from-indigo-600 hover:to-emerald-600 text-white transform hover:scale-105 transition-all duration-200' 
-                  : 'bg-gray-200 text-gray-500 cursor-not-allowed'}
+                  ? 'bg-gradient-to-r from-indigo-500 to-emerald-500 dark:from-indigo-600 dark:to-emerald-600 hover:from-indigo-600 hover:to-emerald-600 dark:hover:from-indigo-700 dark:hover:to-emerald-700 text-white transform hover:scale-105 transition-all duration-200' 
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'}
               `}
             >
               {isStarting 
@@ -288,7 +288,7 @@ export default function SetupPage() {
               }
             </Button>
             {!devices.video || !devices.audio ? (
-              <p className="text-sm text-red-500">
+              <p className="text-sm text-red-500 dark:text-red-400">
                 Please allow access to both camera and microphone to continue
               </p>
             ) : null}

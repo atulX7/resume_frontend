@@ -1,13 +1,15 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { RecommendationsCard } from './components/RecommendationsCard';
 import { ResumeAnalysisCard } from './components/ResumeAnalysisCard';
 import { TailoredData, ParsedData, ExperienceImprovement} from './types';
-
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 function TailorResumeDetailsContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const dataParam = searchParams?.get('data');
   const [tailoredData, setTailoredData] = useState<TailoredData | null>(null);
@@ -54,24 +56,36 @@ function TailorResumeDetailsContent() {
   };
 
   return (
-    <div className="min-h-screen bg-indigo-50 flex justify-center gap-4 py-12 px-8">
-      <ResumeAnalysisCard
-        error={error}
-        tailoredData={tailoredData}
-        parsedData={parsedData}
-        renderHighlightedText={renderHighlightedText}
-      />
-      {parsedData && tailoredData?.sections && (
-        <div className="w-96 sticky top-8 self-start">
-          <RecommendationsCard 
-            recommendations={parsedData.review_suggestions.recommendations}
-            finalNotes={parsedData.review_suggestions.final_notes}
-            skillsData={parsedData.review_suggestions.skills}
-            jdAlignment={parsedData.review_suggestions.jd_alignment_summary}
-            sectionScores={parsedData.review_suggestions.section_scores}
-          />
-        </div>
-      )}
+    <div className="min-h-screen bg-indigo-50 dark:bg-gray-900 flex flex-col gap-4 py-12 px-8">
+      <div className="max-w-7xl mx-auto w-full">
+        <Button
+          variant="outline"
+          className="mb-6 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+          onClick={() => router.push('/dashboard/resume-refiner')}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Resume Analyzer
+        </Button>
+      </div>
+      <div className="max-w-7xl mx-auto w-full flex justify-center gap-4">
+        <ResumeAnalysisCard
+          error={error}
+          tailoredData={tailoredData}
+          parsedData={parsedData}
+          renderHighlightedText={renderHighlightedText}
+        />
+        {parsedData && tailoredData?.sections && (
+          <div className="w-96 sticky top-8 self-start">
+            <RecommendationsCard 
+              recommendations={parsedData.review_suggestions.recommendations}
+              finalNotes={parsedData.review_suggestions.final_notes}
+              skillsData={parsedData.review_suggestions.skills}
+              jdAlignment={parsedData.review_suggestions.jd_alignment_summary}
+              sectionScores={parsedData.review_suggestions.section_scores}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

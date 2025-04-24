@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useUser } from "@/lib/user"
-import { X } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 // Toggle this to enable/disable fullscreen feature
 const ENABLE_FULLSCREEN = true;
@@ -13,29 +13,22 @@ interface FullscreenPopupProps {
   onClose: () => void;
 }
 
-function FullscreenPopup({ onRequestFullscreen, onClose }: FullscreenPopupProps) {
+function FullscreenPopup({ onRequestFullscreen }: FullscreenPopupProps) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
-        <button 
-          onClick={onClose}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
-          aria-label="Close fullscreen popup"
-        >
-          <X className="h-5 w-5" />
-        </button>
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-white dark:bg-gray-800/95 rounded-lg shadow-xl dark:shadow-black/30 max-w-md w-full p-6 relative border border-gray-200 dark:border-gray-700">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-50 mb-4">
           Enter Fullscreen Mode
         </h3>
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
           For the best interview experience, we recommend using fullscreen mode. This ensures proper camera and audio functionality.
         </p>
-        <button
+        <Button
           onClick={onRequestFullscreen}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+          className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium transition-colors"
         >
           Enter Fullscreen
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -54,14 +47,14 @@ export default function SessionLayout({
   const [showFullscreenPopup, setShowFullscreenPopup] = useState(false)
 
   // Function to stop all media tracks
-  const stopAllMediaTracks = () => {
+  const stopAllMediaTracks = useCallback(() => {
     if (activeStream) {
       activeStream.getTracks().forEach(track => {
         track.stop()
       })
       setActiveStream(null)
     }
-  }
+  }, [activeStream])
 
   // Function to handle fullscreen
   const handleFullscreen = async () => {
@@ -159,6 +152,27 @@ export default function SessionLayout({
     }
   }, [user, router, pathname, showFullscreenPopup])
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      stopAllMediaTracks();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden' && !isFullscreen) {
+        stopAllMediaTracks();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      stopAllMediaTracks();
+    };
+  }, [isFullscreen, stopAllMediaTracks]);
+
   return (
     <>
       {ENABLE_FULLSCREEN && showFullscreenPopup && !isFullscreen && (
@@ -167,7 +181,7 @@ export default function SessionLayout({
           onClose={() => setShowFullscreenPopup(false)}
         />
       )}
-      <div className="fixed inset-0 w-full h-full bg-background overflow-hidden">
+      <div className="fixed inset-0 w-full h-full bg-gray-50 dark:bg-gray-900 overflow-hidden">
         <div className="w-full h-full">
           {children}
         </div>

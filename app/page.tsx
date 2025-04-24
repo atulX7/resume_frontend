@@ -5,9 +5,9 @@ import HeroSection from "@/components/homepage/hero-section";
 import MarketingCards from "@/components/homepage/marketing-cards";
 import { MarqueeDemo } from "@/components/homepage/marquee-demo";
 import SideBySide from "@/components/homepage/side-by-side";
-import { Footer } from "@/components/layout/footer";
+import { Footer } from "@/components/homepage/footer";
 
-export default async function Home() {
+export default function Home() {
   return (
     <>
       <main>
