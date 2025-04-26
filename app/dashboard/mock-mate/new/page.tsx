@@ -39,28 +39,39 @@ export default function NewInterviewPage() {
     }
   }
 
+  // Check if all required fields are filled
+  const isFormValid = () => {
+    return (
+      formData.job_title.trim() !== '' &&
+      formData.job_description.trim() !== '' &&
+      resumeFile !== null &&
+      acceptedTerms
+    )
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all fields
+    if (!isFormValid()) {
+      const missingFields = [];
+      if (!formData.job_title.trim()) missingFields.push('Job Title');
+      if (!formData.job_description.trim()) missingFields.push('Job Description');
+      if (!resumeFile) missingFields.push('Resume');
+      if (!acceptedTerms) missingFields.push('Terms and Conditions');
+
+      toast.error('Missing Required Fields', {
+        description: `Please fill in: ${missingFields.join(', ')}`,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
       if (!user?.id) {
         toast.error('Authentication required', {
           description: 'Please sign in to continue'
-        });
-        return;
-      }
-
-      if (!acceptedTerms) {
-        toast.error('Terms not accepted', {
-          description: 'Please accept the Terms and Conditions and Privacy Policy'
-        });
-        return;
-      }
-
-      if (!formData.job_title || !formData.job_description) {
-        toast.error('Missing information', {
-          description: 'Please fill in all required fields'
         });
         return;
       }
@@ -78,10 +89,9 @@ export default function NewInterviewPage() {
       try {
         // ✅ store as one object under 'interview-form-data'
         const blob = {
-          job_title:     formData.job_title,
+          job_title: formData.job_title,
           job_description: formData.job_description,
           resume_temp_key: processedResume?.temp_key ?? null
-          
         }
         localStorage.setItem('interview-form-data', JSON.stringify(blob));
         router.push('/dashboard/mock-mate/session/setup');
@@ -112,7 +122,7 @@ export default function NewInterviewPage() {
             {/* Job Title Section */}
             <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl">
               <label htmlFor="jobTitle" className="block text-[#0A2647] dark:text-blue-300 text-lg font-semibold mb-3">
-                What position are you applying for?
+                What position are you applying for? <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -121,13 +131,14 @@ export default function NewInterviewPage() {
                 placeholder="e.g., Senior Product Designer"
                 value={formData.job_title}
                 onChange={(e) => setFormData(prev => ({...prev, job_title: e.target.value}))}
+                required
               />
             </div>
 
             {/* Resume Upload Section */}
             <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl">
               <label htmlFor="resume" className="block text-[#0A2647] dark:text-blue-300 text-lg font-semibold mb-3">
-                Upload your resume
+                Upload your resume <span className="text-red-500">*</span>
               </label>
               <label 
                 className={`w-full p-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg
@@ -144,6 +155,7 @@ export default function NewInterviewPage() {
                   className="hidden"
                   accept=".pdf,.doc,.docx"
                   onChange={handleFileChange}
+                  required
                 />
                 <div className="text-center">
                   <span className="text-blue-600 dark:text-blue-400 font-medium">Click to upload</span>
@@ -159,7 +171,7 @@ export default function NewInterviewPage() {
             {/* Job Description Section */}
             <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl">
               <label htmlFor="description" className="block text-[#0A2647] dark:text-blue-300 text-lg font-semibold mb-3">
-                Paste the job description
+                Paste the job description <span className="text-red-500">*</span>
               </label>
               <textarea
                 id="description"
@@ -168,6 +180,7 @@ export default function NewInterviewPage() {
                 placeholder="Copy and paste the job description here..."
                 value={formData.job_description}
                 onChange={(e) => setFormData(prev => ({...prev, job_description: e.target.value}))}
+                required
               />
             </div>
 
@@ -180,6 +193,7 @@ export default function NewInterviewPage() {
                   checked={acceptedTerms}
                   onChange={(e) => setAcceptedTerms(e.target.checked)}
                   className="mt-1 h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-800"
+                  required
                 />
                 <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-300">
                   I have read and agree to the{" "}
@@ -198,6 +212,7 @@ export default function NewInterviewPage() {
                   >
                     Privacy Policy
                   </Link>
+                  <span className="text-red-500"> *</span>
                 </label>
               </div>
             </div>
@@ -214,8 +229,8 @@ export default function NewInterviewPage() {
               <Button
                 type="submit"
                 variant="default"
-                disabled={isSubmitting}
-                className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors"
+                disabled={!isFormValid() || isSubmitting}
+                className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Processing...' : 'Continue →'}
               </Button>

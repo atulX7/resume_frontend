@@ -23,6 +23,17 @@ export default function TailorResumePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false)
 
+  // Add validation function
+  const isFormValid = () => {
+    return (
+      formData.jobTitle.trim() !== '' &&
+      formData.jobDescription.trim() !== '' &&
+      formData.skills.trim() !== '' &&
+      formData.resumeFile !== null &&
+      acceptedTerms
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTailoredResume(null);
@@ -179,8 +190,8 @@ export default function TailorResumePage() {
 
               <Button 
                 type="submit" 
-                disabled={isLoading}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white transition-colors duration-300 shadow-lg hover:shadow-xl"
+                disabled={!isFormValid() || isLoading}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white transition-colors duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Tailoring...' : 'Perfect My Resume'}
               </Button>
