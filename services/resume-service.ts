@@ -1,5 +1,4 @@
-import { getSession, signOut } from "next-auth/react";
-import { handle403Error } from '@/utils/error-handler';
+import { ErrorService } from "@/utils/error-service";
 
 interface ResumeAnalysisResult {
   overall_score: number;
@@ -19,26 +18,12 @@ interface ResumeScoreResponse {
   error?: string;
 }
 
-const handleUnauthorizedError = async () => {
-  await signOut({ redirect: false });
-  window.location.href = "/auth/login?error=Unauthorized&message=Your session has expired. Please log in again.";
-};
-
-const checkAuthorization = async () => {
-  const session = await getSession();
-  if (!session?.accessToken) {
-    await handleUnauthorizedError();
-    throw new Error("Unauthorized");
-  }
-  return session.accessToken;
-};
-
 export class ResumeService {
   private static BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   static async getResumeScore(resumeFile: File): Promise<ResumeScoreResponse> {
     try {
-      const accessToken = await checkAuthorization();
+      const accessToken = await ErrorService.checkAuthorization();
       const formData = new FormData();
       formData.append('resume_file', resumeFile);
 
@@ -50,18 +35,9 @@ export class ResumeService {
         },
       });
 
-      if (response.status === 401) {
-        await handleUnauthorizedError();
-        throw new Error("Unauthorized");
-      }
-
       if (!response.ok) {
-        if (response.status === 403) {
-          handle403Error();
-          return { success: false, error: 'Usage limit reached' };
-        }
-        const result = await response.json();
-        return { success: false, error: result.message || 'Failed to analyze resume' };
+        const error = new Error(`Failed to analyze resume (Status: ${response.status})`);
+        return await ErrorService.handleError(error) as ResumeScoreResponse;
       }
 
       const result = await response.json();
@@ -74,13 +50,7 @@ export class ResumeService {
 
       return { success: true, data: result };
     } catch (error) {
-      if (error instanceof Error && error.message === "Unauthorized") {
-        await handleUnauthorizedError();
-      }
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'An error occurred'
-      };
+      return await ErrorService.handleError(error) as ResumeScoreResponse;
     }
   }
 }

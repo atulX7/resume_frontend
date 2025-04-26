@@ -1,6 +1,4 @@
-import { getSession } from "next-auth/react";
-import { handle403Error } from '@/utils/error-handler';
-import { handle401Error } from "@/utils/error-handler";
+import { ErrorService } from "../utils/error-service";
 
 interface TailorResumeData {
   jobTitle: string;
@@ -96,10 +94,7 @@ export class ResumeTailorService {
 
   static async tailorResume(data: TailorResumeData): Promise<TailorResumeResponse> {
     try {
-      const session = await getSession();
-      if (!session?.accessToken) {
-        throw new Error('No active session');
-      }
+      const accessToken = await ErrorService.checkAuthorization();
 
       const formData = new FormData();
       formData.append('job_title', data.jobTitle);
@@ -110,41 +105,20 @@ export class ResumeTailorService {
       const response = await fetch(`${this.BASE_URL}/ai-resume/tailor`, {
         method: 'POST',
         headers: {
-          "Authorization": `Bearer ${session.accessToken}`,
+          "Authorization": `Bearer ${accessToken}`,
         },
         body: formData,
       });
 
-      const result = await response.json();
-
-      if (response.status === 403) {
-        handle403Error();
-        return { success: false, error: 'Usage limit reached' };
-      }
-
-      if (response.status === 401) {
-        handle401Error();
-        return { success: false, error: 'Session expired' };
-      }
-
       if (!response.ok) {
-        console.error('API Error:', result);
-        return {
-          success: false,
-          error: result.message || `Failed to tailor resume (Status: ${response.status})`
-        };
+        const error = new Error(`Failed to tailor resume (Status: ${response.status})`);
+        return await ErrorService.handleError(error) as TailorResumeResponse;
       }
 
-      return { 
-        success: true, 
-        data: result
-      };
+      const result = await response.json();
+      return { success: true, data: result };
     } catch (error) {
-      console.error('Detailed error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'An error occurred while tailoring the resume'
-      };
+      return await ErrorService.handleError(error) as TailorResumeResponse;
     }
   }
 }

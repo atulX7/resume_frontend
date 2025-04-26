@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation"
 import { Suspense, useEffect, useState } from "react"
 import Loading from "./loading"
 import { useRouter } from 'next/navigation'
+import { Toaster } from 'sonner'
 
 
 const geistSans = Geist({
@@ -75,6 +76,7 @@ export default function RootLayout({
               {isLoading && !isLegalPage && <Loading />}
               <main>{children}</main>
             </Suspense>
+            <Toaster position="top-right" />
           </LoadingProvider>
         </Providers>
       </body>

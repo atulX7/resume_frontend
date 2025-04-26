@@ -8,6 +8,7 @@ import { FileText, Star, Award } from 'lucide-react';
 import { ResumeTailorService } from '@/services/resume-tailor-service';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function TailorResumePage() {
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function TailorResumePage() {
     setIsLoading(true);
 
     if (!formData.resumeFile) {
-      console.error('No resume file selected');
+      toast.error('Please select a resume file');
       setIsLoading(false);
       return;
     }
@@ -54,12 +55,13 @@ export default function TailorResumePage() {
       });
 
       if (response.success && response.data) {
+        toast.success('Resume tailored successfully!');
         const queryParams = new URLSearchParams({
           data: JSON.stringify(response.data)
         });
         router.push(`/dashboard/resume-refiner/details?${queryParams.toString()}`);
       } else {
-        console.error('Failed to tailor resume:', response.error);
+        toast.error(response.error || 'Failed to tailor resume');
       }
     } catch (error) {
       console.error('Error tailoring resume:', error);

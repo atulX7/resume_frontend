@@ -7,12 +7,11 @@ import Link from "next/link";
 import { useUserSidebarStore } from "@/hooks/use-user-sidebar-store";
 import { Menu } from "./menu";
 import { siteConfig } from "@/config/site";
-import { SidebarToggle } from "../admin-panel/sidebar-toggle";
 
 export function Sidebar() {
   const sidebar = useUserSidebarStore();
   if (!sidebar) return null;
-  const { isOpen, toggleOpen, settings } = sidebar;
+  const { isOpen, settings } = sidebar;
   
   return (
     <aside
@@ -22,7 +21,6 @@ export function Sidebar() {
         settings.disabled && "hidden"
       )}
     >
-        <SidebarToggle isOpen={isOpen} setIsOpen={toggleOpen} />
       <div
         className="relative h-full flex flex-col px-3 py-4 overflow-hidden shadow-md dark:shadow-zinc-800"
       >
