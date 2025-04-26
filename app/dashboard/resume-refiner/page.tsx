@@ -97,7 +97,7 @@ export default function TailorResumePage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="jobTitle" className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
-                    Job Title
+                    Job Title <span className="text-red-500">*</span>
                   </label>
                   <Input
                     id="jobTitle"
@@ -111,7 +111,7 @@ export default function TailorResumePage() {
                 </div>
                 <div>
                   <label htmlFor="skills" className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
-                  Your Skills
+                    Your Skills <span className="text-red-500">*</span>
                   </label>
                   <Input
                     id="skills"
@@ -127,7 +127,7 @@ export default function TailorResumePage() {
 
               <div>
                 <label htmlFor="jobDescription" className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
-                  Job Description
+                  Job Description <span className="text-red-500">*</span>
                 </label>
                 <Textarea
                   id="jobDescription"
@@ -142,7 +142,7 @@ export default function TailorResumePage() {
 
               <div>
                 <label htmlFor="resumeFile" className="block text-sm font-medium text-indigo-800 dark:text-indigo-300 mb-2">
-                  Upload Resume
+                  Upload Resume <span className="text-red-500">*</span>
                 </label>
                 <div className="flex items-center space-x-4">
                   <Input
@@ -184,6 +184,7 @@ export default function TailorResumePage() {
                   >
                     Privacy Policy
                   </Link>
+                  <span className="text-red-500">*</span>
                 </label>
               </div>
             </div>

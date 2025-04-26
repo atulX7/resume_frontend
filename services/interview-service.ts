@@ -306,7 +306,6 @@ export class InterviewService {
     }
   }
 
-  // Add this new method to InterviewService class
   static async uploadAnswer(
     interviewId: string,
     questionId: string,
@@ -324,7 +323,7 @@ export class InterviewService {
       formData.append('question_id', questionId);
       formData.append('answer_audio', audioFile);
   
-      const response = await fetch(
+      fetch(
         `${this.BASE_URL}/mock-interview/${interviewId}/upload-answer`,
         {
           method: 'POST',
@@ -333,19 +332,17 @@ export class InterviewService {
             Authorization: `Bearer ${session.accessToken}`,
           },
         }
-      );
-  
-      if (!response.ok) {
-        throw new Error(`Failed to upload answer (Status: ${response.status})`);
-      }
-  
-      const data = await response.json();
-      return { success: true, data };
+      ).catch(error => {
+        console.error('Error uploading answer in background:', error);
+        toast.error('Failed to upload answer in background');
+      });
+
+      return { success: true, data: { status: 'uploading' } };
     } catch (error) {
-      console.error('Error uploading answer:', error);
+      console.error('Error preparing answer upload:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'An error occurred while uploading the answer'
+        error: error instanceof Error ? error.message : 'An error occurred while preparing the answer upload'
       };
     }
   }

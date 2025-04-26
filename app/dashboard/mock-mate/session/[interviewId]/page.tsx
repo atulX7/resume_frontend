@@ -119,41 +119,31 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
       chunks.push(e.data)
     }
 
-    // Modify the mediaRecorder.onstop handler in startAnswering function
     mediaRecorder.onstop = async () => {
       const blob = new Blob(chunks, { type: 'video/webm' })
       const currentQuestionId = questions[currentQuestion]?.question_id
     
       if (currentQuestionId) {
-        try {
-          // Upload the answer immediately
-          const response = await InterviewService.uploadAnswer(
-            interviewId,
-            currentQuestionId,
-            blob
-          );
-    
-          if (!response.success) {
-            throw new Error(response.error);
-          }
-    
-          // Store answer in local state
-          setAnswers(prev => [...prev, {
-            questionId: currentQuestionId,
-            recording: blob
-          }]);
-    
-          // Move to next question or finish
-          if (currentQuestion < questions.length - 1) {
-            setCurrentQuestion(prev => prev + 1);
-          } else {
-            setIsAllQuestionsAnswered(true);
-          }
-        } catch (error) {
+        // Start the upload in the background
+        InterviewService.uploadAnswer(
+          interviewId,
+          currentQuestionId,
+          blob
+        ).catch(error => {
           console.error('Error uploading answer:', error);
-          toast.error('Failed to upload answer', {
-            description: 'Please try recording again.',
-          });
+        });
+
+        // Store answer in local state
+        setAnswers(prev => [...prev, {
+          questionId: currentQuestionId,
+          recording: blob
+        }]);
+    
+        // Move to next question or finish immediately
+        if (currentQuestion < questions.length - 1) {
+          setCurrentQuestion(prev => prev + 1);
+        } else {
+          setIsAllQuestionsAnswered(true);
         }
       }
     }
