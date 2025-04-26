@@ -151,31 +151,17 @@ export default function SetupPage() {
     try {
       const formDataStr = localStorage.getItem('interview-form-data');
       if (!formDataStr) {
+        console.error("Missing interview details", { description: "Please go back and re-enter your job & resume." });
         setIsStarting(false);
         return;
       }
   
-      const formData = JSON.parse(formDataStr);
-      
-      let resumeFile = null;
-      if (formData.resume_file) {
-        const binaryStr = atob(formData.resume_file.data);
-        const bytes = new Uint8Array(binaryStr.length);
-        for (let i = 0; i < binaryStr.length; i++) {
-          bytes[i] = binaryStr.charCodeAt(i);
-        }
-        resumeFile = new File(
-          [bytes.buffer], 
-          formData.resume_file.name, 
-          { type: formData.resume_file.type }
-        );
-      }
-
+      const { job_title, job_description, resume_temp_key } = JSON.parse(formDataStr);
       const response = await InterviewService.createInterview({
         user_id: user.id,
-        job_title: formData.job_title,
-        job_description: formData.job_description,
-        resume_file: resumeFile
+        job_title: job_title,
+        job_description: job_description,
+        resume_temp_key: resume_temp_key
       });
   
       if (response.success && response.data) {

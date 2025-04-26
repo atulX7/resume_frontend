@@ -42,7 +42,7 @@ interface CreateInterviewData {
   user_id: string;
   job_title: string;
   job_description: string;
-  resume_file?: File | null;
+  resume_temp_key?: string;
 }
 
 interface CreateInterviewResponse {
@@ -79,7 +79,7 @@ interface UserInterviewsResponse {
 interface ProcessResumeResponse {
   success: boolean;
   data?: {
-    text: string;
+    temp_key: string;
   };
   error?: string;
 }
@@ -159,8 +159,8 @@ export class InterviewService {
       formData.append('job_title', data.job_title);
       formData.append('job_description', data.job_description);
       
-      if (data.resume_file) {
-        formData.append('resume_file', data.resume_file);
+      if (data.resume_temp_key) {
+        formData.append('resume_temp_key', data.resume_temp_key);
       }
 
       const response = await fetch(`${this.BASE_URL}/mock-interview/start`, {
@@ -361,7 +361,7 @@ export class InterviewService {
       formData.append('resume_file', resumeFile);
 
       // Dummy API endpoint
-      const response = await fetch(`${this.BASE_URL}/process-resume`, {
+      const response = await fetch(`${this.BASE_URL}/resumes/upload-temp-resume`, {
         method: 'POST',
         body: formData,
         headers: {

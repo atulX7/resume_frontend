@@ -76,13 +76,14 @@ export default function NewInterviewPage() {
 
       // Try to store each piece separately to avoid quota issues
       try {
-        localStorage.setItem('interview-form-job-title', formData.job_title);
-        localStorage.setItem('interview-form-job-description', formData.job_description);
-        
-        if (processedResume) {
-          localStorage.setItem('interview-form-resume', JSON.stringify(processedResume));
+        // ✅ store as one object under 'interview-form-data'
+        const blob = {
+          job_title:     formData.job_title,
+          job_description: formData.job_description,
+          resume_temp_key: processedResume?.temp_key ?? null
+          
         }
-
+        localStorage.setItem('interview-form-data', JSON.stringify(blob));
         router.push('/dashboard/mock-mate/session/setup');
       } catch (storageError) {
         console.error('Storage error:', storageError);

@@ -6,40 +6,40 @@ import Image from "next/image";
 
 const reviews = [
   {
-    name: "Sarah M.",
-    username: "@sarahm",
+    name: "Akash",
+    username: "@akash",
     body: "The ATS score analysis helped me optimize my resume perfectly. Got callbacks from top companies!",
-    img: "https://avatar.vercel.sh/sarah",
+    img: "https://avatar.vercel.sh/akash",
   },
   {
-    name: "Michael R.",
-    username: "@michaelr",
+    name: "Manish",
+    username: "@manish",
     body: "Mock interviews were incredibly realistic. The AI feedback helped me improve significantly.",
-    img: "https://avatar.vercel.sh/michael",
+    img: "https://avatar.vercel.sh/manish",
   },
   {
-    name: "Emily L.",
-    username: "@emilyl",
+    name: "Rohit",
+    username: "@rohit",
     body: "The resume enhancement tool transformed my CV completely. Highly recommended!",
-    img: "https://avatar.vercel.sh/emily",
+    img: "https://avatar.vercel.sh/rohit",
   },
   {
-    name: "David K.",
-    username: "@davidk",
+    name: "Anudeep",
+    username: "@anudeep",
     body: "Career insights were spot-on! Helped me make better decisions about my career path.",
-    img: "https://avatar.vercel.sh/david",
+    img: "https://avatar.vercel.sh/anudeep",
   },
   {
-    name: "Jessica W.",
-    username: "@jessicaw",
+    name: "Yogesh",
+    username: "@yogesh",
     body: "Amazing tool! Landed my dream job after using the ATS optimization features.",
     img: "https://avatar.vercel.sh/jessica",
   },
   {
-    name: "Alex T.",
-    username: "@alext",
+    name: "Yash",
+    username: "@yash",
     body: "The AI interview practice made me so much more confident. Great platform!",
-    img: "https://avatar.vercel.sh/alex",
+    img: "https://avatar.vercel.sh/yash",
   },
 ];
 
