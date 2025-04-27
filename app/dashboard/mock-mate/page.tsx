@@ -69,6 +69,7 @@ export default function MockMatePage() {
                 className="w-[600px] h-auto hover:transform hover:scale-105 transition-transform duration-300"
                 width={600}
                 height={600}
+                priority
               />
             </div>
           </div>
@@ -99,6 +100,7 @@ export default function MockMatePage() {
                 className="w-[500px] h-auto hover:transform hover:scale-105 transition-transform duration-300"
                 width={500}
                 height={500}
+                priority
               />
             </div>
           </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { RecommendationsCard } from './components/RecommendationsCard';
 import { ResumeAnalysisCard } from './components/ResumeAnalysisCard';
@@ -10,18 +10,19 @@ import { ArrowLeft } from 'lucide-react';
 
 function TailorResumeDetailsContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const dataParam = searchParams?.get('data');
   const [tailoredData, setTailoredData] = useState<TailoredData | null>(null);
   const [parsedData, setParsedData] = useState<ParsedData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
-      if (!dataParam || dataParam.trim() === '') {
-        throw new Error('No data found in URL parameters.');
+      // Read analysis data from sessionStorage
+      const storedData = sessionStorage.getItem('resumeTailorData');
+      if (!storedData) {
+        throw new Error('No data found. Please analyze your resume first.');
       }
-      const parsed = JSON.parse(dataParam);
+      
+      const parsed = JSON.parse(storedData);
       setParsedData(parsed);
       setTailoredData({
         sections: {
@@ -39,7 +40,7 @@ function TailorResumeDetailsContent() {
     } catch (err) {
       setError((err as Error).message);
     }
-  }, [dataParam]);
+  }, []);
 
   const renderHighlightedText = (text: string, color: string) => {
     const bgColorMap: Record<string, string> = {
