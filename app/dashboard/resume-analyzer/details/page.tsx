@@ -1,10 +1,9 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { DetailCard } from './components/DetailCard';
 import { FileText, ArrowLeft } from 'lucide-react';
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
@@ -68,9 +67,22 @@ function CircularProgress({ score }: { score: number }) {
 
 function ResumeATSDetailsContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const analysisDataParam = searchParams?.get('analysisData');
-  const analysisData = analysisDataParam ? JSON.parse(decodeURIComponent(analysisDataParam)) as ResumeAnalysisData : null;
+  const [analysisData, setAnalysisData] = useState<ResumeAnalysisData | null>(null);
+
+  useEffect(() => {
+    // Read analysis data from sessionStorage
+    const storedData = sessionStorage.getItem('resumeAnalysisData');
+    if (storedData) {
+      setAnalysisData(JSON.parse(storedData));
+    } else {
+      // If no data found, redirect back to analyzer
+      router.push('/dashboard/resume-analyzer');
+    }
+  }, [router]);
+
+  if (!analysisData) {
+    return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-6">

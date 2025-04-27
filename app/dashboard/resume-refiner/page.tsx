@@ -54,10 +54,11 @@ export default function TailorResumePage() {
       });
 
       if (response.success && response.data) {
-        const queryParams = new URLSearchParams({
-          data: JSON.stringify(response.data)
-        });
-        router.push(`/dashboard/resume-refiner/details?${queryParams.toString()}`);
+        // Store analysis data in sessionStorage
+        sessionStorage.setItem('resumeTailorData', JSON.stringify(response.data));
+        
+        // Navigate to details page without query parameters
+        router.push('/dashboard/resume-refiner/details');
       } else {
         console.error('Failed to tailor resume:', response.error);
       }

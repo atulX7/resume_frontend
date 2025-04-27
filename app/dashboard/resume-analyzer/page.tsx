@@ -52,18 +52,11 @@ export default function ResumeATS() {
       if (response.success && response.data) {
         toast.success('Analysis Complete');
         
-        // Encode the entire analysis data
-        const analysisData = {
-          overall_score: response.data.overall_score,
-          overall_summary: response.data.overall_summary,
-          detailed_evaluation: response.data.detailed_evaluation
-        };
+        // Store analysis data in sessionStorage
+        sessionStorage.setItem('resumeAnalysisData', JSON.stringify(response.data));
         
-        const queryParams = new URLSearchParams({
-          analysisData: encodeURIComponent(JSON.stringify(analysisData))
-        });
-        
-        router.push(`/dashboard/resume-analyzer/details?${queryParams.toString()}`);
+        // Navigate to details page without query parameters
+        router.push('/dashboard/resume-analyzer/details');
       } else {
         toast.error('Analysis Failed', {
           description: response.error || 'Failed to analyze resume. Please try again.',
@@ -83,13 +76,15 @@ export default function ResumeATS() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-indigo-50 dark:bg-gray-900 px-6">
       <h1 className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-6">Resume Analyzer</h1>
       <Card className="p-8 shadow-xl rounded-2xl bg-white dark:bg-gray-800 max-w-lg w-full flex flex-col items-center">
-        <Image
-          src="/images/resume-analysis.svg"
-          alt="Resume Analysis"
-          width={300}
-          height={200}
-          className="mb-4"
-        />
+        <div className="relative w-[300px] h-[200px] mb-4">
+          <Image
+            src="/images/resume-analysis.svg"
+            alt="Resume Analysis"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
         <label className="w-64 flex flex-col items-center px-6 py-4 border-2 border-dashed border-indigo-500 dark:border-indigo-400 rounded-lg cursor-pointer hover:bg-indigo-100 dark:hover:bg-indigo-800 transition">
           <Upload className="h-8 w-8 text-indigo-500 dark:text-indigo-400" />
           <span className="mt-2 text-indigo-600 dark:text-indigo-400 text-sm">Select your resume</span>
