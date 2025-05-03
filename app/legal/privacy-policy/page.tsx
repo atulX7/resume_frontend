@@ -152,7 +152,7 @@ export default function PrivacyPolicy() {
                     <p className="text-muted-foreground leading-relaxed">
                       If you have any questions about our privacy policy or the information we hold about you, please contact us at:
                       <br />
-                      Email: support@resuwin.com
+                      Email: hello@resuwin.com
                       <br />
                       We aim to respond to all inquiries within 48 business hours.
                     </p>
