@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 export default function NotFound() {
   const handleContactSupport = () => {
-    window.location.href = "mailto:support@resuwin.com?subject=Support%20Request"
+    window.location.href = "mailto:hello@resuwin.com?subject=Support%20Request"
   }
 
   return (

@@ -5,7 +5,7 @@ import { useState } from "react"
 
 export function Footer() {
   const [isLoading, setIsLoading] = useState(false)
-  const emailLink = "mailto:support@resuwin.com?subject=Contact%20ResuWin"
+  const emailLink = "mailto:hello@resuwin.com?subject=Contact%20ResuWin"
 
   const handleContact = () => {
     setIsLoading(true)

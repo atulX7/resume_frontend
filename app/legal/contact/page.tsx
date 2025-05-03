@@ -29,10 +29,10 @@ export default function Contact() {
             <div className="flex items-center gap-2 text-primary">
               <Mail className="h-5 w-5" />
               <a 
-                href="mailto:support@resuwin.com"
+                href="mailto:hello@resuwin.com"
                 className="hover:underline"
               >
-                support@resuwin.com
+                hello@resuwin.com
               </a>
             </div>
           </div>

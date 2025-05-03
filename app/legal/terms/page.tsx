@@ -9,7 +9,7 @@ export default function TermsAndConditions() {
 
   const handleGDPROptOut = () => {
     // TODO: Implement GDPR opt-out functionality
-    window.location.href = "mailto:support@resuwin.com?subject=GDPR%20Opt-Out%20Request"
+    window.location.href = "mailto:hello@resuwin.com?subject=GDPR%20Opt-Out%20Request"
   }
 
   return (
