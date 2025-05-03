@@ -96,7 +96,7 @@ export function SubmitInterviewModal({
             </div>
             <div className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2 px-1 mt-1">
               <Clock className="w-3 h-3" />
-              Please check your spam/junk folder if you don&apos;t see our email within 15 minutes
+              Please check your spam/junk folder if you don&apos;t see our email within 30 minutes
             </div>
           </div>
 
