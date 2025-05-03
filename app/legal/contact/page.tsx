@@ -35,6 +35,11 @@ export default function Contact() {
                 hello@resuwin.com
               </a>
             </div>
+
+            <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm text-blue-600 dark:text-blue-300">
+              <p>We&apos;ll get back to you as soon as possible, usually within 1-2 business days.</p>
+              <p className="mt-2">Please check your spam/junk folder if you don&apos;t see our reply in your inbox.</p>
+            </div>
           </div>
         </CardContent>
       </Card>
