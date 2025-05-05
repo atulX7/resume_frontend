@@ -45,6 +45,17 @@ export default function SessionLayout({
   const [activeStream, setActiveStream] = useState<MediaStream | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showFullscreenPopup, setShowFullscreenPopup] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Function to detect if device is mobile
+  const checkIfMobile = useCallback(() => {
+    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent : '';
+    const mobile = Boolean(
+      userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i)
+    );
+    setIsMobile(mobile);
+    return mobile;
+  }, []);
 
   // Function to stop all media tracks
   const stopAllMediaTracks = useCallback(() => {
@@ -81,6 +92,20 @@ export default function SessionLayout({
     }
   };
 
+  // Handle window resize to update mobile status
+  useEffect(() => {
+    const handleResize = () => {
+      checkIfMobile();
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [checkIfMobile]);
+
   useEffect(() => {
     if (!user) {
       router.push('/auth/signin')
@@ -108,8 +133,8 @@ export default function SessionLayout({
       setIsFullscreen(!!document.fullscreenElement);
     };
 
-    // Show fullscreen popup if enabled and not in fullscreen
-    if (ENABLE_FULLSCREEN && !document.fullscreenElement && !showFullscreenPopup) {
+    // Show fullscreen popup if enabled, not on mobile, and not in fullscreen
+    if (ENABLE_FULLSCREEN && !isMobile && !document.fullscreenElement && !showFullscreenPopup) {
       setShowFullscreenPopup(true);
     }
 
@@ -150,7 +175,7 @@ export default function SessionLayout({
         exitFullscreen();
       }
     }
-  }, [user, router, pathname, showFullscreenPopup])
+  }, [user, router, pathname, showFullscreenPopup, isMobile, stopAllMediaTracks])
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -175,7 +200,7 @@ export default function SessionLayout({
 
   return (
     <>
-      {ENABLE_FULLSCREEN && showFullscreenPopup && !isFullscreen && (
+      {ENABLE_FULLSCREEN && !isMobile && showFullscreenPopup && !isFullscreen && (
         <FullscreenPopup 
           onRequestFullscreen={handleFullscreen}
           onClose={() => setShowFullscreenPopup(false)}

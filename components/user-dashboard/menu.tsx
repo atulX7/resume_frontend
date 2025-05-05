@@ -19,9 +19,11 @@ import { userMenuItems } from "@/config/user-sidebar";
 
 interface MenuProps {
   isOpen: boolean | undefined;
+  isMobile?: boolean;
+  closeMobileMenu?: () => void;
 }
 
-export function Menu({ isOpen }: MenuProps) {
+export function Menu({ isOpen, isMobile, closeMobileMenu }: MenuProps) {
   const pathname = usePathname();
   const { user } = useUser();
 
@@ -61,7 +63,7 @@ export function Menu({ isOpen }: MenuProps) {
                           className="w-full justify-start h-10 mb-1"
                           asChild
                         >
-                          <Link href={href}>
+                          <Link href={href} onClick={isMobile && closeMobileMenu ? closeMobileMenu : undefined}>
                             <span className={cn(isOpen === false ? "" : "mr-4")}>
                               <Icon size={18} />
                             </span>

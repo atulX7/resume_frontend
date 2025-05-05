@@ -30,6 +30,31 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   const [questions, setQuestions] = useState<Array<{ question_id: string, question: string }>>([])
   const [isAllQuestionsAnswered, setIsAllQuestionsAnswered] = useState(false)
   const [isCameraActive, setIsCameraActive] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Function to detect if device is mobile
+  const checkIfMobile = () => {
+    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent : '';
+    const mobile = Boolean(
+      userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i)
+    );
+    setIsMobile(mobile);
+    return mobile;
+  }
+
+  // Handle window resize to update mobile status
+  useEffect(() => {
+    const handleResize = () => {
+      checkIfMobile();
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const savedQuestions = localStorage.getItem('current-interview-questions');
@@ -44,8 +69,10 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
 
     async function setupStream() {
       try {
+        // Don't request video for mobile devices
+        const isMobileDevice = checkIfMobile();
         const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: isMobileDevice ? false : true,
           audio: true
         });
 
@@ -55,9 +82,12 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
         }
 
         setStream(mediaStream);
-        setIsCameraActive(true);
+        
+        // Only set camera active on non-mobile or if we actually get video
+        const hasVideo = mediaStream.getVideoTracks().length > 0;
+        setIsCameraActive(hasVideo);
 
-        if (currentVideoRef) {
+        if (currentVideoRef && hasVideo && !isMobileDevice) {
           currentVideoRef.srcObject = mediaStream;
           // Add event listeners for better error handling
           const playVideo = async () => {
@@ -80,7 +110,9 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
         }
       } catch (error) {
         console.error('Error accessing devices:', error);
-        alert('Unable to access camera. Please check your permissions.');
+        if (!isMobile) {
+          alert('Unable to access camera. Please check your permissions.');
+        }
       }
     }
 
@@ -216,11 +248,10 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-
   return (
     <>
       <div className="h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 p-4 flex flex-col">
-        {!isCameraActive && (
+        {!isCameraActive && !isMobile && (
           <div className="absolute top-0 left-0 right-0 text-center bg-red-500 dark:bg-red-600 text-white p-2">
             Camera is off. Please enable your camera.
           </div>
@@ -231,78 +262,108 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
           totalQuestions={questions.length}
           recordingTime={recordingTime}
           formatTime={formatTime}
+          isMobile={isMobile}
         />
 
-        <div className="flex-1 grid grid-cols-12 gap-4 min-h-0">
-          <div className="col-span-8 grid grid-rows-[auto_1fr] gap-4 min-h-0">
+        {/* Mobile layout */}
+        {isMobile ? (
+          <div className="flex-1 flex flex-col min-h-0 gap-4">
             <QuestionCard
               currentQuestion={currentQuestion}
               question={questions[currentQuestion]?.question}
               isRecording={!!recording}
+              isMobile={true}
             />
-            <VideoPreview
-              videoRef={videoRef}
-              recording={recording}
-            />
+            
+            <div className="mt-auto">
+              <InterviewControls
+                isAllQuestionsAnswered={isAllQuestionsAnswered}
+                recording={recording}
+                onStartRecording={startAnswering}
+                onStopRecording={() => {
+                  recording?.stop()
+                  setRecording(null)
+                }}
+                onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
+                isMobile={true}
+              />
+            </div>
           </div>
+        ) : (
+          // Desktop layout
+          <div className="flex-1 grid grid-cols-12 gap-4 min-h-0">
+            <div className="col-span-8 grid grid-rows-[auto_1fr] gap-4 min-h-0">
+              <QuestionCard
+                currentQuestion={currentQuestion}
+                question={questions[currentQuestion]?.question}
+                isRecording={!!recording}
+                isMobile={false}
+              />
+              <VideoPreview
+                videoRef={videoRef}
+                recording={recording}
+              />
+            </div>
 
-          <div className="col-span-4 grid grid-rows-[auto_1fr] gap-4 min-h-0">
-            <InterviewControls
-              isAllQuestionsAnswered={isAllQuestionsAnswered}
-              recording={recording}
-              onStartRecording={startAnswering}
-              onStopRecording={() => {
-                recording?.stop()
-                setRecording(null)
-              }}
-              onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
-            />
+            <div className="col-span-4 grid grid-rows-[auto_1fr] gap-4 min-h-0">
+              <InterviewControls
+                isAllQuestionsAnswered={isAllQuestionsAnswered}
+                recording={recording}
+                onStartRecording={startAnswering}
+                onStopRecording={() => {
+                  recording?.stop()
+                  setRecording(null)
+                }}
+                onOpenSubmitModal={() => setIsSubmitModalOpen(true)}
+                isMobile={false}
+              />
 
-            <Card className="flex-1 min-h-0 dark:bg-gray-800 dark:border-gray-700">
-              <CardContent className="h-full p-4">
-                <div className="h-full flex flex-col">
-                  <div className="mb-3">
-                    <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">AI Interview Tips</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      Our AI analyzes these key aspects of your responses:
-                    </p>
-                  </div>
-
-                  <div className="flex-1 grid grid-cols-1 gap-2 auto-rows-min">
-                    <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
-                      <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">Communication</h4>
-                      <p className="text-xs text-gray-600 dark:text-gray-300">
-                        Speak clearly with steady pace. AI evaluates articulation.
+              <Card className="flex-1 min-h-0 dark:bg-gray-800 dark:border-gray-700">
+                <CardContent className="h-full p-4">
+                  <div className="h-full flex flex-col">
+                    <div className="mb-3">
+                      <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">AI Interview Tips</h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Our AI analyzes these key aspects of your responses:
                       </p>
                     </div>
 
-                    <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
-                      <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">STAR Method</h4>
-                      <p className="text-xs text-gray-600 dark:text-gray-300">
-                        Situation, Task, Action, Result. Keep responses structured.
-                      </p>
-                    </div>
-
-                    <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
-                      <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">Professionalism</h4>
-                      <p className="text-xs text-gray-600 dark:text-gray-300">
-                        Good posture, eye contact, show enthusiasm.
-                      </p>
-                    </div>
-
-                    {recording && (
-                      <div className="p-2 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
-                        <p className="text-xs text-green-800 dark:text-green-200 font-medium">
-                          🎯 Recording: Focus on clear, structured response
+                    <div className="flex-1 grid grid-cols-1 gap-2 auto-rows-min">
+                      <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+                        <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">Communication</h4>
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          Speak clearly with steady pace. AI evaluates articulation.
                         </p>
                       </div>
-                    )}
+
+                      <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+                        <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">STAR Method</h4>
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          Situation, Task, Action, Result. Keep responses structured.
+                        </p>
+                      </div>
+
+                      <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+                        <h4 className="font-medium text-sm text-indigo-900 dark:text-indigo-100">Professionalism</h4>
+                        <p className="text-xs text-gray-600 dark:text-gray-300">
+                          Good posture, eye contact, show enthusiasm.
+                        </p>
+                      </div>
+
+                      {recording && (
+                        <div className="p-2 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
+                          <p className="text-xs text-green-800 dark:text-green-200 font-medium">
+                            🎯 Recording: Focus on clear, structured response
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <SubmitInterviewModal
@@ -311,7 +372,8 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
         onConfirm={submitInterview}
         isLoading={isSubmitting}
         userEmail={session?.user?.email || ''}
+        isMobile={isMobile}
       />
     </>
   )
-} // Close both JSX fragment and function
+}
