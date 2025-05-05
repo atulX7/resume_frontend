@@ -94,16 +94,15 @@ export function SubmitInterviewModal({
                 </span>
               </div>
             </div>
-            <div className="text-sm text-indigo-600 dark:text-indigo-400 flex items-center gap-2 px-1">
-              <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400" />
-              Interview feedback will be sent to this email
-            </div>
-            <div className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2 px-1 mt-1">
-              <Clock className="w-3 h-3" />
-              Please check your spam/junk folder if you don&apos;t see our email within 30 minutes
             <div className={`${isMobile ? 'text-[10px]' : 'text-sm'} text-indigo-600 dark:text-indigo-400 flex items-center gap-1 px-1`}>
               <CheckCircle className={`${isMobile ? 'w-2.5 h-2.5' : 'w-4 h-4'} text-green-500 dark:text-green-400 flex-shrink-0`} />
               <span>Feedback sent to your email</span>
+            </div>
+            <div className={`text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2 px-1 mt-1`}>
+              <Clock className={`${isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} flex-shrink-0`} />
+              <span className={`${isMobile ? 'text-[10px]' : ''}`}>
+                Check spam folder if you don&apos;t see our email within 30 minutes
+              </span>
             </div>
           </div>
 
