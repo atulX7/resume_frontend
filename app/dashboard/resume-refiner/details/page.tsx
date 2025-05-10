@@ -50,42 +50,51 @@ function TailorResumeDetailsContent() {
     };
 
     return (
-      <div className={`p-4 rounded-lg border ${bgColorMap[color] || 'bg-indigo-100 border-indigo-300 text-indigo-900'}`}>
+      <div className={`p-3 sm:p-4 rounded-lg border text-sm sm:text-base ${bgColorMap[color] || 'bg-indigo-100 border-indigo-300 text-indigo-900'}`}>
         {text}
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-indigo-50 dark:bg-gray-900 flex flex-col gap-4 py-12 px-8">
+    <div className="min-h-screen bg-indigo-50 dark:bg-gray-900 flex flex-col gap-4 py-6 sm:py-12 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto w-full">
         <Button
           variant="outline"
-          className="mb-6 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+          className="mb-4 sm:mb-6 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
           onClick={() => router.push('/dashboard/resume-refiner')}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Resume Analyzer
+          <span className="hidden sm:inline">Back to Resume Analyzer</span>
+          <span className="sm:hidden">Back</span>
         </Button>
       </div>
-      <div className="max-w-7xl mx-auto w-full flex justify-center gap-4">
-        <ResumeAnalysisCard
-          error={error}
-          tailoredData={tailoredData}
-          parsedData={parsedData}
-          renderHighlightedText={renderHighlightedText}
-        />
-        {parsedData && tailoredData?.sections && (
-          <div className="w-96 sticky top-8 self-start">
-            <RecommendationsCard 
-              recommendations={parsedData.review_suggestions.recommendations}
-              finalNotes={parsedData.review_suggestions.final_notes}
-              skillsData={parsedData.review_suggestions.skills}
-              jdAlignment={parsedData.review_suggestions.jd_alignment_summary}
-              sectionScores={parsedData.review_suggestions.section_scores}
+      
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          <div className="w-full lg:max-w-[65%]">
+            <ResumeAnalysisCard
+              error={error}
+              tailoredData={tailoredData}
+              parsedData={parsedData}
+              renderHighlightedText={renderHighlightedText}
             />
           </div>
-        )}
+          
+          {parsedData && tailoredData?.sections && (
+            <div className="w-full lg:w-[35%] order-first lg:order-last">
+              <div className="lg:sticky lg:top-8">
+                <RecommendationsCard 
+                  recommendations={parsedData.review_suggestions.recommendations}
+                  finalNotes={parsedData.review_suggestions.final_notes}
+                  skillsData={parsedData.review_suggestions.skills}
+                  jdAlignment={parsedData.review_suggestions.jd_alignment_summary}
+                  sectionScores={parsedData.review_suggestions.section_scores}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

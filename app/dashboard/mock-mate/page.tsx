@@ -43,30 +43,30 @@ export default function MockMatePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="p-6 space-y-8 container mx-auto max-w-7xl">
+      <div className="p-4 sm:p-6 space-y-8 container mx-auto max-w-7xl">
         {/* Hero Section */}
         {!isLoading && interviews.length === 0 ? (
-          <div className="flex justify-between items-center min-h-[80vh] gap-8">
-            <div className="max-w-xl space-y-6">
-              <h1 className="text-5xl font-bold mb-4 text-[#0A2647] dark:text-white leading-tight">
+          <div className="flex flex-col lg:flex-row justify-between items-center min-h-[60vh] lg:min-h-[80vh] gap-8">
+            <div className="max-w-xl space-y-6 text-center lg:text-left">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#0A2647] dark:text-white leading-tight">
                 Welcome to <span className="text-primary dark:text-primary-foreground">Mock Mate</span>
               </h1>
-              <p className="text-gray-700 dark:text-gray-300 mb-8 text-lg leading-relaxed">
+              <p className="text-gray-700 dark:text-gray-300 mb-8 text-base sm:text-lg leading-relaxed">
                 Get more job offers by improving your interview skills...
               </p>
               <Link 
                 href="/dashboard/mock-mate/new"
-                className="bg-primary text-white px-8 py-4 rounded-lg hover:bg-primary/90 transition-all transform hover:scale-105 inline-flex items-center gap-2 shadow-lg"
+                className="bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-primary/90 transition-all transform hover:scale-105 inline-flex items-center gap-2 shadow-lg"
               >
                 Start Your First Interview
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-center lg:justify-end mt-8 lg:mt-0">
               <Image
                 src="/images/interview-illustration.svg" 
                 alt="Interview illustration" 
-                className="w-[600px] h-auto hover:transform hover:scale-105 transition-transform duration-300"
+                className="w-full max-w-md lg:max-w-[600px] h-auto hover:transform hover:scale-105 transition-transform duration-300"
                 width={600}
                 height={600}
                 priority
@@ -77,27 +77,27 @@ export default function MockMatePage() {
 
         {/* Modified header section */}
         {interviews.length > 0 && (
-          <div className="flex justify-between items-center gap-8 pt-8">
-            <div className="max-w-xl space-y-6">
-              <h1 className="text-5xl font-bold mb-4 text-[#0A2647] dark:text-white leading-tight">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-8 pt-8">
+            <div className="max-w-xl space-y-6 text-center lg:text-left">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#0A2647] dark:text-white leading-tight">
                 Welcome to <span className="text-primary dark:text-primary-foreground">Mock Mate</span>
               </h1>
-              <p className="text-gray-700 dark:text-gray-300 mb-8 text-lg leading-relaxed">
+              <p className="text-gray-700 dark:text-gray-300 mb-8 text-base sm:text-lg leading-relaxed">
                 Get more job offers by improving your interview skills...
               </p>
               <Link 
                 href="/dashboard/mock-mate/new"
-                className="bg-primary text-white px-8 py-4 rounded-lg hover:bg-primary/90 transition-all transform hover:scale-105 inline-flex items-center gap-2 shadow-lg"
+                className="bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-primary/90 transition-all transform hover:scale-105 inline-flex items-center gap-2 shadow-lg"
               >
                 Start New Interview
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-center lg:justify-end mt-8 lg:mt-0">
               <Image
                 src="/images/interview-illustration.svg" 
                 alt="Interview illustration" 
-                className="w-[500px] h-auto hover:transform hover:scale-105 transition-transform duration-300"
+                className="w-full max-w-md lg:max-w-[500px] h-auto hover:transform hover:scale-105 transition-transform duration-300"
                 width={500}
                 height={500}
                 priority
@@ -109,12 +109,17 @@ export default function MockMatePage() {
         {/* Interviews Grid with floating arrow */}
         {interviews.length > 0 && (
           <div className="relative space-y-4 pt-16">
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
-              <ArrowRight className="w-8 h-8 text-primary dark:text-primary-foreground transform rotate-90" />
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Your Interviews</span>
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+              <div className="hidden sm:flex flex-col items-center animate-bounce">
+                <ArrowRight className="w-8 h-8 text-primary dark:text-primary-foreground transform rotate-90" />
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Your Interviews</span>
+              </div>
+              <div className="sm:hidden text-center">
+                <span className="text-sm font-medium text-primary dark:text-primary-foreground">Scroll down to see your interviews</span>
+              </div>
             </div>
             
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Your Mock Interviews</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center lg:text-left">Your Mock Interviews</h2>
             
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -125,24 +130,24 @@ export default function MockMatePage() {
                 ))}
               </div>
             ) : interviews.length === 0 ? (
-              <div className="min-h-[80vh] flex flex-col items-center justify-center">
-                <div className="text-center max-w-2xl mx-auto">
+              <div className="min-h-[60vh] lg:min-h-[80vh] flex flex-col items-center justify-center">
+                <div className="text-center max-w-2xl mx-auto p-4">
                   <Image
                     src="/images/empty-interview.svg" 
                     alt="No interviews" 
-                    className="w-64 h-64 mb-8 mx-auto"
+                    className="w-48 h-48 sm:w-64 sm:h-64 mb-8 mx-auto"
                     width={256}
                     height={256}
                   />
-                  <h1 className="text-4xl font-bold mb-4 text-[#0A2647]">
+                  <h1 className="text-2xl sm:text-4xl font-bold mb-4 text-[#0A2647]">
                     Start Your Interview Journey
                   </h1>
-                  <p className="text-gray-600 mb-8 text-lg">
+                  <p className="text-gray-600 mb-8 text-base sm:text-lg">
                     Practice makes perfect! Begin your interview preparation by simulating 
                     real job interviews with our AI-powered mock interview system.
                   </p>
                   <Link href="/dashboard/mock-mate/new">
-                    <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-6 h-auto text-lg gap-2">
+                    <Button className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-3 sm:py-6 h-auto text-base sm:text-lg gap-2">
                       <FileText className="w-5 h-5" />
                       Start Your First Interview
                     </Button>

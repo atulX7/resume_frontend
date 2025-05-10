@@ -10,18 +10,19 @@ export function Footer() {
 
   return (
     <div className="z-20 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-4 md:mx-8 flex h-14 items-center justify-between">
-        <p className="text-xs md:text-sm leading-loose text-muted-foreground">
+      <div className="px-4 md:px-8 flex flex-col sm:flex-row h-auto sm:h-14 py-4 sm:py-0 items-center justify-between">
+        <p className="text-xs leading-loose text-muted-foreground mb-4 sm:mb-0 text-center sm:text-left">
           {mainContent}
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="h-8 w-8"
           >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <Sun className="h-3 w-3 sm:h-4 sm:w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-3 w-3 sm:h-4 sm:w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
           </Button>
           
@@ -29,10 +30,10 @@ export function Footer() {
             <Button
               variant="ghost"
               size="sm"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+              className="h-8 text-xs sm:text-sm flex items-center gap-1 sm:gap-2 text-muted-foreground hover:text-foreground px-2 sm:px-3"
             >
-              <Mail className="h-4 w-4" />
-              Contact Us
+              <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+              Contact
             </Button>
           </Link>
 
@@ -40,9 +41,9 @@ export function Footer() {
             <Button
               variant="ghost"
               size="sm"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+              className="h-8 text-xs sm:text-sm flex items-center text-muted-foreground hover:text-foreground px-2 sm:px-3"
             >
-              Privacy Policy
+              Privacy
             </Button>
           </Link>
 
@@ -50,9 +51,9 @@ export function Footer() {
             <Button
               variant="ghost"
               size="sm"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+              className="h-8 text-xs sm:text-sm flex items-center text-muted-foreground hover:text-foreground px-2 sm:px-3"
             >
-              Terms & Conditions
+              Terms
             </Button>
           </Link>
         </div>

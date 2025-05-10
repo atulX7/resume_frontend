@@ -1,7 +1,7 @@
 "use client";
 
 import { Footer } from "@/components/user-dashboard/footer";
-import { Sidebar } from "@/components/user-dashboard/sidebar";
+import { Sidebar, MobileSidebar, ResponsiveHandler } from "@/components/user-dashboard/sidebar";
 import { useUserSidebarStore } from "@/hooks/use-user-sidebar-store";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/user-dashboard/navbar";
@@ -23,7 +23,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <>
+      {/* Responsive handler component detects screen size without rendering anything */}
+      <ResponsiveHandler />
       <Sidebar />
+      <MobileSidebar />
       <div className="flex flex-col min-h-screen">
         <main
           className={cn(
