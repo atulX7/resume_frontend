@@ -145,7 +145,7 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
             </CardHeader>
             <CardContent>
               <div className="text-5xl font-bold">
-                {analysis.overall_score * 20}%
+                {analysis.overall_score * 10}%
               </div>
             </CardContent>
           </Card>
@@ -157,10 +157,10 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="text-2xl font-semibold text-emerald-500 dark:text-emerald-400">
-                  {(score as number) * 20}%
+                  {(score as number) * 10}%
                 </div>
                 <Progress 
-                  value={(score as number) * 20} 
+                  value={(score as number) * 10} 
                   className="h-2 bg-accent"
                 />
               </CardContent>
@@ -184,11 +184,11 @@ export default function AnalysisPage({ params }: { params: Promise<{ interviewId
                 </div>
                 <div className="flex items-center gap-4 mb-4">
                   <Progress 
-                    value={result.score * 20} 
+                    value={result.score * 10} 
                     className="h-2 flex-1 bg-accent" 
                   />
                   <span className="text-sm font-medium bg-emerald-500/20 text-emerald-500 dark:bg-emerald-400/20 dark:text-emerald-400 px-3 py-1 rounded-full">
-                    {result.score * 20}%
+                    {result.score * 10}%
                   </span>
                 </div>
                 <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
