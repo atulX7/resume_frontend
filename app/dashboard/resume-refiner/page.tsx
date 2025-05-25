@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { FileText, Star, Award } from 'lucide-react';
+import { FileText, Star, Award, Loader2 } from 'lucide-react';
 import { ResumeTailorService } from '@/services/resume-tailor-service';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -56,7 +56,7 @@ export default function TailorResumePage() {
       if (response.success && response.data) {
         // Store analysis data in sessionStorage
         sessionStorage.setItem('resumeTailorData', JSON.stringify(response.data));
-        
+
         // Navigate to details page without query parameters
         router.push('/dashboard/resume-refiner/details');
       } else {
@@ -169,33 +169,40 @@ export default function TailorResumePage() {
                     className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
                   <label htmlFor="terms" className="text-xs sm:text-sm text-gray-600">
-                  I have read and agree to the{" "}
-                  <Link 
-                    href="/legal/terms" 
-                    target="_blank"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Terms and Conditions
-                  </Link>
-                  {" "}and{" "}
-                  <Link 
-                    href="/legal/privacy-policy" 
-                    target="_blank"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Privacy Policy
-                  </Link>
-                  <span className="text-red-500">*</span>
-                </label>
+                    I have read and agree to the{" "}
+                    <Link
+                      href="/legal/terms"
+                      target="_blank"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Terms and Conditions
+                    </Link>
+                    {" "}and{" "}
+                    <Link
+                      href="/legal/privacy-policy"
+                      target="_blank"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>
+                    <span className="text-red-500">*</span>
+                  </label>
+                </div>
               </div>
-            </div>
 
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={!isFormValid() || isLoading}
                 className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white transition-colors duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base py-3 h-auto"
               >
-                {isLoading ? 'Tailoring...' : 'Perfect My Resume'}
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>Tailoring...</span>
+                  </div>
+                ) : (
+                  'Perfect My Resume'
+                )}
               </Button>
             </form>
           </div>

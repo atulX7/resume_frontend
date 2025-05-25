@@ -25,8 +25,8 @@ export function Footer() {
             <Moon className="absolute h-3 w-3 sm:h-4 sm:w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
           </Button>
-          
-          <Link href="/legal/contact">
+
+          <Link href="/legal/contact" target="_blank" rel="noreferrer">
             <Button
               variant="ghost"
               size="sm"
@@ -37,7 +37,7 @@ export function Footer() {
             </Button>
           </Link>
 
-          <Link href="/legal/privacy-policy">
+          <Link href="/legal/privacy-policy" target="_blank" rel="noreferrer">
             <Button
               variant="ghost"
               size="sm"
@@ -47,7 +47,7 @@ export function Footer() {
             </Button>
           </Link>
 
-          <Link href="/legal/terms">
+          <Link href="/legal/terms" target="_blank" rel="noreferrer">
             <Button
               variant="ghost"
               size="sm"

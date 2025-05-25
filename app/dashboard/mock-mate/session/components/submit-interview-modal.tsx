@@ -56,10 +56,10 @@ export function SubmitInterviewModal({
   const handleSubmit = async () => {
     try {
       await onConfirm()
-      
+
       // Clean up media devices before redirecting
       stopAllMediaTracks()
-      
+
       // Small delay to ensure cleanup is complete
       setTimeout(() => {
         router.push('/dashboard/mock-mate')
@@ -155,16 +155,16 @@ export function SubmitInterviewModal({
 
         <DialogFooter className={`${isMobile ? 'p-2' : 'p-6'} pt-0`}>
           <div className="flex gap-2 w-full">
-            <Button 
-              variant="outline" 
-              onClick={onClose} 
+            <Button
+              variant="outline"
+              onClick={onClose}
               disabled={isLoading}
               className={`flex-1 ${isMobile ? 'text-xs py-1 px-2 h-8' : ''} border-indigo-200 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/30`}
             >
               Cancel
             </Button>
-            <Button 
-              onClick={handleSubmit} 
+            <Button
+              onClick={handleSubmit}
               disabled={isLoading}
               className={`flex-1 gap-1 ${isMobile ? 'text-xs py-1 px-2 h-8' : ''} bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30`}
             >

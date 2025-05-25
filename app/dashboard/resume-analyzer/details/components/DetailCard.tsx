@@ -52,7 +52,7 @@ export function DetailCard({ evaluation }: DetailCardProps) {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 sm:h-2.5 mr-2">
-            <div 
+            <div
               className={`h-full rounded-full transition-all duration-300 ${getStatusColor(evaluation.status)}`}
               style={{ width: `${evaluation.score}%` }}
             />

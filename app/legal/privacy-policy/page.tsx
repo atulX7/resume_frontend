@@ -1,25 +1,11 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 export default function PrivacyPolicy() {
-  const router = useRouter()
-
   return (
     <>
-      <Button
-        variant="ghost"
-        onClick={() => router.back()}
-        className="mb-6 hover:bg-accent"
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back
-      </Button>
-
       <Card className="bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <CardContent className="p-6 md:p-8">
           <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -29,9 +15,9 @@ export default function PrivacyPolicy() {
           <div className="prose dark:prose-invert max-w-none">
             <div className="bg-accent/50 rounded-lg p-6 mb-8">
               <p className="text-lg leading-relaxed text-muted-foreground">
-                ResuWin is a specialized platform focusing on resume analysis and career development services. 
-                To provide our services effectively, we need to collect certain personal information that is stored 
-                in our secure internal systems. This privacy policy explains how we use the personal information 
+                ResuWin is a specialized platform focusing on resume analysis and career development services.
+                To provide our services effectively, we need to collect certain personal information that is stored
+                in our secure internal systems. This privacy policy explains how we use the personal information
                 we collect when you use our website and services.
               </p>
             </div>
@@ -66,10 +52,10 @@ export default function PrivacyPolicy() {
                 <Card className="bg-card/50">
                   <CardContent className="p-6">
                     <p className="text-muted-foreground leading-relaxed">
-                      When you submit information to ResuWin, it is stored in our internal system. Additional information 
-                      may be collected from various career-related platforms such as LinkedIn, Github, and other professional 
-                      networks. Notes from interview sessions and AI analysis, along with customer feedback, are stored in 
-                      our system as supplements to previously provided information. Other information that may be collected 
+                      When you submit information to ResuWin, it is stored in our internal system. Additional information
+                      may be collected from various career-related platforms such as LinkedIn, Github, and other professional
+                      networks. Notes from interview sessions and AI analysis, along with customer feedback, are stored in
+                      our system as supplements to previously provided information. Other information that may be collected
                       includes personality assessments and various certificates if required for specific services.
                     </p>
                   </CardContent>
@@ -92,59 +78,59 @@ export default function PrivacyPolicy() {
                   </CardContent>
                 </Card>
               </section>
-              
+
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Future Services</h2>
                 <Card className="bg-card/50">
                   <CardContent className="p-6">
                     <p className="text-muted-foreground leading-relaxed">
-                      As we develop new features and services, we may collect additional information to support these enhancements. 
-                      We will always notify you and update this privacy policy accordingly. Future services may include advanced 
+                      As we develop new features and services, we may collect additional information to support these enhancements.
+                      We will always notify you and update this privacy policy accordingly. Future services may include advanced
                       career tracking, skill assessments, and integrated job application systems.
                     </p>
                   </CardContent>
                 </Card>
               </section>
-              
+
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Access to Your Information and Correction</h2>
                 <Card className="bg-card/50">
                   <CardContent className="p-6">
                     <p className="text-muted-foreground leading-relaxed">
-                      You have the right to request a copy of the information we hold about you. If you would like a copy of your 
-                      personal information, please contact us. We want to ensure that your personal information is accurate and up 
+                      You have the right to request a copy of the information we hold about you. If you would like a copy of your
+                      personal information, please contact us. We want to ensure that your personal information is accurate and up
                       to date. You may ask us to correct or remove information you think is inaccurate.
                     </p>
                   </CardContent>
                 </Card>
               </section>
-              
+
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Third-party Websites</h2>
                 <Card className="bg-card/50">
                   <CardContent className="p-6">
                     <p className="text-muted-foreground leading-relaxed">
-                      Our website may contain links to other websites. This privacy policy only applies to ResuWin, so when you 
-                      link to other websites, you should read their privacy policies. We integrate with professional networks 
+                      Our website may contain links to other websites. This privacy policy only applies to ResuWin, so when you
+                      link to other websites, you should read their privacy policies. We integrate with professional networks
                       like LinkedIn and GitHub, but we only access the information you explicitly authorize.
                     </p>
                   </CardContent>
                 </Card>
               </section>
-              
+
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Maintenance of Privacy Policy</h2>
                 <Card className="bg-card/50">
                   <CardContent className="p-6">
                     <p className="text-muted-foreground leading-relaxed">
-                      We regularly review our privacy policy and place any updates on this webpage. This privacy policy was last 
-                      updated to reflect our commitment to transparency and to incorporate feedback from our users. We encourage 
+                      We regularly review our privacy policy and place any updates on this webpage. This privacy policy was last
+                      updated to reflect our commitment to transparency and to incorporate feedback from our users. We encourage
                       you to periodically review this policy to stay informed about how we protect your information.
                     </p>
                   </CardContent>
                 </Card>
               </section>
-              
+
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">How to Contact Us</h2>
                 <Card className="bg-card/50">
@@ -159,7 +145,7 @@ export default function PrivacyPolicy() {
                   </CardContent>
                 </Card>
               </section>
-              
+
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Article 6: Lawful Processing of Personal Data</h2>
                 <Card className="bg-card/50">

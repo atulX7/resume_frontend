@@ -42,7 +42,7 @@ export function Menu({ isOpen, isMobile, closeMobileMenu }: MenuProps) {
                   <Tooltip delayDuration={100}>
                     <TooltipTrigger className="w-full">
                       <div className="w-full flex justify-center items-center">
-                        <Ellipsis className="h-5 w-5" />
+                        <Ellipsis className="h-5 w-5 hidden" />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="right">
@@ -87,15 +87,20 @@ export function Menu({ isOpen, isMobile, closeMobileMenu }: MenuProps) {
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <div className={cn(
-                    "w-full p-4 border rounded-lg hover:bg-accent transition-colors cursor-pointer",
-                    isOpen === false ? "p-2" : "p-4"
+                    "w-full border rounded-lg hover:bg-accent transition-colors cursor-pointer",
+                    isOpen === false ? "p-2 flex justify-center" : "p-4"
                   )}>
-                    <div className="flex items-center gap-3">
-                      <Avatar>
+                    <div className={cn(
+                      "flex items-center",
+                      isOpen === false ? "justify-center" : "gap-3 w-full"
+                    )}>
+                      <Avatar className={cn(
+                        isOpen === false ? "h-9 w-9" : "h-8 w-8"
+                      )}>
                         <AvatarImage src={user?.image || ''} />
                         <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <div className={cn("flex-1 overflow-hidden transition-all duration-200", 
+                      <div className={cn("flex-1 overflow-hidden transition-all duration-200",
                         isOpen === false ? "w-0 opacity-0" : "w-auto opacity-100"
                       )}>
                         <p className="text-sm font-medium truncate">{user?.name}</p>
@@ -107,9 +112,9 @@ export function Menu({ isOpen, isMobile, closeMobileMenu }: MenuProps) {
                   </div>
                 </TooltipTrigger>
                 {isOpen === false && (
-                  <TooltipContent side="right">
-                    <p className="font-medium">{user?.name}</p>
-                    <p className="text-xs text-muted-foreground">{user?.email}</p>
+                  <TooltipContent side="right" className="bg-indigo-600 dark:bg-indigo-500 text-white border-none">
+                    <p className="font-medium text-white">{user?.name}</p>
+                    <p className="text-xs text-white/90">{user?.email}</p>
                   </TooltipContent>
                 )}
               </Tooltip>

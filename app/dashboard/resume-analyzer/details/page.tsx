@@ -26,41 +26,33 @@ function getScoreColor(score: number): string {
 }
 
 function CircularProgress({ score }: { score: number }) {
-  const radius = 30;
+  const radius = 35;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
   const colorClass = getScoreColor(score);
 
   return (
     <div className="relative inline-flex items-center justify-center">
-      <svg className="w-20 h-20 sm:w-24 sm:h-24 transform -rotate-90">
-        {/* Background circle */}
-        <circle
-          cx="40"
-          cy="40"
-          r={radius}
-          stroke="currentColor"
-          strokeWidth="4"
-          fill="transparent"
-          className="text-gray-100"
-        />
+      <svg className="w-24 h-24 transform -rotate-90">
         {/* Progress circle */}
         <circle
-          cx="40"
-          cy="40"
+          cx="48"
+          cy="48"
           r={radius}
           stroke="currentColor"
-          strokeWidth="4"
+          strokeWidth="3"
           fill="transparent"
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
-          className={`${colorClass} transition-all duration-1000 ease-out`}
+          className={`${colorClass}`}
         />
       </svg>
-      <span className={`absolute text-base sm:text-xl font-bold ${colorClass}`}>
-        {Math.round(score)}%
-      </span>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className={`text-2xl font-semibold ${colorClass}`}>
+          {Math.round(score)}%
+        </span>
+      </div>
     </div>
   );
 }
