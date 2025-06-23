@@ -70,6 +70,10 @@ function ResumeATSDetailsContent() {
       // If no data found, redirect back to analyzer
       router.push('/dashboard/resume-analyzer');
     }
+    // Set localStorage variable if not already set
+    if (typeof window !== "undefined" && !localStorage.getItem("showRatingDialog")) {
+      localStorage.setItem("showRatingDialog", "true");
+    }
   }, [router]);
 
   if (!analysisData) {

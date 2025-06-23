@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { RecommendationsCard } from './components/RecommendationsCard';
 import { ResumeAnalysisCard } from './components/ResumeAnalysisCard';
-import { TailoredData, ParsedData, ExperienceImprovement} from './types';
+import { TailoredData, ParsedData, ExperienceImprovement } from './types';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
@@ -21,7 +21,7 @@ function TailorResumeDetailsContent() {
       if (!storedData) {
         throw new Error('No data found. Please analyze your resume first.');
       }
-      
+
       const parsed = JSON.parse(storedData);
       setParsedData(parsed);
       setTailoredData({
@@ -39,6 +39,13 @@ function TailorResumeDetailsContent() {
       });
     } catch (err) {
       setError((err as Error).message);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set localStorage variable if not already set
+    if (typeof window !== "undefined" && !localStorage.getItem("showRatingDialog")) {
+      localStorage.setItem("showRatingDialog", "true");
     }
   }, []);
 
@@ -69,7 +76,7 @@ function TailorResumeDetailsContent() {
           <span className="sm:hidden">Back</span>
         </Button>
       </div>
-      
+
       <div className="max-w-7xl mx-auto w-full">
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           <div className="w-full lg:max-w-[65%]">
@@ -80,11 +87,11 @@ function TailorResumeDetailsContent() {
               renderHighlightedText={renderHighlightedText}
             />
           </div>
-          
+
           {parsedData && tailoredData?.sections && (
             <div className="w-full lg:w-[35%] order-first lg:order-last">
               <div className="lg:sticky lg:top-8">
-                <RecommendationsCard 
+                <RecommendationsCard
                   recommendations={parsedData.review_suggestions.recommendations}
                   finalNotes={parsedData.review_suggestions.final_notes}
                   skillsData={parsedData.review_suggestions.skills}

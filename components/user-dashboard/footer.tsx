@@ -37,6 +37,16 @@ export function Footer() {
             </Button>
           </Link>
 
+          <Link href="/pricing">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 text-xs sm:text-sm flex items-center text-muted-foreground hover:text-foreground px-2 sm:px-3"
+            >
+              Pricing
+            </Button>
+          </Link>
+
           <Link href="/legal/privacy-policy" target="_blank" rel="noreferrer">
             <Button
               variant="ghost"

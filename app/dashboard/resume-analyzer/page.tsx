@@ -15,14 +15,59 @@ import { submitRating } from '@/services/rating-service';
 export default function ResumeATS() {
   const router = useRouter();
   const { data: session } = useSession();
-  const name = session?.user?.name;
-  const email = session?.user?.email;
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [showRating, setShowRating] = useState(false);
 
-  useEffect(() => { setShowRating(true); }, []);
+  // Rating dialog logic
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const checkAndShowDialog = () => {
+      const nextEligible = localStorage.getItem("showRatingDialogNext");
+      const now = Date.now();
+      if (
+        localStorage.getItem("showRatingDialog") === "true" &&
+        (!nextEligible || now > Number(nextEligible))
+      ) {
+        setShowRating(true);
+        localStorage.setItem("showRatingDialog", "false");
+      }
+    };
+
+    // Initial check on mount (for reloads)
+    const timer = setTimeout(checkAndShowDialog, 5000);
+
+    // Listen for localStorage changes (for instant show)
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "showRatingDialog" && e.newValue === "true") {
+        checkAndShowDialog();
+      }
+    };
+    window.addEventListener("storage", onStorage);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, []);
+
+  const handleCloseRating = () => {
+    setShowRating(false);
+    // Set next eligible time to 48 hours from now
+    const nextTime = Date.now() + 48 * 60 * 60 * 1000;
+    localStorage.setItem("showRatingDialogNext", nextTime.toString());
+  };
+
+  const handleSubmitRating = async (rating: number, comment: string) => {
+    await submitRating(
+      rating,
+      comment,
+      session?.user?.name ?? undefined,
+      session?.user?.email ?? undefined
+    );
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -171,11 +216,8 @@ export default function ResumeATS() {
       </div>
       <RatingDialog
         open={showRating}
-        onClose={() => setShowRating(false)}
-        onSubmit={async (rating, comment) => {
-          await submitRating(rating, comment, name ?? undefined, email ?? undefined);
-          setShowRating(false);
-        }}
+        onClose={handleCloseRating}
+        onSubmit={handleSubmitRating}
       />
     </div>
   );

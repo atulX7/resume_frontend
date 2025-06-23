@@ -47,10 +47,10 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     const handleResize = () => {
       checkIfMobile();
     };
-    
+
     handleResize();
     window.addEventListener('resize', handleResize);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -82,7 +82,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
         }
 
         setStream(mediaStream);
-        
+
         // Only set camera active on non-mobile or if we actually get video
         const hasVideo = mediaStream.getVideoTracks().length > 0;
         setIsCameraActive(hasVideo);
@@ -154,7 +154,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     mediaRecorder.onstop = async () => {
       const blob = new Blob(chunks, { type: 'video/webm' })
       const currentQuestionId = questions[currentQuestion]?.question_id
-    
+
       if (currentQuestionId) {
         // Start the upload in the background
         InterviewService.uploadAnswer(
@@ -170,7 +170,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
           questionId: currentQuestionId,
           recording: blob
         }]);
-    
+
         // Move to next question or finish immediately
         if (currentQuestion < questions.length - 1) {
           setCurrentQuestion(prev => prev + 1);
@@ -212,7 +212,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
   const submitInterview = async () => {
     try {
       setIsSubmitting(true)
-      
+
       const response = await InterviewService.processInterview(
         interviewId,
       )
@@ -248,6 +248,13 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
+  useEffect(() => {
+    // Set localStorage variable if not already set
+    if (typeof window !== "undefined" && !localStorage.getItem("showRatingDialog")) {
+      localStorage.setItem("showRatingDialog", "true");
+    }
+  }, []);
+
   return (
     <>
       <div className="h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 p-4 flex flex-col">
@@ -274,7 +281,7 @@ export default function InterviewSession({ params }: { params: Promise<{ intervi
               isRecording={!!recording}
               isMobile={true}
             />
-            
+
             <div className="mt-auto">
               <InterviewControls
                 isAllQuestionsAnswered={isAllQuestionsAnswered}

@@ -36,7 +36,7 @@ export function RatingDialog({ open, onClose, onSubmit }: RatingDialogProps) {
     return (
         <Dialog open={open} onOpenChange={open => !open && onClose()}>
             <DialogContent className="bg-white dark:bg-black">
-                <DialogHeader>
+                <DialogHeader >
                     <DialogTitle className="text-center">Comment & Rating Form</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -85,7 +85,7 @@ export function RatingDialog({ open, onClose, onSubmit }: RatingDialogProps) {
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 rounded bg-green-500 hover:bg-green-600 text-white font-semibold"
+                            className="px-4 py-2 rounded bg-indigo-500 hover:bg-indigo-600 text-white font-semibold"
                             disabled={submitting || rating === 0}
                         >
                             {submitting ? 'Submitting...' : 'Submit'}

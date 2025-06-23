@@ -44,6 +44,9 @@ export function Navbar({ title }: NavbarProps) {
 
         {/* Desktop navigation */}
         <div className="ml-auto hidden md:flex items-center gap-4">
+          <Link href="/pricing">
+            <Button variant="ghost" className="text-indigo-600 dark:text-indigo-400">Pricing</Button>
+          </Link>
           <Button
             variant="ghost"
             size="icon"
@@ -53,7 +56,7 @@ export function Navbar({ title }: NavbarProps) {
             <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
           </Button>
-          
+
           {session ? (
             <Button
               variant="default"
@@ -78,6 +81,9 @@ export function Navbar({ title }: NavbarProps) {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-md shadow-md flex flex-col p-4 space-y-4 border-t dark:border-gray-800">
+          <Link href="/pricing">
+            <Button variant="ghost" className="w-full text-indigo-600 dark:text-indigo-400">Pricing</Button>
+          </Link>
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Theme</span>
             <Button
@@ -91,7 +97,7 @@ export function Navbar({ title }: NavbarProps) {
               <span className="sr-only">Toggle theme</span>
             </Button>
           </div>
-          
+
           {session ? (
             <Button
               variant="default"
@@ -105,8 +111,8 @@ export function Navbar({ title }: NavbarProps) {
             </Button>
           ) : (
             <Link href="/auth/login" className="w-full">
-              <Button 
-                variant="default" 
+              <Button
+                variant="default"
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white dark:bg-indigo-500 dark:hover:bg-indigo-600"
               >
                 Sign In

@@ -8,9 +8,9 @@ import { InterviewService } from "@/services/interview-service"
 import { Button } from "@/components/ui/button"
 import { FileText } from "lucide-react"
 import { toast } from "sonner"
-import { RatingDialog } from '@/components/user-dashboard/RatingDialog'
+import { useSession } from "next-auth/react"
+import { RatingDialog } from "@/components/user-dashboard/RatingDialog"
 import { submitRating } from '@/services/rating-service'
-import { useSession } from 'next-auth/react'
 
 interface Interview {
   session_id: string
@@ -23,10 +23,8 @@ interface Interview {
 export default function MockMatePage() {
   const [interviews, setInterviews] = useState<Interview[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [showRating, setShowRating] = useState(false)
-  const { data: session } = useSession()
-  const name = session?.user?.name
-  const email = session?.user?.email
+  const { data: session } = useSession();
+  const [showRating, setShowRating] = useState(false);
 
   useEffect(() => {
     async function fetchInterviews() {
@@ -46,8 +44,55 @@ export default function MockMatePage() {
     }
 
     fetchInterviews()
-    setShowRating(true)
   }, [])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const checkAndShowDialog = () => {
+      const nextEligible = localStorage.getItem("showRatingDialogNext");
+      const now = Date.now();
+      if (
+        localStorage.getItem("showRatingDialog") === "true" &&
+        (!nextEligible || now > Number(nextEligible))
+      ) {
+        setShowRating(true);
+        localStorage.setItem("showRatingDialog", "false");
+      }
+    };
+
+    // Initial check on mount (for reloads)
+    const timer = setTimeout(checkAndShowDialog, 5000);
+
+    // Listen for localStorage changes (for instant show)
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "showRatingDialog" && e.newValue === "true") {
+        checkAndShowDialog();
+      }
+    };
+    window.addEventListener("storage", onStorage);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, []);
+
+  const handleCloseRating = () => {
+    setShowRating(false);
+    // Set next eligible time to 48 hours from now
+    const nextTime = Date.now() + 48 * 60 * 60 * 1000;
+    localStorage.setItem("showRatingDialogNext", nextTime.toString());
+  };
+
+  const handleSubmitRating = async (rating: number, comment: string) => {
+    await submitRating(
+      rating,
+      comment,
+      session?.user?.name ?? undefined,
+      session?.user?.email ?? undefined
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800">
@@ -214,11 +259,8 @@ export default function MockMatePage() {
       </div>
       <RatingDialog
         open={showRating}
-        onClose={() => setShowRating(false)}
-        onSubmit={async (rating, comment) => {
-          await submitRating(rating, comment, name ?? undefined, email ?? undefined)
-          setShowRating(false)
-        }}
+        onClose={handleCloseRating}
+        onSubmit={handleSubmitRating}
       />
     </div>
   )

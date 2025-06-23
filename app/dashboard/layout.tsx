@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const sidebar = useUserSidebarStore();
   const pathname = usePathname();
+
   if (!sidebar) return null;
   const { isOpen, settings } = sidebar;
 
@@ -39,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </main>
         <footer
           className={cn(
-            "transition-[margin-left] ease-in-out duration-300 h-16",
+            "sticky bottom-0 h-16 z-30 bg-white dark:bg-zinc-900",
             !settings.disabled && (!isOpen ? "lg:ml-[90px]" : "lg:ml-72")
           )}
         >
