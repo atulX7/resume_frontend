@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +8,9 @@ import { FileText, Star, Award, Loader2 } from 'lucide-react';
 import { ResumeTailorService } from '@/services/resume-tailor-service';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { RatingDialog } from '@/components/user-dashboard/RatingDialog';
+import { submitRating } from '@/services/rating-service';
+import { useSession } from 'next-auth/react';
 
 export default function TailorResumePage() {
   const router = useRouter();
@@ -22,6 +25,12 @@ export default function TailorResumePage() {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [showRating, setShowRating] = useState(false);
+  const { data: session } = useSession();
+  const name = session?.user?.name;
+  const email = session?.user?.email;
+
+  useEffect(() => { setShowRating(true); }, []);
 
   // Add validation function
   const isFormValid = () => {
@@ -208,6 +217,14 @@ export default function TailorResumePage() {
           </div>
         </div>
       </div>
+      <RatingDialog
+        open={showRating}
+        onClose={() => setShowRating(false)}
+        onSubmit={async (rating, comment) => {
+          await submitRating(rating, comment, name ?? undefined, email ?? undefined);
+          setShowRating(false);
+        }}
+      />
     </div>
   );
 }

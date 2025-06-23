@@ -1,21 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { useUser } from '@/lib/user';
+import { useSession } from 'next-auth/react';
 import { ResumeService } from '@/services/resume-service';
 import { toast } from 'sonner';
 import { Upload, Loader2, Award, Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { RatingDialog } from '@/components/user-dashboard/RatingDialog';
+import { submitRating } from '@/services/rating-service';
 
 export default function ResumeATS() {
   const router = useRouter();
-  const { user } = useUser();
+  const { data: session } = useSession();
+  const name = session?.user?.name;
+  const email = session?.user?.email;
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [showRating, setShowRating] = useState(false);
+
+  useEffect(() => { setShowRating(true); }, []);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -24,7 +31,7 @@ export default function ResumeATS() {
   };
 
   const handleSubmit = async () => {
-    if (!user) {
+    if (!session) {
       toast.error('Authentication Required', {
         description: 'Please login to analyze your resume.',
       });
@@ -162,6 +169,14 @@ export default function ResumeATS() {
           </div>
         </div>
       </div>
+      <RatingDialog
+        open={showRating}
+        onClose={() => setShowRating(false)}
+        onSubmit={async (rating, comment) => {
+          await submitRating(rating, comment, name ?? undefined, email ?? undefined);
+          setShowRating(false);
+        }}
+      />
     </div>
   );
 }

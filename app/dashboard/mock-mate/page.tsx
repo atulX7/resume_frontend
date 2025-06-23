@@ -8,6 +8,9 @@ import { InterviewService } from "@/services/interview-service"
 import { Button } from "@/components/ui/button"
 import { FileText } from "lucide-react"
 import { toast } from "sonner"
+import { RatingDialog } from '@/components/user-dashboard/RatingDialog'
+import { submitRating } from '@/services/rating-service'
+import { useSession } from 'next-auth/react'
 
 interface Interview {
   session_id: string
@@ -20,6 +23,10 @@ interface Interview {
 export default function MockMatePage() {
   const [interviews, setInterviews] = useState<Interview[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [showRating, setShowRating] = useState(false)
+  const { data: session } = useSession()
+  const name = session?.user?.name
+  const email = session?.user?.email
 
   useEffect(() => {
     async function fetchInterviews() {
@@ -39,6 +46,7 @@ export default function MockMatePage() {
     }
 
     fetchInterviews()
+    setShowRating(true)
   }, [])
 
   return (
@@ -54,7 +62,7 @@ export default function MockMatePage() {
               <p className="text-gray-700 dark:text-gray-300 mb-8 text-base sm:text-lg leading-relaxed">
                 Get more job offers by improving your interview skills...
               </p>
-              <Link 
+              <Link
                 href="/dashboard/mock-mate/new"
                 className="bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-primary/90 transition-all transform hover:scale-105 inline-flex items-center gap-2 shadow-lg"
               >
@@ -64,8 +72,8 @@ export default function MockMatePage() {
             </div>
             <div className="flex-1 flex justify-center lg:justify-end mt-8 lg:mt-0">
               <Image
-                src="/images/interview-illustration.svg" 
-                alt="Interview illustration" 
+                src="/images/interview-illustration.svg"
+                alt="Interview illustration"
                 className="w-full max-w-md lg:max-w-[600px] h-auto hover:transform hover:scale-105 transition-transform duration-300"
                 width={600}
                 height={600}
@@ -85,7 +93,7 @@ export default function MockMatePage() {
               <p className="text-gray-700 dark:text-gray-300 mb-8 text-base sm:text-lg leading-relaxed">
                 Get more job offers by improving your interview skills...
               </p>
-              <Link 
+              <Link
                 href="/dashboard/mock-mate/new"
                 className="bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-primary/90 transition-all transform hover:scale-105 inline-flex items-center gap-2 shadow-lg"
               >
@@ -95,8 +103,8 @@ export default function MockMatePage() {
             </div>
             <div className="flex-1 flex justify-center lg:justify-end mt-8 lg:mt-0">
               <Image
-                src="/images/interview-illustration.svg" 
-                alt="Interview illustration" 
+                src="/images/interview-illustration.svg"
+                alt="Interview illustration"
                 className="w-full max-w-md lg:max-w-[500px] h-auto hover:transform hover:scale-105 transition-transform duration-300"
                 width={500}
                 height={500}
@@ -118,9 +126,9 @@ export default function MockMatePage() {
                 <span className="text-sm font-medium text-primary dark:text-primary-foreground">Scroll down to see your interviews</span>
               </div>
             </div>
-            
+
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center lg:text-left">Your Mock Interviews</h2>
-            
+
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[...Array(3)].map((_, i) => (
@@ -133,8 +141,8 @@ export default function MockMatePage() {
               <div className="min-h-[60vh] lg:min-h-[80vh] flex flex-col items-center justify-center">
                 <div className="text-center max-w-2xl mx-auto p-4">
                   <Image
-                    src="/images/empty-interview.svg" 
-                    alt="No interviews" 
+                    src="/images/empty-interview.svg"
+                    alt="No interviews"
                     className="w-48 h-48 sm:w-64 sm:h-64 mb-8 mx-auto"
                     width={256}
                     height={256}
@@ -143,7 +151,7 @@ export default function MockMatePage() {
                     Start Your Interview Journey
                   </h1>
                   <p className="text-gray-600 mb-8 text-base sm:text-lg">
-                    Practice makes perfect! Begin your interview preparation by simulating 
+                    Practice makes perfect! Begin your interview preparation by simulating
                     real job interviews with our AI-powered mock interview system.
                   </p>
                   <Link href="/dashboard/mock-mate/new">
@@ -157,7 +165,7 @@ export default function MockMatePage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {interviews.map((interview) => (
-                  <Link 
+                  <Link
                     key={interview.session_id}
                     href={`/dashboard/mock-mate/${interview.session_id}`}
                   >
@@ -204,6 +212,14 @@ export default function MockMatePage() {
           </div>
         )}
       </div>
+      <RatingDialog
+        open={showRating}
+        onClose={() => setShowRating(false)}
+        onSubmit={async (rating, comment) => {
+          await submitRating(rating, comment, name ?? undefined, email ?? undefined)
+          setShowRating(false)
+        }}
+      />
     </div>
   )
 }
